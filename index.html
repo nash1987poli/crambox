@@ -1638,24 +1638,26 @@ const DRILL_TOPICS = [
   {
     id: 'mean', name: 'Mean (Average)', icon: 'x-bar',
     generate() {
-      const count = randInt(4, 7);
-      const nums = [];
-      let sum = 0;
-      // Generate numbers that give a clean mean
-      const target = randInt(3, 15);
-      for (let i = 0; i < count - 1; i++) {
-        const n = randInt(1, 20);
-        nums.push(n);
-        sum += n;
+      for (let attempt = 0; attempt < 100; attempt++) {
+        const count = randInt(4, 7);
+        const nums = [];
+        let sum = 0;
+        const target = randInt(3, 15);
+        for (let i = 0; i < count - 1; i++) {
+          const n = randInt(1, 20);
+          nums.push(n);
+          sum += n;
+        }
+        const last = target * count - sum;
+        if (last < 1 || last > 30) continue;
+        nums.push(last);
+        const shuffled = shuffle(nums);
+        const eq = shuffled.join(', ');
+        const realSum = shuffled.reduce((a,b)=>a+b, 0);
+        const steps = `Sum = ${shuffled.join(' + ')} = ${realSum}\nCount = ${count}\nMean = ${realSum} / ${count} = ${target}`;
+        return { equation: eq, instruction: 'Find the mean', answer: target, steps, variable: '' };
       }
-      const last = target * count - sum;
-      if (last < 1 || last > 30) return this.generate();
-      nums.push(last);
-      const shuffled = shuffle(nums);
-      const eq = shuffled.join(', ');
-      const realSum = shuffled.reduce((a,b)=>a+b, 0);
-      const steps = `Sum = ${shuffled.join(' + ')} = ${realSum}\nCount = ${count}\nMean = ${realSum} / ${count} = ${target}`;
-      return { equation: eq, instruction: 'Find the mean', answer: target, steps, variable: '' };
+      return { equation: '4, 6, 8, 10, 12', instruction: 'Find the mean', answer: 8, steps: 'Sum = 4 + 6 + 8 + 10 + 12 = 40\nCount = 5\nMean = 40 / 5 = 8', variable: '' };
     }
   },
   {
