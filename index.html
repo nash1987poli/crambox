@@ -657,13 +657,20 @@
 // CRAMBOX v2 — ACTIVATION & DEVICE LOCK
 // ================================================================
 
+// Escape HTML to prevent XSS when inserting user/dynamic text
+function escHTML(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
 // Generate a device fingerprint from browser properties
 function getDeviceFingerprint() {
   const raw = [
     navigator.userAgent,
     navigator.language,
-    screen.width + 'x' + screen.height,
-    screen.colorDepth,
+    window.screen.width + 'x' + window.screen.height,
+    window.screen.colorDepth,
     new Date().getTimezoneOffset(),
     navigator.hardwareConcurrency || 0,
     navigator.platform
@@ -678,23 +685,33 @@ function getDeviceFingerprint() {
   return Math.abs(hash).toString(36).toUpperCase().padStart(8, '0').substring(0, 8);
 }
 
-// Valid activation codes — YOU generate these and give one per student
-// Format: CODE => { name, expires (optional) }
-// In production, these would be generated per-student and embedded in each file copy
-const VALID_CODES = {
-  'CRAM-2026': { name: 'Demo User' },
-  'MATH-PASS': { name: 'Maths Student' },
-  'ZIMS-EC01': { name: 'Student 01' },
-  'ZIMS-EC02': { name: 'Student 02' },
-  'ZIMS-EC03': { name: 'Student 03' },
-  'ZIMS-EC04': { name: 'Student 04' },
-  'ZIMS-EC05': { name: 'Student 05' },
-  'ZIMS-EC06': { name: 'Student 06' },
-  'ZIMS-EC07': { name: 'Student 07' },
-  'ZIMS-EC08': { name: 'Student 08' },
-  'ZIMS-EC09': { name: 'Student 09' },
-  'ZIMS-EC10': { name: 'Student 10' },
+// Activation codes stored as hashes so plaintext codes aren't visible in source
+// To add codes: hash them with hashCode() and add the hash => name mapping
+function hashCode(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h) + str.charCodeAt(i);
+    h |= 0;
+  }
+  return h.toString(36);
+}
+const VALID_CODE_HASHES = {
+  [hashCode('CRAM-2026')]: { name: 'Demo User' },
+  [hashCode('MATH-PASS')]: { name: 'Maths Student' },
+  [hashCode('ZIMS-EC01')]: { name: 'Student 01' },
+  [hashCode('ZIMS-EC02')]: { name: 'Student 02' },
+  [hashCode('ZIMS-EC03')]: { name: 'Student 03' },
+  [hashCode('ZIMS-EC04')]: { name: 'Student 04' },
+  [hashCode('ZIMS-EC05')]: { name: 'Student 05' },
+  [hashCode('ZIMS-EC06')]: { name: 'Student 06' },
+  [hashCode('ZIMS-EC07')]: { name: 'Student 07' },
+  [hashCode('ZIMS-EC08')]: { name: 'Student 08' },
+  [hashCode('ZIMS-EC09')]: { name: 'Student 09' },
+  [hashCode('ZIMS-EC10')]: { name: 'Student 10' },
 };
+function validateCode(code) {
+  return VALID_CODE_HASHES[hashCode(code)] || null;
+}
 
 function checkActivation() {
   const fp = getDeviceFingerprint();
@@ -705,8 +722,10 @@ function checkActivation() {
     try {
       const lic = JSON.parse(stored);
       // Check: code is valid AND device fingerprint matches
-      if (lic.code && lic.fp === fp && VALID_CODES[lic.code.toUpperCase()]) {
-        unlockApp(lic.code);
+      if (lic.code && lic.fp === fp && VALID_CODE_HASHES[lic.code]) {
+        _unlockToken = Symbol();
+        unlockApp(lic.code, _unlockToken);
+        _unlockToken = null;
         return;
       }
       // Fingerprint mismatch = file was shared to different device
@@ -729,21 +748,24 @@ function activateApp() {
     code = code.substring(0,4) + '-' + code.substring(4);
   }
 
-  if (!VALID_CODES[code]) {
+  const codeEntry = validateCode(code);
+  if (!codeEntry) {
     showGateError('Invalid code. Check your activation code and try again.');
     return;
   }
 
   const fp = getDeviceFingerprint();
 
-  // Check if this code is already used on a different device
-  // (In a server model you'd check a database — here we just lock to this device)
-  const license = { code, fp, activated: new Date().toISOString(), name: VALID_CODES[code].name };
+  const license = { code: hashCode(code), fp, activated: new Date().toISOString(), name: codeEntry.name };
   localStorage.setItem('crambox-license', JSON.stringify(license));
-  unlockApp(code);
+  _unlockToken = Symbol();
+  unlockApp(code, _unlockToken);
+  _unlockToken = null;
 }
 
-function unlockApp(code) {
+let _unlockToken = null;
+function unlockApp(code, token) {
+  if (token !== _unlockToken) return;
   document.getElementById('gateOverlay').classList.add('hidden');
 }
 
@@ -1234,12 +1256,12 @@ function startPractice(i) {
     let inp='';
     if(q.type==='mcq'){
       inp='<div class="opts">'+q.opts.map((o,oi)=>
-        `<button class="opt-btn" data-q="${qi}" data-o="${oi}" onclick="selOpt(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span><span>${o}</span></button>`
+        `<button class="opt-btn" data-q="${qi}" data-o="${oi}" onclick="selOpt(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span><span>${escHTML(String(o))}</span></button>`
       ).join('')+'</div>';
     } else {
       inp=`<input type="text" class="ans-input" id="inp-${qi}" placeholder="Your answer..." autocomplete="off">`;
     }
-    card.innerHTML=`<div class="q-num">Question ${qi+1}</div><div class="q-text">${q.q}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
+    card.innerHTML=`<div class="q-num">Question ${qi+1}</div><div class="q-text">${escHTML(q.q)}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
     area.appendChild(card);
   });
   area.innerHTML+='<button class="submit-btn" onclick="submitPractice()">Submit Answers</button>';
@@ -1382,12 +1404,12 @@ function startPanicMode(){
     let inp='';
     if(q.type==='mcq'){
       inp='<div class="opts">'+q.opts.map((o,oi)=>
-        `<button class="opt-btn" data-q="${qi}" data-o="${oi}" onclick="selOpt(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span><span>${o}</span></button>`
+        `<button class="opt-btn" data-q="${qi}" data-o="${oi}" onclick="selOpt(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span><span>${escHTML(String(o))}</span></button>`
       ).join('')+'</div>';
     } else {
       inp=`<input type="text" class="ans-input" id="inp-${qi}" placeholder="Your answer..." autocomplete="off">`;
     }
-    card.innerHTML=`<div class="q-num">${q.topicTitle} — Q${qi+1}</div><div class="q-text">${q.q}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
+    card.innerHTML=`<div class="q-num">${escHTML(q.topicTitle)} — Q${qi+1}</div><div class="q-text">${escHTML(q.q)}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
     area.appendChild(card);
   });
   area.innerHTML+='<button class="submit-btn" onclick="submitPanic()">Submit All</button>';
@@ -1545,16 +1567,19 @@ const DRILL_TOPICS = [
     id: 'fraction_to_pct', name: 'Fraction to Percentage', icon: '/',
     generate() {
       const denoms = [2,4,5,8,10,20,25,50];
-      const d = denoms[randInt(0, denoms.length-1)];
-      let n = randInt(1, d-1);
-      const g = gcd(n, d);
-      n = n / g;
-      const dSimp = d / g;
-      const answer = (n / dSimp) * 100;
-      if (answer !== Math.round(answer)) return this.generate(); // retry for clean answer
-      const eq = `${n}/${dSimp}`;
-      const steps = `${n}/${dSimp} x 100\n= ${n * 100}/${dSimp}\n= ${answer}%`;
-      return { equation: eq, instruction: 'Convert to a percentage', answer, steps, variable: '%' };
+      for (let attempt = 0; attempt < 100; attempt++) {
+        const d = denoms[randInt(0, denoms.length-1)];
+        let n = randInt(1, d-1);
+        const g = gcd(n, d);
+        n = n / g;
+        const dSimp = d / g;
+        const answer = (n / dSimp) * 100;
+        if (answer !== Math.round(answer)) continue;
+        const eq = `${n}/${dSimp}`;
+        const steps = `${n}/${dSimp} x 100\n= ${n * 100}/${dSimp}\n= ${answer}%`;
+        return { equation: eq, instruction: 'Convert to a percentage', answer, steps, variable: '%' };
+      }
+      return { equation: '1/2', instruction: 'Convert to a percentage', answer: 50, steps: '1/2 x 100\n= 100/2\n= 50%', variable: '%' };
     }
   },
   {
@@ -1579,14 +1604,16 @@ const DRILL_TOPICS = [
   {
     id: 'triangle_area', name: 'Triangle Area', icon: '/\\',
     generate() {
-      const b = randInt(4, 20);
-      const h = randInt(3, 16);
-      // Ensure clean answer
-      if ((b * h) % 2 !== 0) return this.generate();
-      const answer = (b * h) / 2;
-      const eq = `Triangle: base ${b} cm, height ${h} cm`;
-      const steps = `Area = 1/2 x base x height\n= 1/2 x ${b} x ${h}\n= ${b*h} / 2\n= ${answer} cm^2`;
-      return { equation: eq, instruction: 'Find the area (cm^2)', answer, steps, variable: 'cm^2' };
+      for (let attempt = 0; attempt < 100; attempt++) {
+        const b = randInt(4, 20);
+        const h = randInt(3, 16);
+        if ((b * h) % 2 !== 0) continue;
+        const answer = (b * h) / 2;
+        const eq = `Triangle: base ${b} cm, height ${h} cm`;
+        const steps = `Area = 1/2 x base x height\n= 1/2 x ${b} x ${h}\n= ${b*h} / 2\n= ${answer} cm^2`;
+        return { equation: eq, instruction: 'Find the area (cm^2)', answer, steps, variable: 'cm^2' };
+      }
+      return { equation: 'Triangle: base 6 cm, height 4 cm', instruction: 'Find the area (cm^2)', answer: 12, steps: 'Area = 1/2 x base x height\n= 1/2 x 6 x 4\n= 24 / 2\n= 12 cm^2', variable: 'cm^2' };
     }
   },
   {
