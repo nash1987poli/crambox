@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<title>CramBox - Pass Your O-Levels</title>
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0a0a0a; --bg2: #141414; --card: #1a1a1a; --card2: #222;
+    --text: #f0f0f0; --text2: #999; --border: #2a2a2a;
+    --green: #00e676; --green-bg: rgba(0,230,118,0.1); --green-dim: #1b5e20;
+    --gold: #ffd740; --gold-bg: rgba(255,215,64,0.1);
+    --red: #ff5252; --red-bg: rgba(255,82,82,0.1);
+    --blue: #448aff; --blue-bg: rgba(68,138,255,0.1);
+    --purple: #b388ff; --purple-bg: rgba(179,136,255,0.1);
+    --accent: #00e676;
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f5f5; --bg2: #eee; --card: #fff; --card2: #f9f9f9;
+    --text: #111; --text2: #666; --border: #ddd;
+    --green: #2e7d32; --green-bg: #e8f5e9; --green-dim: #c8e6c9;
+    --gold: #f9a825; --gold-bg: #fff8e1;
+    --red: #c62828; --red-bg: #ffebee;
+    --blue: #1565c0; --blue-bg: #e3f2fd;
+    --purple: #7c4dff; --purple-bg: #ede7f6;
+    --accent: #2e7d32;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height:1.6;
+    min-height:100vh; overflow-x:hidden; transition: background 0.3s, color 0.3s;
+  }
+  /* Header */
+  .header {
+    background: var(--card); border-bottom:1px solid var(--border);
+    padding:12px 16px; position:sticky; top:0; z-index:100;
+  }
+  .header-inner {
+    max-width:480px; margin:0 auto; display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo { font-size:20px; font-weight:800; letter-spacing:-1px; }
+  .logo span { color:var(--accent); }
+  .header-right { display:flex; align-items:center; gap:8px; }
+  .theme-btn, .back-btn {
+    background:var(--bg2); border:1px solid var(--border); color:var(--text);
+    padding:6px 10px; border-radius:8px; font-size:13px; cursor:pointer;
+  }
+  .back-btn { display:none; }
+  .xp-badge {
+    background: var(--gold-bg); color:var(--gold); padding:4px 10px;
+    border-radius:20px; font-size:12px; font-weight:700;
+  }
+  /* Container */
+  .container { max-width:480px; margin:0 auto; padding:16px; }
+  .screen { display:none; } .screen.active { display:block; }
+
+  /* ===== HOME ===== */
+  .streak-bar {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border:1px solid var(--border); border-radius:16px;
+    padding:20px; margin-bottom:16px; display:flex;
+    align-items:center; justify-content:space-between;
+  }
+  [data-theme="light"] .streak-bar { background: linear-gradient(135deg, #e8f5e9, #e3f2fd); }
+  .streak-info h3 { font-size:14px; color:var(--text2); font-weight:500; }
+  .streak-number { font-size:42px; font-weight:800; color:var(--accent); line-height:1; }
+  .streak-label { font-size:12px; color:var(--text2); }
+  .streak-dots { display:flex; gap:6px; }
+  .streak-dot {
+    width:32px; height:32px; border-radius:50%; display:flex;
+    align-items:center; justify-content:center; font-size:11px; font-weight:700;
+    background:var(--bg); border:2px solid var(--border); color:var(--text2);
+  }
+  .streak-dot.active { background:var(--green-bg); border-color:var(--green); color:var(--green); }
+  .streak-dot.today { border-color:var(--gold); color:var(--gold); background:var(--gold-bg); }
+
+  /* Stats Row */
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
+  .stat-card {
+    background:var(--card); padding:12px 8px; border-radius:12px;
+    text-align:center; border:1px solid var(--border);
+  }
+  .stat-num { font-size:22px; font-weight:800; color:var(--accent); }
+  .stat-lbl { font-size:10px; color:var(--text2); margin-top:2px; text-transform:uppercase; letter-spacing:0.5px; }
+
+  /* Quick Actions */
+  .quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  .quick-btn {
+    padding:16px; border-radius:14px; border:1px solid var(--border);
+    background:var(--card); cursor:pointer; text-align:left; transition:all 0.2s;
+  }
+  .quick-btn:hover { border-color:var(--accent); transform:translateY(-1px); }
+  .quick-btn h4 { font-size:14px; margin-bottom:2px; color:var(--text); }
+  .quick-btn p { font-size:11px; color:var(--text2); }
+  .quick-btn.panic {
+    background:linear-gradient(135deg, #b71c1c, #c62828);
+    border-color:#e53935; color:white;
+  }
+  .quick-btn.panic h4, .quick-btn.panic p { color:white; }
+  .quick-btn.speed {
+    background:linear-gradient(135deg, #e65100, #f57c00);
+    border-color:#ff9800; color:white;
+  }
+  .quick-btn.speed h4, .quick-btn.speed p { color:white; }
+
+  /* Section */
+  .section-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .section-title { font-size:16px; font-weight:700; }
+  .section-link { font-size:12px; color:var(--accent); cursor:pointer; }
+
+  /* Subject Cards */
+  .subject-card {
+    background:var(--card); padding:16px; border-radius:14px;
+    border:1px solid var(--border); margin-bottom:10px;
+    cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:14px;
+  }
+  .subject-card:hover { border-color:var(--accent); }
+  .subj-icon {
+    width:44px; height:44px; border-radius:12px; display:flex;
+    align-items:center; justify-content:center; font-size:20px; font-weight:700;
+  }
+  .subj-info { flex:1; }
+  .subj-info h3 { font-size:15px; }
+  .subj-info p { font-size:12px; color:var(--text2); }
+  .subj-pct { font-size:13px; font-weight:700; color:var(--accent); }
+
+  /* Topic List */
+  .topic-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    margin-bottom:8px; cursor:pointer; transition:all 0.2s; overflow:hidden;
+  }
+  .topic-card:hover { border-color:var(--accent); }
+  .topic-card.locked { opacity:0.4; cursor:default; }
+  .topic-card.locked:hover { border-color:var(--border); }
+  .topic-inner {
+    padding:14px 16px; display:flex; align-items:center; gap:12px;
+  }
+  .topic-num {
+    width:32px; height:32px; border-radius:50%; display:flex;
+    align-items:center; justify-content:center; font-weight:700; font-size:13px;
+    background:var(--bg2); color:var(--text2); flex-shrink:0;
+  }
+  .topic-num.done { background:var(--green); color:#000; }
+  .topic-det { flex:1; }
+  .topic-det h4 { font-size:14px; }
+  .topic-det p { font-size:11px; color:var(--text2); }
+  .topic-tag {
+    padding:3px 8px; border-radius:6px; font-size:10px; font-weight:700; text-transform:uppercase;
+  }
+  .tag-lesson { background:var(--blue-bg); color:var(--blue); }
+  .tag-practice { background:var(--gold-bg); color:var(--gold); }
+  .tag-locked { background:var(--bg2); color:var(--text2); }
+
+  /* XP Popup */
+  .xp-popup {
+    position:fixed; top:60px; left:50%; transform:translateX(-50%);
+    background:var(--gold); color:#000; padding:8px 20px; border-radius:20px;
+    font-weight:800; font-size:16px; z-index:200; display:none;
+    animation: xpPop 0.5s ease;
+  }
+  @keyframes xpPop { 0%{transform:translateX(-50%) scale(0.5) translateY(20px);opacity:0} 100%{transform:translateX(-50%) scale(1) translateY(0);opacity:1} }
+
+  /* Lesson Player */
+  .lesson-card {
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    overflow:hidden; margin-bottom:12px;
+  }
+  .lesson-head { padding:14px 16px; border-bottom:1px solid var(--border); }
+  .lesson-head h3 { font-size:16px; }
+  .lesson-head p { font-size:12px; color:var(--text2); }
+  .workspace {
+    padding:16px; background:#0d1117; color:#c9d1d9;
+    font-family:'SF Mono','Fira Code','Consolas',monospace;
+    font-size:14px; line-height:1.8; min-height:240px;
+    white-space:pre-wrap; word-wrap:break-word; overflow-y:auto;
+  }
+  [data-theme="light"] .workspace { background:#1e1e1e; color:#d4d4d4; }
+  .workspace .step { display:none; animation:fadeIn 0.3s ease; }
+  .workspace .step.visible { display:block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .workspace .comment{color:#6a9955} .workspace .keyword{color:#569cd6}
+  .workspace .number{color:#b5cea8} .workspace .highlight{color:#dcdcaa}
+  .workspace .result{color:#4ec9b0;font-weight:700} .workspace .label{color:#9cdcfe}
+  .workspace .important{color:#f44747;font-weight:700} .workspace .operator{color:#c9d1d9}
+  .narration-box {
+    padding:16px 18px; background:var(--card2); border-left:4px solid var(--accent);
+    font-size:15px; color:var(--text); display:flex; align-items:flex-start; gap:10px;
+    line-height:1.7; min-height:80px; transition: border-color 0.3s;
+  }
+  .narration-box.typing { border-color: var(--gold); }
+  .narr-icon {
+    width:28px; height:28px; border-radius:50%; background:var(--accent);
+    color:#000; display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:700; flex-shrink:0; margin-top:2px;
+  }
+  .narr-cursor {
+    display:inline-block; width:2px; height:1em; background:var(--accent);
+    margin-left:2px; vertical-align:text-bottom;
+    animation: blink 0.6s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  /* Workspace glow for highlight sync */
+  .workspace .glow {
+    background: rgba(255,215,64,0.15);
+    border-radius: 3px;
+    box-shadow: 0 0 8px rgba(255,215,64,0.3);
+    transition: background 0.3s;
+  }
+  .controls {
+    padding:12px 16px; display:flex; align-items:center; gap:8px;
+    border-top:1px solid var(--border); flex-wrap:wrap;
+  }
+  .play-btn {
+    width:40px; height:40px; border-radius:50%; background:var(--accent);
+    color:#000; border:none; font-size:16px; font-weight:700; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .timeline { flex:1; min-width:100px; }
+  .tl-bar {
+    width:100%; height:4px; background:var(--border); border-radius:2px;
+    cursor:pointer; position:relative;
+  }
+  .tl-fill { height:100%; background:var(--accent); border-radius:2px; transition:width 0.3s; }
+  .tl-label { font-size:11px; color:var(--text2); margin-top:3px; }
+  .ctrl-btn {
+    padding:6px 12px; border:1px solid var(--border); background:var(--bg2);
+    color:var(--text); border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  .ctrl-btn:hover { border-color:var(--accent); }
+  .voice-btn { font-size:11px; }
+  .voice-btn.on { color:var(--green); border-color:var(--green); }
+  .try-area { border-top:2px dashed #333; margin-top:14px; padding-top:14px; }
+  .try-label { color:var(--gold); font-weight:700; font-size:12px; display:block; margin-bottom:6px; }
+  .try-input {
+    width:100%; min-height:60px; background:#161b22; border:1px solid #333;
+    border-radius:8px; color:#c9d1d9; font-family:inherit; font-size:13px;
+    padding:10px; resize:vertical; outline:none;
+  }
+  .try-input:focus { border-color:var(--gold); }
+
+  /* Practice */
+  .q-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:20px; margin-bottom:12px;
+  }
+  .q-num { font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase; margin-bottom:6px; }
+  .q-text { font-size:15px; font-weight:600; margin-bottom:4px; white-space:pre-wrap; }
+  .q-marks { font-size:12px; color:var(--text2); margin-bottom:14px; }
+  .opts { display:grid; gap:8px; }
+  .opt-btn {
+    padding:12px 14px; border:2px solid var(--border); border-radius:10px;
+    background:var(--bg2); color:var(--text); font-size:14px; cursor:pointer;
+    text-align:left; display:flex; align-items:center; gap:10px; transition:all 0.15s;
+  }
+  .opt-btn:hover { border-color:var(--accent); }
+  .opt-btn.selected { border-color:var(--blue); background:var(--blue-bg); }
+  .opt-btn.correct { border-color:var(--green); background:var(--green-bg); }
+  .opt-btn.wrong { border-color:var(--red); background:var(--red-bg); }
+  .opt-letter {
+    width:28px; height:28px; border-radius:50%; background:var(--card);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:13px; flex-shrink:0; border:1px solid var(--border);
+  }
+  .ans-input {
+    width:100%; padding:12px; border:2px solid var(--border); border-radius:10px;
+    font-size:15px; background:var(--bg2); color:var(--text); outline:none;
+  }
+  .ans-input:focus { border-color:var(--accent); }
+  .submit-btn {
+    width:100%; padding:14px; background:var(--accent); color:#000;
+    border:none; border-radius:10px; font-size:15px; font-weight:700;
+    cursor:pointer; margin-top:10px;
+  }
+  .submit-btn:disabled { background:var(--border); color:var(--text2); cursor:default; }
+  .explanation {
+    margin-top:12px; padding:12px; border-radius:8px; font-size:13px;
+    display:none; line-height:1.7;
+  }
+  .explanation.show { display:block; }
+  .explanation.correct-exp { background:var(--green-bg); border-left:3px solid var(--green); }
+  .explanation.wrong-exp { background:var(--red-bg); border-left:3px solid var(--red); }
+  .explanation h4 { margin-bottom:4px; font-size:13px; }
+
+  /* Speed Round */
+  .speed-screen { text-align:center; }
+  .speed-timer {
+    width:80px; height:80px; border-radius:50%; margin:0 auto 16px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:32px; font-weight:800; border:4px solid var(--accent);
+    color:var(--accent);
+  }
+  .speed-timer.urgent { border-color:var(--red); color:var(--red); animation:pulse 0.5s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+  .speed-q { font-size:18px; font-weight:700; margin-bottom:16px; padding:0 10px; }
+  .speed-opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 10px; }
+  .speed-opt {
+    padding:16px; border:2px solid var(--border); border-radius:12px;
+    background:var(--card); font-size:16px; font-weight:600; cursor:pointer;
+    color:var(--text); transition:all 0.15s;
+  }
+  .speed-opt:hover { border-color:var(--accent); }
+  .speed-opt.correct { background:var(--green-bg); border-color:var(--green); }
+  .speed-opt.wrong { background:var(--red-bg); border-color:var(--red); }
+  .speed-score-bar {
+    display:flex; justify-content:center; gap:6px; margin-bottom:16px;
+  }
+  .speed-dot {
+    width:12px; height:12px; border-radius:50%; background:var(--border);
+  }
+  .speed-dot.right { background:var(--green); }
+  .speed-dot.wrong-dot { background:var(--red); }
+
+  /* Results */
+  .results-card {
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:28px 20px; text-align:center;
+  }
+  .results-circle {
+    width:110px; height:110px; border-radius:50%; margin:0 auto 16px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-size:32px; font-weight:800;
+  }
+  .results-circle small { font-size:13px; font-weight:400; }
+  .rc-great { background:var(--green-bg); color:var(--green); border:3px solid var(--green); }
+  .rc-ok { background:var(--gold-bg); color:var(--gold); border:3px solid var(--gold); }
+  .rc-bad { background:var(--red-bg); color:var(--red); border:3px solid var(--red); }
+  .results-msg { font-size:18px; font-weight:700; margin-bottom:6px; }
+  .results-det { font-size:13px; color:var(--text2); margin-bottom:8px; }
+  .results-xp { font-size:14px; font-weight:700; color:var(--gold); margin-bottom:20px; }
+  .results-actions { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .results-actions button {
+    padding:10px 20px; border-radius:10px; font-size:13px; font-weight:600;
+    cursor:pointer; border:1px solid var(--border); background:var(--bg2); color:var(--text);
+  }
+  .results-actions button:hover { border-color:var(--accent); }
+  .results-actions .primary { background:var(--accent); color:#000; border-color:var(--accent); }
+  .share-btn {
+    width:100%; padding:12px; margin-top:12px; background:#25d366; color:white;
+    border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer;
+  }
+
+  /* Responsive */
+  @media(max-width:400px) {
+    .stats-row { grid-template-columns:repeat(2,1fr); }
+    .speed-opts { grid-template-columns:1fr; }
+    .controls { gap:6px; }
+  }
+  /* Infinite Drill */
+  .drill-topic-pick {
+    display:grid; gap:8px; margin-bottom:16px;
+  }
+  .drill-pick {
+    padding:14px 16px; border:2px solid var(--border); border-radius:12px;
+    background:var(--card); cursor:pointer; display:flex; align-items:center;
+    gap:12px; transition:all 0.15s; color:var(--text); font-size:14px; font-weight:600;
+  }
+  .drill-pick:hover, .drill-pick.active { border-color:var(--accent); background:var(--green-bg); }
+  .drill-pick .dp-icon {
+    width:32px; height:32px; border-radius:8px; background:var(--bg2);
+    display:flex; align-items:center; justify-content:center; font-size:16px;
+  }
+  .drill-q-card {
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:24px; margin-bottom:12px; text-align:center;
+  }
+  .drill-equation {
+    font-size:22px; font-weight:700; margin:16px 0; padding:20px;
+    background:var(--bg2); border-radius:12px; font-family:'SF Mono','Fira Code',monospace;
+    letter-spacing:1px;
+  }
+  .drill-input-row {
+    display:flex; gap:10px; align-items:center; justify-content:center; margin:16px 0;
+  }
+  .drill-ans {
+    width:120px; padding:14px; border:2px solid var(--border); border-radius:10px;
+    font-size:20px; font-weight:700; text-align:center; background:var(--bg2);
+    color:var(--text); outline:none; font-family:inherit;
+  }
+  .drill-ans:focus { border-color:var(--accent); }
+  .drill-check {
+    padding:14px 24px; background:var(--accent); color:#000; border:none;
+    border-radius:10px; font-size:16px; font-weight:700; cursor:pointer;
+  }
+  .drill-feedback {
+    padding:14px; border-radius:10px; font-size:14px; font-weight:600;
+    margin-top:12px; display:none;
+  }
+  .drill-feedback.show { display:block; }
+  .drill-feedback.correct-fb { background:var(--green-bg); color:var(--green); }
+  .drill-feedback.wrong-fb { background:var(--red-bg); color:var(--red); }
+  .drill-counter {
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:13px; color:var(--text2); margin-bottom:12px;
+  }
+  .drill-streak-badge {
+    padding:4px 12px; border-radius:20px; font-weight:700; font-size:13px;
+  }
+  .drill-streak-hot { background:var(--gold-bg); color:var(--gold); }
+  .drill-streak-cold { background:var(--bg2); color:var(--text2); }
+  .drill-next {
+    width:100%; padding:14px; background:var(--blue); color:white; border:none;
+    border-radius:10px; font-size:15px; font-weight:700; cursor:pointer;
+    margin-top:10px; display:none;
+  }
+  .drill-solution {
+    margin-top:12px; padding:14px; background:var(--bg2); border-radius:10px;
+    font-family:'SF Mono','Fira Code',monospace; font-size:13px;
+    text-align:left; white-space:pre-wrap; display:none; line-height:1.8;
+    color:var(--text);
+  }
+
+  /* Activation Gate */
+  .gate-overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999;
+    background:var(--bg); display:flex; align-items:center; justify-content:center;
+  }
+  .gate-overlay.hidden { display:none; }
+  .gate-card {
+    width:90%; max-width:380px; background:var(--card); border:1px solid var(--border);
+    border-radius:20px; padding:32px 24px; text-align:center;
+  }
+  .gate-logo { font-size:32px; font-weight:800; letter-spacing:-1px; margin-bottom:4px; }
+  .gate-logo span { color:var(--accent); }
+  .gate-sub { font-size:13px; color:var(--text2); margin-bottom:24px; }
+  .gate-input {
+    width:100%; padding:14px; border:2px solid var(--border); border-radius:12px;
+    font-size:18px; font-weight:700; text-align:center; letter-spacing:4px;
+    background:var(--bg2); color:var(--text); outline:none;
+    text-transform:uppercase; font-family:monospace;
+  }
+  .gate-input:focus { border-color:var(--accent); }
+  .gate-input::placeholder { letter-spacing:1px; font-size:14px; font-weight:400; }
+  .gate-btn {
+    width:100%; padding:14px; margin-top:12px; background:var(--accent); color:#000;
+    border:none; border-radius:12px; font-size:16px; font-weight:700; cursor:pointer;
+  }
+  .gate-btn:disabled { background:var(--border); color:var(--text2); cursor:default; }
+  .gate-error {
+    margin-top:12px; padding:10px; background:var(--red-bg); color:var(--red);
+    border-radius:8px; font-size:13px; font-weight:600; display:none;
+  }
+  .gate-device {
+    margin-top:16px; font-size:11px; color:var(--text2); word-break:break-all;
+  }
+  .gate-device code {
+    background:var(--bg2); padding:2px 6px; border-radius:4px; font-size:10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ACTIVATION GATE -->
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-card">
+    <div class="gate-logo">Cram<span>Box</span></div>
+    <div class="gate-sub">Enter your activation code to start</div>
+    <input type="text" class="gate-input" id="gateCode" placeholder="XXXX-XXXX" maxlength="9" autocomplete="off">
+    <button class="gate-btn" id="gateBtn" onclick="activateApp()">Activate</button>
+    <div class="gate-error" id="gateError"></div>
+    <div class="gate-device">Device ID: <code id="gateDeviceId">...</code></div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-inner">
+    <button class="back-btn" id="backBtn" onclick="goBack()">Back</button>
+    <div class="logo">Cram<span>Box</span></div>
+    <div class="header-right">
+      <span class="xp-badge" id="xpBadge">0 XP</span>
+      <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">Light</button>
+    </div>
+  </div>
+</div>
+
+<div class="xp-popup" id="xpPopup"></div>
+
+<!-- ==================== HOME ==================== -->
+<div class="screen active" id="homeScreen">
+<div class="container">
+  <div class="streak-bar">
+    <div class="streak-info">
+      <h3>Daily Streak</h3>
+      <div class="streak-number" id="streakNum">0</div>
+      <div class="streak-label">days in a row</div>
+    </div>
+    <div class="streak-dots" id="streakDots"></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="sLessons">0</div><div class="stat-lbl">Lessons</div></div>
+    <div class="stat-card"><div class="stat-num" id="sQuestions">0</div><div class="stat-lbl">Questions</div></div>
+    <div class="stat-card"><div class="stat-num" id="sBest">-</div><div class="stat-lbl">Best</div></div>
+    <div class="stat-card"><div class="stat-num" id="sLevel">1</div><div class="stat-lbl">Level</div></div>
+  </div>
+
+  <div class="quick-actions">
+    <div class="quick-btn panic" onclick="startPanicMode()">
+      <h4>EXAM TOMORROW</h4>
+      <p>20 min blitz revision</p>
+    </div>
+    <div class="quick-btn speed" onclick="startSpeedRound()">
+      <h4>SPEED ROUND</h4>
+      <p>10 questions, 15 sec each</p>
+    </div>
+  </div>
+  <div class="subject-card" onclick="openDrillPicker()" style="border-color:var(--purple);margin-bottom:20px">
+    <div class="subj-icon" style="background:var(--purple-bg);color:var(--purple);">INF</div>
+    <div class="subj-info">
+      <h3>Infinite Drill</h3>
+      <p>Unlimited random questions — never the same twice</p>
+    </div>
+    <span class="subj-pct" style="color:var(--purple)">NEW</span>
+  </div>
+
+  <div class="section-head">
+    <div class="section-title">Subjects</div>
+  </div>
+
+  <div class="subject-card" onclick="openSubject('maths')">
+    <div class="subj-icon" style="background:var(--blue-bg);color:var(--blue);">+</div>
+    <div class="subj-info">
+      <h3>Mathematics 4004</h3>
+      <p>Algebra, Geometry, Stats, Trig</p>
+    </div>
+    <span class="subj-pct" id="mathsPct">0%</span>
+  </div>
+  <div class="subject-card" onclick="openSubject('science')" style="opacity:0.4">
+    <div class="subj-icon" style="background:var(--green-bg);color:var(--green);">~</div>
+    <div class="subj-info">
+      <h3>Combined Science 5006</h3>
+      <p>Coming soon</p>
+    </div>
+    <span class="subj-pct" style="color:var(--text2)">Soon</span>
+  </div>
+  <div class="subject-card" onclick="openSubject('english')" style="opacity:0.4">
+    <div class="subj-icon" style="background:var(--gold-bg);color:var(--gold);">A</div>
+    <div class="subj-info">
+      <h3>English Language 1122</h3>
+      <p>Coming soon</p>
+    </div>
+    <span class="subj-pct" style="color:var(--text2)">Soon</span>
+  </div>
+</div>
+</div>
+
+<!-- ==================== SUBJECT ==================== -->
+<div class="screen" id="subjectScreen">
+<div class="container">
+  <div class="section-title" id="subjectTitle" style="margin-bottom:4px">Mathematics 4004</div>
+  <p style="color:var(--text2);font-size:13px;margin-bottom:16px" id="subjectDesc">Paper 1 & Paper 2 Topics</p>
+  <div id="topicList"></div>
+</div>
+</div>
+
+<!-- ==================== LESSON ==================== -->
+<div class="screen" id="lessonScreen">
+<div class="container">
+  <div class="lesson-card">
+    <div class="lesson-head">
+      <h3 id="lessonTitle">Lesson</h3>
+      <p id="lessonSub">Topic</p>
+    </div>
+    <div class="workspace" id="workspace"></div>
+    <div class="narration-box" id="narrationBox">
+      <div class="narr-icon" id="narrIcon">V</div>
+      <div id="narrationText" style="flex:1">Tap play or next to begin...</div>
+    </div>
+    <div class="controls">
+      <button class="play-btn" id="playBtn" onclick="togglePlay()">|></button>
+      <div class="timeline">
+        <div class="tl-bar" onclick="seekTL(event)"><div class="tl-fill" id="tlFill" style="width:0%"></div></div>
+        <div class="tl-label">Step <span id="curStep">0</span>/<span id="totSteps">0</span></div>
+      </div>
+      <button class="ctrl-btn" onclick="prevStep()">Prev</button>
+      <button class="ctrl-btn" onclick="nextStep()">Next</button>
+      <button class="ctrl-btn voice-btn on" id="voiceBtn" onclick="toggleVoice()">Voice ON</button>
+    </div>
+  </div>
+  <button class="submit-btn" id="goToPractice" style="display:none" onclick="startPracticeFromLesson()">Practice This Topic</button>
+</div>
+</div>
+
+<!-- ==================== PRACTICE ==================== -->
+<div class="screen" id="practiceScreen">
+<div class="container">
+  <div class="section-title" id="practiceTitle">Practice</div>
+  <p style="color:var(--text2);font-size:13px;margin-bottom:16px" id="practiceSub"></p>
+  <div id="practiceArea"></div>
+</div>
+</div>
+
+<!-- ==================== SPEED ROUND ==================== -->
+<div class="screen" id="speedScreen">
+<div class="container speed-screen">
+  <div class="speed-score-bar" id="speedDots"></div>
+  <div class="speed-timer" id="speedTimer">15</div>
+  <div class="speed-q" id="speedQ">Loading...</div>
+  <div class="speed-opts" id="speedOpts"></div>
+</div>
+</div>
+
+<!-- ==================== DRILL PICKER ==================== -->
+<div class="screen" id="drillPickScreen">
+<div class="container">
+  <div class="section-title">Infinite Drill</div>
+  <p style="color:var(--text2);font-size:13px;margin-bottom:16px">Pick a topic. Every question is randomly generated — you'll never see the same one twice.</p>
+  <div class="drill-topic-pick" id="drillTopics"></div>
+</div>
+</div>
+
+<!-- ==================== DRILL ACTIVE ==================== -->
+<div class="screen" id="drillScreen">
+<div class="container">
+  <div class="drill-counter">
+    <span id="drillCount">Question 1</span>
+    <span class="drill-streak-badge drill-streak-cold" id="drillStreakBadge">0 in a row</span>
+    <span id="drillScore">0 correct</span>
+  </div>
+  <div class="drill-q-card">
+    <div class="q-num" id="drillTopicLabel">Linear Equations</div>
+    <div class="drill-equation" id="drillEquation">3x + 7 = 22</div>
+    <p style="font-size:13px;color:var(--text2)" id="drillInstruction">Solve for x</p>
+    <div class="drill-input-row">
+      <input type="text" class="drill-ans" id="drillAns" placeholder="?" autocomplete="off" inputmode="decimal">
+      <button class="drill-check" id="drillCheckBtn" onclick="checkDrill()">Check</button>
+    </div>
+    <div class="drill-feedback" id="drillFeedback"></div>
+    <div class="drill-solution" id="drillSolution"></div>
+    <button class="drill-next" id="drillNextBtn" onclick="nextDrill()">Next Question</button>
+  </div>
+  <button class="submit-btn" onclick="endDrill()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border)">End Drill</button>
+</div>
+</div>
+
+<!-- ==================== RESULTS ==================== -->
+<div class="screen" id="resultsScreen">
+<div class="container">
+  <div class="results-card">
+    <div class="results-circle" id="resCircle"><span id="resPct">0%</span><small id="resMarks">0/0</small></div>
+    <div class="results-msg" id="resMsg">Nice!</div>
+    <div class="results-det" id="resDet"></div>
+    <div class="results-xp" id="resXP"></div>
+    <div class="results-actions">
+      <button onclick="retryPractice()">Try Again</button>
+      <button onclick="viewSolutions()">Solutions</button>
+      <button class="primary" onclick="goHome()">Continue</button>
+    </div>
+    <button class="share-btn" onclick="shareWhatsApp()">Share on WhatsApp</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ================================================================
+// CRAMBOX v2 — ACTIVATION & DEVICE LOCK
+// ================================================================
+
+// Generate a device fingerprint from browser properties
+function getDeviceFingerprint() {
+  const raw = [
+    navigator.userAgent,
+    navigator.language,
+    screen.width + 'x' + screen.height,
+    screen.colorDepth,
+    new Date().getTimezoneOffset(),
+    navigator.hardwareConcurrency || 0,
+    navigator.platform
+  ].join('|');
+  // Simple hash
+  let hash = 0;
+  for (let i = 0; i < raw.length; i++) {
+    const c = raw.charCodeAt(i);
+    hash = ((hash << 5) - hash) + c;
+    hash |= 0;
+  }
+  return Math.abs(hash).toString(36).toUpperCase().padStart(8, '0').substring(0, 8);
+}
+
+// Valid activation codes — YOU generate these and give one per student
+// Format: CODE => { name, expires (optional) }
+// In production, these would be generated per-student and embedded in each file copy
+const VALID_CODES = {
+  'CRAM-2026': { name: 'Demo User' },
+  'MATH-PASS': { name: 'Maths Student' },
+  'ZIMS-EC01': { name: 'Student 01' },
+  'ZIMS-EC02': { name: 'Student 02' },
+  'ZIMS-EC03': { name: 'Student 03' },
+  'ZIMS-EC04': { name: 'Student 04' },
+  'ZIMS-EC05': { name: 'Student 05' },
+  'ZIMS-EC06': { name: 'Student 06' },
+  'ZIMS-EC07': { name: 'Student 07' },
+  'ZIMS-EC08': { name: 'Student 08' },
+  'ZIMS-EC09': { name: 'Student 09' },
+  'ZIMS-EC10': { name: 'Student 10' },
+};
+
+function checkActivation() {
+  const fp = getDeviceFingerprint();
+  document.getElementById('gateDeviceId').textContent = fp;
+
+  const stored = localStorage.getItem('crambox-license');
+  if (stored) {
+    try {
+      const lic = JSON.parse(stored);
+      // Check: code is valid AND device fingerprint matches
+      if (lic.code && lic.fp === fp && VALID_CODES[lic.code.toUpperCase()]) {
+        unlockApp(lic.code);
+        return;
+      }
+      // Fingerprint mismatch = file was shared to different device
+      if (lic.fp && lic.fp !== fp) {
+        showGateError('This copy is locked to another device. Enter your own code.');
+        return;
+      }
+    } catch {}
+  }
+  // Not activated — show gate
+  document.getElementById('gateOverlay').classList.remove('hidden');
+}
+
+function activateApp() {
+  const input = document.getElementById('gateCode');
+  let code = input.value.trim().toUpperCase();
+
+  // Auto-format: add dash if missing
+  if (code.length >= 4 && !code.includes('-')) {
+    code = code.substring(0,4) + '-' + code.substring(4);
+  }
+
+  if (!VALID_CODES[code]) {
+    showGateError('Invalid code. Check your activation code and try again.');
+    return;
+  }
+
+  const fp = getDeviceFingerprint();
+
+  // Check if this code is already used on a different device
+  // (In a server model you'd check a database — here we just lock to this device)
+  const license = { code, fp, activated: new Date().toISOString(), name: VALID_CODES[code].name };
+  localStorage.setItem('crambox-license', JSON.stringify(license));
+  unlockApp(code);
+}
+
+function unlockApp(code) {
+  document.getElementById('gateOverlay').classList.add('hidden');
+}
+
+function showGateError(msg) {
+  const el = document.getElementById('gateError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// Auto-format code input with dash
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('gateCode');
+  inp.addEventListener('input', () => {
+    let v = inp.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+    if (v.length === 4 && !v.includes('-')) v += '-';
+    if (v.length > 9) v = v.substring(0, 9);
+    inp.value = v;
+  });
+  inp.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') activateApp();
+  });
+
+  // Check activation on load
+  checkActivation();
+});
+
+// ================================================================
+// CRAMBOX v2 — FULL APP
+// ================================================================
+
+// --- State ---
+let screen = 'homeScreen', history = [], subject = null, topicIdx = 0;
+let lessonStep = 0, playing = false, playTimer = null;
+let voiceOn = true, practiceAnswers = {}, practiceTopicIdx = 0;
+let speedIdx = 0, speedScore = 0, speedTimer = null, speedQuestions = [];
+let lastResultPct = 0, lastResultType = '', lastResultTopic = '';
+
+// --- XP & Gamification ---
+function getStore() { try { return JSON.parse(localStorage.getItem('crambox') || '{}'); } catch { return {}; } }
+function setStore(d) { localStorage.setItem('crambox', JSON.stringify(d)); }
+
+function addXP(amount, reason) {
+  const s = getStore();
+  s.xp = (s.xp || 0) + amount;
+  s.level = Math.floor((s.xp || 0) / 100) + 1;
+  setStore(s);
+  // Show popup
+  const popup = document.getElementById('xpPopup');
+  popup.textContent = '+' + amount + ' XP — ' + reason;
+  popup.style.display = 'block';
+  setTimeout(() => popup.style.display = 'none', 1500);
+  updateHome();
+}
+
+function recordStreak() {
+  const s = getStore();
+  const today = new Date().toISOString().split('T')[0];
+  if (s.lastActive === today) return; // Already recorded today
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  if (s.lastActive === yesterday) {
+    s.streak = (s.streak || 0) + 1;
+  } else if (s.lastActive !== today) {
+    s.streak = 1;
+  }
+  s.lastActive = today;
+  if (!s.activeDays) s.activeDays = [];
+  if (!s.activeDays.includes(today)) s.activeDays.push(today);
+  // Keep last 30 days only
+  if (s.activeDays.length > 30) s.activeDays = s.activeDays.slice(-30);
+  setStore(s);
+}
+
+function markLesson(subj, idx) {
+  const s = getStore();
+  if (!s[subj]) s[subj] = {};
+  if (!s[subj].lessons) s[subj].lessons = [];
+  if (!s[subj].lessons.includes(idx)) {
+    s[subj].lessons.push(idx);
+    setStore(s);
+    addXP(20, 'Lesson complete');
+    recordStreak();
+  }
+}
+function saveScore(subj, idx, earned, total) {
+  const s = getStore();
+  if (!s[subj]) s[subj] = {};
+  if (!s[subj].scores) s[subj].scores = {};
+  const pct = Math.round((earned/total)*100);
+  const key = 't'+idx;
+  if (!s[subj].scores[key] || pct > s[subj].scores[key]) s[subj].scores[key] = pct;
+  s[subj].questions = (s[subj].questions || 0) + total;
+  setStore(s);
+  const xp = earned * 5;
+  if (xp > 0) addXP(xp, pct + '% — ' + earned + '/' + total);
+  recordStreak();
+}
+
+function updateHome() {
+  const s = getStore();
+  // XP badge
+  document.getElementById('xpBadge').textContent = (s.xp||0) + ' XP';
+  // Streak
+  document.getElementById('streakNum').textContent = s.streak || 0;
+  // Streak dots (last 7 days)
+  const dots = document.getElementById('streakDots');
+  dots.innerHTML = '';
+  const days = ['M','T','W','T','F','S','S'];
+  const today = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const ds = d.toISOString().split('T')[0];
+    const dayName = days[d.getDay() === 0 ? 6 : d.getDay()-1];
+    const isActive = (s.activeDays || []).includes(ds);
+    const isToday = i === 0;
+    const dot = document.createElement('div');
+    dot.className = 'streak-dot' + (isActive ? ' active' : '') + (isToday ? ' today' : '');
+    dot.textContent = dayName;
+    dots.appendChild(dot);
+  }
+  // Stats
+  let lessons=0, questions=0, best=0, hasBest=false;
+  for (const k of Object.keys(s)) {
+    if (s[k] && s[k].lessons) lessons += s[k].lessons.length;
+    if (s[k] && s[k].questions) questions += s[k].questions;
+    if (s[k] && s[k].scores) {
+      for (const v of Object.values(s[k].scores)) { hasBest=true; if(v>best)best=v; }
+    }
+  }
+  document.getElementById('sLessons').textContent = lessons;
+  document.getElementById('sQuestions').textContent = questions;
+  document.getElementById('sBest').textContent = hasBest ? best+'%' : '-';
+  document.getElementById('sLevel').textContent = s.level || 1;
+  // Maths %
+  const ml = (s.maths||{}).lessons||[];
+  const total = DATA.maths.topics.length;
+  document.getElementById('mathsPct').textContent = Math.round((ml.length/total)*100)+'%';
+}
+
+// --- Theme ---
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? 'Dark' : 'Light';
+  localStorage.setItem('crambox-theme', isDark ? 'light' : 'dark');
+}
+// Load saved theme
+(function() {
+  const saved = localStorage.getItem('crambox-theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    document.getElementById('themeBtn').textContent = saved === 'dark' ? 'Light' : 'Dark';
+  }
+})();
+
+// --- Nav ---
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('backBtn').style.display = id === 'homeScreen' ? 'none' : 'block';
+  screen = id; window.scrollTo(0,0);
+}
+function goBack() { stopPlay(); if(history.length) showScreen(history.pop()); else showScreen('homeScreen'); }
+function goHome() { history=[]; stopPlay(); showScreen('homeScreen'); updateHome(); }
+
+// ================================================================
+// COURSE DATA
+// ================================================================
+const DATA = {
+  maths: {
+    title:'Mathematics 4004', desc:'Paper 1 & Paper 2 Topics',
+    topics: [
+      {
+        title:'Solving Linear Equations', sub:'Algebra — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- ZIMSEC O-Level Mathematics --</span>\n<span class="comment">-- Topic: Solving Linear Equations --</span>\n\n<span class="label">Problem:</span>\n<span class="highlight">Solve for x:</span>  <span class="number">3x + 7 = 22</span>', n:"Let's solve a linear equation. We need to find the value of x in the equation 3x plus 7 equals 22." },
+          { w:'<span class="comment">-- Step 1: Isolate the variable term --</span>\n\n  <span class="number">3x + 7 = 22</span>\n\n<span class="keyword">Subtract 7 from both sides:</span>\n\n  <span class="number">3x + 7</span> <span class="operator">- 7</span> = <span class="number">22</span> <span class="operator">- 7</span>', n:"Step 1. We need to get x by itself. First, subtract 7 from both sides of the equation." },
+          { w:'<span class="comment">-- Step 1 Result --</span>\n\n  3x + 7 - 7 = 22 - 7\n\n  <span class="result">3x = 15</span>\n\n<span class="comment">-- The +7 and -7 cancel out --</span>', n:"The positive 7 and negative 7 cancel out, giving us 3x equals 15." },
+          { w:'<span class="comment">-- Step 2: Solve for x --</span>\n\n  <span class="number">3x = 15</span>\n\n<span class="keyword">Divide both sides by 3:</span>\n\n  <span class="number">3x</span> <span class="operator">/ 3</span> = <span class="number">15</span> <span class="operator">/ 3</span>', n:"Step 2. Divide both sides by 3. 15 divided by 3 gives us our answer." },
+          { w:'<span class="comment">-- Solution --</span>\n\n  <span class="result">x = 5</span>\n\n<span class="keyword">Check:</span> 3(<span class="number">5</span>) + 7 = 15 + 7 = <span class="result">22</span>  <span class="result">Correct!</span>', n:"x equals 5. Check: 3 times 5 is 15, plus 7 equals 22. Correct!" },
+          { w:'<span class="comment">-- Key Rules --</span>\n\n<span class="keyword">1.</span> <span class="highlight">Move terms</span> using opposite operations\n<span class="keyword">2.</span> <span class="highlight">Undo coefficients</span> by dividing\n<span class="keyword">3.</span> <span class="highlight">Always check</span> your answer\n\n<span class="important">ZIMSEC TIP: Show your working!\nMarks are for method, not just the answer.</span>', n:"Remember: move terms with opposite operations, undo coefficients by dividing, and always check. Show your working in ZIMSEC — marks are for method, not just the answer." }
+        ],
+        practice: [
+          { q:'Solve for x:  5x - 3 = 17', type:'mcq', opts:['x = 2','x = 4','x = 3','x = 5'], ans:1, marks:3, exp:'5x - 3 = 17\n5x = 20\nx = 4' },
+          { q:'Solve for y:  2y + 9 = 25', type:'mcq', opts:['y = 7','y = 8','y = 17','y = 6'], ans:1, marks:3, exp:'2y + 9 = 25\n2y = 16\ny = 8' },
+          { q:'Solve:  4x + 5 = 2x + 13', type:'mcq', opts:['x = 9','x = 3','x = 4','x = 6'], ans:2, marks:4, exp:'4x - 2x = 13 - 5\n2x = 8\nx = 4' },
+          { q:'What is x if  7x - 14 = 0?', type:'input', ans:'2', marks:2, exp:'7x = 14\nx = 2' }
+        ]
+      },
+      {
+        title:'Simultaneous Equations', sub:'Algebra — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Simultaneous Equations (Elimination) --</span>\n\n<span class="label">Solve:</span>\n  <span class="number">2x + y = 7</span>   ... (i)\n  <span class="number">x - y = 2</span>    ... (ii)', n:"We solve simultaneous equations using elimination. Equation 1: 2x plus y equals 7. Equation 2: x minus y equals 2." },
+          { w:'<span class="comment">-- Add the equations --</span>\n\n  2x + y = 7   ... (i)\n<span class="operator">+</span> x  - y = 2   ... (ii)\n  <span class="keyword">___________</span>\n\n<span class="comment">-- +y and -y cancel out --</span>', n:"The y terms have opposite signs. Adding the equations cancels y out." },
+          { w:'<span class="comment">-- Result --</span>\n\n  <span class="result">3x = 9</span>\n  <span class="result">x = 3</span>', n:"2x plus x is 3x. 7 plus 2 is 9. So x equals 3." },
+          { w:'<span class="comment">-- Substitute x = 3 into (i) --</span>\n\n  2(<span class="number">3</span>) + y = 7\n  6 + y = 7\n  <span class="result">y = 1</span>\n\n<span class="keyword">Check in (ii):</span> 3 - 1 = <span class="result">2</span> <span class="result">Correct!</span>\n\n<span class="important">TIP: Label equations (i), (ii).\nVerify using the OTHER equation!</span>', n:"Substitute x equals 3: 6 plus y equals 7, so y equals 1. Check: 3 minus 1 equals 2. Correct! Always label and verify with the other equation." }
+        ],
+        practice: [
+          { q:'x + y = 10  and  x - y = 4.\nFind x.', type:'mcq', opts:['x = 5','x = 6','x = 7','x = 8'], ans:2, marks:4, exp:'Add: 2x = 14, x = 7' },
+          { q:'x + y = 10  and  x - y = 4.\nFind y.', type:'input', ans:'3', marks:2, exp:'x = 7, so y = 10 - 7 = 3' },
+          { q:'3x + 2y = 12  and  x + 2y = 8.\nFind x.', type:'mcq', opts:['x = 1','x = 2','x = 3','x = 4'], ans:1, marks:4, exp:'Subtract: 2x = 4, x = 2' }
+        ]
+      },
+      {
+        title:'Area and Perimeter', sub:'Mensuration — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- Area and Perimeter Formulae --</span>\n\n<span class="keyword">Rectangle:</span>  A = <span class="highlight">l x w</span>    P = <span class="highlight">2(l + w)</span>\n<span class="keyword">Triangle:</span>   A = <span class="highlight">1/2 x b x h</span>\n<span class="keyword">Circle:</span>     A = <span class="highlight">pi x r x r</span>  C = <span class="highlight">2 x pi x r</span>', n:"Key formulae. Rectangle: area is length times width, perimeter is 2 times length plus width. Triangle: half times base times height. Circle: pi r squared, circumference 2 pi r." },
+          { w:'<span class="comment">-- Rectangle: 12cm x 5cm --</span>\n\nArea = 12 x 5 = <span class="result">60 cm squared</span>\nPerimeter = 2(12+5) = <span class="result">34 cm</span>', n:"Rectangle: 12 times 5 is 60 square centimetres. Perimeter: 2 times 17 is 34 centimetres." },
+          { w:'<span class="comment">-- Triangle: base 8cm, height 6cm --</span>\n\nArea = 1/2 x 8 x 6 = <span class="result">24 cm squared</span>\n\n<span class="important">Height must be PERPENDICULAR to base!</span>', n:"Triangle: half times 8 times 6 is 24 square centimetres. Remember, height must be perpendicular." },
+          { w:'<span class="comment">-- Circle: radius 7cm (use pi = 22/7) --</span>\n\nArea = 22/7 x 7 x 7 = <span class="result">154 cm squared</span>\nCircumference = 2 x 22/7 x 7 = <span class="result">44 cm</span>\n\n<span class="important">TIP: Use 22/7 when r is a multiple of 7</span>', n:"Circle: radius 7, use pi equals 22 over 7. Area is 154 square centimetres. Circumference is 44 centimetres. Use 22 over 7 when radius is a multiple of 7." }
+        ],
+        practice: [
+          { q:'Rectangle: length 15cm, width 8cm. Find area.', type:'mcq', opts:['100','120','46','96'], ans:1, marks:2, exp:'15 x 8 = 120 cm^2' },
+          { q:'Triangle: base 10cm, height 7cm. Find area.', type:'input', ans:'35', marks:3, exp:'1/2 x 10 x 7 = 35 cm^2' },
+          { q:'Circle: radius 14cm. Circumference? (pi=22/7)', type:'mcq', opts:['44','88','616','28'], ans:1, marks:3, exp:'2 x 22/7 x 14 = 88 cm' },
+          { q:'Square perimeter is 36cm. Find area in cm^2.', type:'input', ans:'81', marks:3, exp:'Side = 36/4 = 9\nArea = 81' }
+        ]
+      },
+      {
+        title:'Fractions and Percentages', sub:'Number — Paper 1',
+        steps: [
+          { w:'<span class="keyword">Fraction to %:</span> Multiply by 100\n  <span class="highlight">3/4 x 100 = 75%</span>\n\n<span class="keyword">% to Fraction:</span> Divide by 100\n  <span class="highlight">60% = 60/100 = 3/5</span>', n:"Fraction to percentage: multiply by 100. 3 over 4 times 100 is 75 percent. Percentage to fraction: 60 percent is 60 over 100, simplified to 3 over 5." },
+          { w:'<span class="label">Find 15% of $240</span>\n\n<span class="keyword">Method 1:</span> 15/100 x 240 = <span class="result">$36</span>\n\n<span class="keyword">Method 2 (faster):</span>\n  10% = 24\n   5% = 12\n  15% = <span class="result">$36</span>\n\n<span class="important">Method 2 is faster for Paper 1!</span>', n:"15 percent of 240. Method 1: 15 over 100 times 240 equals 36 dollars. Method 2 is faster: 10 percent is 24, 5 percent is 12, total 36 dollars." },
+          { w:'<span class="label">Shirt costs $50, increases by 20%</span>\n\n  20% of 50 = <span class="number">$10</span>\n  New price = $50 + $10 = <span class="result">$60</span>\n\n<span class="keyword">Quick:</span> 1.2 x 50 = <span class="result">$60</span>', n:"Percentage increase. 20 percent of 50 is 10. New price: 60 dollars. Quick method: multiply by 1.2." },
+          { w:'<span class="label">Score: 36 out of 50. What %?</span>\n\n  (36/50) x 100 = <span class="result">72%</span>\n\n<span class="keyword">Or:</span> 36/50 = 72/100 = <span class="result">72%</span>', n:"36 out of 50. Divide and multiply by 100: 72 percent. Or multiply top and bottom by 2." }
+        ],
+        practice: [
+          { q:'Convert 2/5 to a percentage.', type:'mcq', opts:['20%','25%','40%','45%'], ans:2, marks:2, exp:'2/5 x 100 = 40%' },
+          { q:'Find 25% of $160.', type:'input', ans:'40', marks:2, exp:'160/4 = $40' },
+          { q:'Bag costs $80, reduced 15%. New price?', type:'mcq', opts:['$65','$68','$72','$12'], ans:1, marks:3, exp:'15% of 80 = 12. 80-12 = $68' },
+          { q:'Express 45 out of 75 as a %.', type:'input', ans:'60', marks:2, exp:'(45/75) x 100 = 60%' }
+        ]
+      },
+      {
+        title:'Mean, Median and Mode', sub:'Statistics — Paper 2',
+        steps: [
+          { w:'<span class="keyword">Mean</span>   = Sum / Count\n<span class="keyword">Median</span> = Middle value (in order)\n<span class="keyword">Mode</span>   = Most frequent value', n:"Mean: sum divided by count. Median: middle value when arranged in order. Mode: most frequent value." },
+          { w:'<span class="label">Data: 4, 7, 2, 7, 5, 9, 7, 3, 8</span>\n\n<span class="keyword">Step 1: Arrange</span>\n  <span class="highlight">2, 3, 4, 5, 7, 7, 7, 8, 9</span>', n:"Always arrange data in ascending order first. Our data becomes 2, 3, 4, 5, 7, 7, 7, 8, 9." },
+          { w:'<span class="keyword">Mean:</span>  (2+3+4+5+7+7+7+8+9)/9 = 52/9\n  <span class="result">Mean = 5.78</span>\n\n<span class="keyword">Median:</span> 5th value = <span class="result">7</span>\n\n<span class="keyword">Mode:</span> 7 appears 3 times = <span class="result">7</span>', n:"Mean: 52 divided by 9 is 5 point 78. Median: 5th value is 7. Mode: 7 appears 3 times." },
+          { w:'<span class="label">EVEN number of values: 3, 5, 8, 12</span>\n\n  Middle: 5 and 8\n  Median = (5+8)/2 = <span class="result">6.5</span>\n\n<span class="important">ZIMSEC TRICK: Even count?\nMedian = average of two middle values!</span>', n:"With an even number of values, the median is the average of the two middle values. This is a common ZIMSEC trick!" }
+        ],
+        practice: [
+          { q:'Mean of: 6, 4, 8, 10, 2', type:'input', ans:'6', marks:2, exp:'Sum=30, 30/5=6' },
+          { q:'Median of: 3, 7, 1, 9, 5', type:'mcq', opts:['3','5','7','1'], ans:1, marks:2, exp:'Order: 1,3,5,7,9. Middle=5' },
+          { q:'Mode of: 2, 4, 4, 6, 4, 8, 6', type:'input', ans:'4', marks:1, exp:'4 appears 3 times' },
+          { q:'Median of: 10, 20, 30, 40', type:'mcq', opts:['20','25','30','24'], ans:1, marks:3, exp:'(20+30)/2 = 25' }
+        ]
+      }
+    ]
+  }
+};
+
+// ================================================================
+// SUBJECT / TOPICS
+// ================================================================
+function openSubject(key) {
+  if (key !== 'maths') { alert('Coming soon!'); return; }
+  subject = key;
+  const d = DATA[key]; const s = getStore();
+  document.getElementById('subjectTitle').textContent = d.title;
+  document.getElementById('subjectDesc').textContent = d.desc;
+  const done = (s[key]||{}).lessons||[];
+  const scores = (s[key]||{}).scores||{};
+  const list = document.getElementById('topicList');
+  list.innerHTML = '';
+  d.topics.forEach((t, i) => {
+    const complete = done.includes(i);
+    const locked = i > 0 && !done.includes(i-1);
+    const score = scores['t'+i];
+    // Lesson card
+    const c = document.createElement('div');
+    c.className = 'topic-card' + (locked?' locked':'');
+    c.onclick = () => locked ? alert('Complete Topic '+i+' first!') : openTopic(i,'lesson');
+    c.innerHTML = `<div class="topic-inner">
+      <div class="topic-num ${complete?'done':''}">${locked?'&#128274;':complete?'&#10003;':i+1}</div>
+      <div class="topic-det"><h4>${t.title}</h4><p>${locked?'Locked':t.sub+(score!=null?' — Best: '+score+'%':'')}</p></div>
+      <span class="topic-tag ${locked?'tag-locked':'tag-lesson'}">${locked?'Locked':'Lesson'}</span>
+    </div>`;
+    list.appendChild(c);
+    // Practice card
+    if (t.practice) {
+      const unlocked = complete;
+      const pc = document.createElement('div');
+      pc.className = 'topic-card' + (unlocked?'':' locked');
+      pc.onclick = () => unlocked ? openTopic(i,'practice') : alert('Complete the lesson first!');
+      pc.innerHTML = `<div class="topic-inner">
+        <div class="topic-num" style="background:${unlocked?'var(--gold-bg)':'var(--bg2)'};color:${unlocked?'var(--gold)':'var(--text2)'};">${unlocked?'?':'&#128274;'}</div>
+        <div class="topic-det"><h4>Practice: ${t.title}</h4><p>${unlocked?t.practice.length+' questions':'Complete lesson first'}</p></div>
+        <span class="topic-tag ${unlocked?'tag-practice':'tag-locked'}">${unlocked?'Practice':'Locked'}</span>
+      </div>`;
+      list.appendChild(pc);
+    }
+  });
+  history.push(screen); showScreen('subjectScreen');
+}
+function openTopic(i, mode) { topicIdx = i; mode==='lesson' ? startLesson(i) : startPractice(i); }
+
+// ================================================================
+// LESSON PLAYER
+// ================================================================
+function startLesson(i) {
+  const t = DATA[subject].topics[i];
+  document.getElementById('lessonTitle').textContent = t.title;
+  document.getElementById('lessonSub').textContent = t.sub;
+  document.getElementById('totSteps').textContent = t.steps.length;
+  lessonStep = 0; playing = false; clearInterval(playTimer);
+  document.getElementById('playBtn').textContent = '|>';
+  const ws = document.getElementById('workspace');
+  ws.innerHTML = '';
+  t.steps.forEach((s, si) => {
+    const div = document.createElement('div');
+    div.className = 'step' + (si===0?' visible':'');
+    div.innerHTML = s.w;
+    if (si === t.steps.length-1) {
+      div.innerHTML += '<div class="try-area"><span class="try-label">TRY IT YOURSELF:</span><textarea class="try-input" placeholder="Type your working here..."></textarea></div>';
+    }
+    ws.appendChild(div);
+  });
+  renderStep(0);
+  document.getElementById('goToPractice').style.display = t.practice ? 'block' : 'none';
+  history.push(screen); showScreen('lessonScreen');
+}
+let typeTimer = null;
+let autoAdvTimer = null;
+
+function renderStep(i) {
+  const t = DATA[subject].topics[topicIdx];
+  if (i<0||i>=t.steps.length) return;
+  lessonStep = i;
+
+  // Clear previous animations
+  clearInterval(typeTimer); clearTimeout(autoAdvTimer);
+
+  // Show correct workspace step
+  document.querySelectorAll('.workspace .step').forEach((el,j) => el.classList.toggle('visible',j===i));
+
+  // Highlight sync: make result/important/highlight elements glow briefly
+  const visibleStep = document.querySelectorAll('.workspace .step')[i];
+  if (visibleStep) {
+    const glowTargets = visibleStep.querySelectorAll('.result, .important, .highlight');
+    glowTargets.forEach(el => el.classList.remove('glow'));
+    // Stagger glow on each element
+    glowTargets.forEach((el, gi) => {
+      setTimeout(() => {
+        el.classList.add('glow');
+        setTimeout(() => el.classList.remove('glow'), 2500);
+      }, 600 + gi * 800);
+    });
+  }
+
+  // Update step counter + timeline
+  document.getElementById('curStep').textContent = i+1;
+  document.getElementById('tlFill').style.width = ((i+1)/t.steps.length*100)+'%';
+
+  // Voice mode: speak and show text instantly
+  if (voiceOn) {
+    document.getElementById('narrationText').textContent = t.steps[i].n;
+    speak(t.steps[i].n);
+  } else {
+    // No voice: typing animation — the narration becomes the primary teacher
+    typeNarration(t.steps[i].n);
+  }
+
+  if (i === t.steps.length-1) markLesson(subject, topicIdx);
+}
+
+// Typing animation for voiceless mode
+function typeNarration(text) {
+  const el = document.getElementById('narrationText');
+  const box = document.getElementById('narrationBox');
+  box.classList.add('typing');
+  el.innerHTML = '<span class="narr-cursor"></span>';
+
+  let charIdx = 0;
+  const speed = 25; // ms per character — feels like someone explaining
+
+  clearInterval(typeTimer);
+  typeTimer = setInterval(() => {
+    if (charIdx < text.length) {
+      // Add next character, keep cursor at end
+      const typed = text.substring(0, charIdx + 1);
+      el.innerHTML = typed + '<span class="narr-cursor"></span>';
+      charIdx++;
+    } else {
+      // Done typing — remove cursor, remove typing state
+      clearInterval(typeTimer);
+      el.innerHTML = text;
+      box.classList.remove('typing');
+
+      // Auto-advance: wait reading time then go to next step (if playing)
+      if (playing) {
+        const readTime = Math.max(2000, text.length * 40); // ~40ms per char read time
+        autoAdvTimer = setTimeout(() => nextStep(), readTime);
+      }
+    }
+  }, speed);
+}
+function nextStep() { const t=DATA[subject].topics[topicIdx]; lessonStep<t.steps.length-1 ? renderStep(lessonStep+1) : stopPlay(); }
+function prevStep() { lessonStep>0 && renderStep(lessonStep-1); }
+function togglePlay() {
+  if (playing) { stopPlay(); } else {
+    playing=true; document.getElementById('playBtn').textContent='||';
+    if (voiceOn) {
+      // Voice mode: fixed interval auto-advance
+      playTimer = setInterval(() => { const t=DATA[subject].topics[topicIdx]; lessonStep<t.steps.length-1?nextStep():stopPlay(); }, 8000);
+    } else {
+      // No voice: typing animation handles auto-advance via typeNarration()
+      // Re-render current step to kick off the typing + auto-advance chain
+      renderStep(lessonStep);
+    }
+  }
+}
+function stopPlay() {
+  playing=false; clearInterval(playTimer); clearTimeout(autoAdvTimer); clearInterval(typeTimer);
+  document.getElementById('playBtn').textContent='|>';
+}
+function seekTL(e) {
+  const t=DATA[subject].topics[topicIdx]; const r=e.currentTarget.getBoundingClientRect();
+  renderStep(Math.min(Math.floor((e.clientX-r.left)/r.width*t.steps.length), t.steps.length-1));
+}
+function startPracticeFromLesson() { stopPlay(); if(ttsSupported)speechSynthesis.cancel(); history.push(screen); startPractice(topicIdx); }
+
+// ================================================================
+// VOICE (TTS) — Mobile-safe
+// ================================================================
+let ttsUnlocked=false, ttsVoices=[], ttsSupported='speechSynthesis' in window;
+function loadVoices(){if(ttsSupported)ttsVoices=speechSynthesis.getVoices();}
+if(ttsSupported){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
+function unlockTTS(){
+  if(ttsUnlocked||!ttsSupported)return;
+  const u=new SpeechSynthesisUtterance('');u.volume=0;speechSynthesis.speak(u);ttsUnlocked=true;
+}
+document.addEventListener('click',unlockTTS);
+document.addEventListener('touchstart',unlockTTS);
+function speak(text){
+  if(!voiceOn||!ttsSupported)return;
+  speechSynthesis.cancel();
+  setTimeout(()=>{
+    if(ttsVoices.length===0)loadVoices();
+    const voice=ttsVoices.find(v=>v.lang.startsWith('en'))||ttsVoices[0];
+    if(text.length>200){speakChunked(text,voice);return;}
+    const u=new SpeechSynthesisUtterance(text);
+    u.rate=0.9;u.pitch=1;u.lang='en-US';u.volume=1;
+    if(voice)u.voice=voice;
+    speechSynthesis.speak(u);
+  },100);
+}
+function speakChunked(text,voice){
+  const parts=text.match(/[^.!?]+[.!?]+/g)||[text];let i=0;
+  (function next(){
+    if(i>=parts.length||!voiceOn)return;
+    const u=new SpeechSynthesisUtterance(parts[i].trim());
+    u.rate=0.9;u.lang='en-US';u.volume=1;if(voice)u.voice=voice;
+    u.onend=()=>{i++;next();}; u.onerror=()=>{i++;next();};
+    speechSynthesis.speak(u);
+  })();
+}
+function toggleVoice(){
+  voiceOn=!voiceOn;
+  const b=document.getElementById('voiceBtn');
+  b.textContent='Voice '+(voiceOn?'ON':'OFF');
+  b.classList.toggle('on',voiceOn);
+  if(!voiceOn&&ttsSupported)speechSynthesis.cancel();
+  if(voiceOn)unlockTTS();
+  // Re-render current step to switch between voice/typing mode
+  if(screen==='lessonScreen'){
+    clearInterval(typeTimer); clearTimeout(autoAdvTimer);
+    const t=DATA[subject].topics[topicIdx];
+    if(lessonStep>=0 && lessonStep<t.steps.length){
+      document.getElementById('narrationText').textContent = t.steps[lessonStep].n;
+      document.getElementById('narrationBox').classList.remove('typing');
+    }
+  }
+}
+
+// ================================================================
+// PRACTICE MODE
+// ================================================================
+function startPractice(i) {
+  practiceTopicIdx=i; practiceAnswers={};
+  const t=DATA[subject].topics[i];
+  document.getElementById('practiceTitle').textContent='Practice: '+t.title;
+  const tm=t.practice.reduce((s,q)=>s+q.marks,0);
+  document.getElementById('practiceSub').textContent=t.practice.length+' questions | '+tm+' marks';
+  const area=document.getElementById('practiceArea'); area.innerHTML='';
+  t.practice.forEach((q,qi)=>{
+    const card=document.createElement('div'); card.className='q-card'; card.id='q-'+qi;
+    let inp='';
+    if(q.type==='mcq'){
+      inp='<div class="opts">'+q.opts.map((o,oi)=>
+        `<button class="opt-btn" data-q="${qi}" data-o="${oi}" onclick="selOpt(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span><span>${o}</span></button>`
+      ).join('')+'</div>';
+    } else {
+      inp=`<input type="text" class="ans-input" id="inp-${qi}" placeholder="Your answer..." autocomplete="off">`;
+    }
+    card.innerHTML=`<div class="q-num">Question ${qi+1}</div><div class="q-text">${q.q}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
+    area.appendChild(card);
+  });
+  area.innerHTML+='<button class="submit-btn" onclick="submitPractice()">Submit Answers</button>';
+  history.push(screen); showScreen('practiceScreen');
+}
+function selOpt(qi,oi){
+  practiceAnswers[qi]=oi;
+  document.querySelectorAll(`[data-q="${qi}"]`).forEach(b=>b.classList.toggle('selected',+b.dataset.o===oi));
+}
+function submitPractice(){
+  const t=DATA[subject].topics[practiceTopicIdx]; let earned=0,total=0;
+  t.practice.forEach((q,qi)=>{
+    total+=q.marks; let ok=false;
+    if(q.type==='mcq'){
+      const c=practiceAnswers[qi]; ok=c===q.ans;
+      document.querySelectorAll(`[data-q="${qi}"]`).forEach(b=>{
+        const o=+b.dataset.o; b.disabled=true; b.classList.remove('selected');
+        if(o===q.ans)b.classList.add('correct');
+        if(o===c&&!ok)b.classList.add('wrong');
+      });
+    } else {
+      const inp=document.getElementById('inp-'+qi); const v=inp.value.trim();
+      ok=v===q.ans; inp.disabled=true;
+      inp.style.borderColor=ok?'var(--green)':'var(--red)';
+      inp.style.background=ok?'var(--green-bg)':'var(--red-bg)';
+      if(!ok)inp.value=v+' (answer: '+q.ans+')';
+    }
+    if(ok)earned+=q.marks;
+    const exp=document.getElementById('exp-'+qi);
+    exp.classList.add('show',ok?'correct-exp':'wrong-exp');
+    exp.querySelector('h4').textContent=ok?'Correct!':'Incorrect';
+    exp.querySelector('pre').textContent=q.exp;
+  });
+  saveScore(subject,practiceTopicIdx,earned,total);
+  lastResultPct=Math.round(earned/total*100); lastResultType='practice';
+  lastResultTopic=DATA[subject].topics[practiceTopicIdx].title;
+  setTimeout(()=>showResults(earned,total),500);
+}
+
+// ================================================================
+// SPEED ROUND
+// ================================================================
+function startSpeedRound() {
+  // Collect all MCQ questions from completed topics
+  const s = getStore();
+  const done = (s.maths||{}).lessons||[];
+  speedQuestions = [];
+  DATA.maths.topics.forEach((t,i)=>{
+    if(done.includes(i) && t.practice){
+      t.practice.forEach(q=>{ if(q.type==='mcq') speedQuestions.push({...q, topic:t.title}); });
+    }
+  });
+  if(speedQuestions.length < 3){
+    alert('Complete at least 1 lesson first to unlock Speed Round!');
+    return;
+  }
+  // Shuffle and pick 10 (or less)
+  speedQuestions = speedQuestions.sort(()=>Math.random()-0.5).slice(0,10);
+  speedIdx=0; speedScore=0;
+  history.push(screen); showScreen('speedScreen');
+  renderSpeedQ();
+}
+function renderSpeedQ(){
+  if(speedIdx>=speedQuestions.length){ endSpeedRound(); return; }
+  const q=speedQuestions[speedIdx];
+  // Dots
+  const dots=document.getElementById('speedDots'); dots.innerHTML='';
+  for(let i=0;i<speedQuestions.length;i++){
+    const d=document.createElement('div');d.className='speed-dot';dots.appendChild(d);
+  }
+  document.getElementById('speedQ').textContent=q.q;
+  const opts=document.getElementById('speedOpts'); opts.innerHTML='';
+  q.opts.forEach((o,oi)=>{
+    const btn=document.createElement('button');
+    btn.className='speed-opt'; btn.textContent=o;
+    btn.onclick=()=>answerSpeed(oi);
+    opts.appendChild(btn);
+  });
+  // Timer
+  let sec=15;
+  const timer=document.getElementById('speedTimer');
+  timer.textContent=sec; timer.classList.remove('urgent');
+  clearInterval(speedTimer);
+  speedTimer=setInterval(()=>{
+    sec--;timer.textContent=sec;
+    if(sec<=5)timer.classList.add('urgent');
+    if(sec<=0){clearInterval(speedTimer);answerSpeed(-1);}
+  },1000);
+}
+function answerSpeed(chosen){
+  clearInterval(speedTimer);
+  const q=speedQuestions[speedIdx];
+  const ok=chosen===q.ans;
+  if(ok)speedScore++;
+  // Show result
+  const btns=document.querySelectorAll('.speed-opt');
+  btns.forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.ans)b.classList.add('correct');
+    if(i===chosen&&!ok)b.classList.add('wrong');
+  });
+  // Update dot
+  const dots=document.getElementById('speedDots').children;
+  if(dots[speedIdx]) dots[speedIdx].classList.add(ok?'right':'wrong-dot');
+  setTimeout(()=>{ speedIdx++; renderSpeedQ(); }, 800);
+}
+function endSpeedRound(){
+  clearInterval(speedTimer);
+  const total=speedQuestions.length;
+  const pct=Math.round(speedScore/total*100);
+  saveScore('maths', -1, speedScore, total);
+  lastResultPct=pct; lastResultType='speed'; lastResultTopic='Speed Round';
+  showResults(speedScore,total);
+}
+
+// ================================================================
+// PANIC MODE
+// ================================================================
+function startPanicMode(){
+  // Grab hardest/most-missed questions across all topics
+  const s=getStore(); const done=(s.maths||{}).lessons||[];
+  if(done.length===0){ alert('Complete at least 1 lesson first!'); return; }
+  // Use all practice questions from completed topics
+  subject='maths'; practiceTopicIdx=-1; practiceAnswers={};
+  let allQ=[];
+  DATA.maths.topics.forEach((t,i)=>{
+    if(done.includes(i)&&t.practice){
+      t.practice.forEach(q=>allQ.push({...q,topicTitle:t.title}));
+    }
+  });
+  allQ=allQ.sort(()=>Math.random()-0.5).slice(0,15);
+  document.getElementById('practiceTitle').textContent='EXAM TOMORROW — Blitz Mode';
+  const tm=allQ.reduce((s,q)=>s+q.marks,0);
+  document.getElementById('practiceSub').textContent=allQ.length+' questions | '+tm+' marks | All topics mixed';
+  const area=document.getElementById('practiceArea'); area.innerHTML='';
+  // Store for submit
+  window._panicQs=allQ;
+  allQ.forEach((q,qi)=>{
+    const card=document.createElement('div'); card.className='q-card'; card.id='q-'+qi;
+    let inp='';
+    if(q.type==='mcq'){
+      inp='<div class="opts">'+q.opts.map((o,oi)=>
+        `<button class="opt-btn" data-q="${qi}" data-o="${oi}" onclick="selOpt(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span><span>${o}</span></button>`
+      ).join('')+'</div>';
+    } else {
+      inp=`<input type="text" class="ans-input" id="inp-${qi}" placeholder="Your answer..." autocomplete="off">`;
+    }
+    card.innerHTML=`<div class="q-num">${q.topicTitle} — Q${qi+1}</div><div class="q-text">${q.q}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
+    area.appendChild(card);
+  });
+  area.innerHTML+='<button class="submit-btn" onclick="submitPanic()">Submit All</button>';
+  history.push(screen); showScreen('practiceScreen');
+}
+function submitPanic(){
+  const qs=window._panicQs; let earned=0,total=0;
+  qs.forEach((q,qi)=>{
+    total+=q.marks; let ok=false;
+    if(q.type==='mcq'){
+      const c=practiceAnswers[qi]; ok=c===q.ans;
+      document.querySelectorAll(`[data-q="${qi}"]`).forEach(b=>{
+        b.disabled=true; b.classList.remove('selected');
+        if(+b.dataset.o===q.ans)b.classList.add('correct');
+        if(+b.dataset.o===c&&!ok)b.classList.add('wrong');
+      });
+    } else {
+      const inp=document.getElementById('inp-'+qi); const v=inp.value.trim();
+      ok=v===q.ans; inp.disabled=true;
+      inp.style.borderColor=ok?'var(--green)':'var(--red)';
+      inp.style.background=ok?'var(--green-bg)':'var(--red-bg)';
+      if(!ok)inp.value=v+' (answer: '+q.ans+')';
+    }
+    if(ok)earned+=q.marks;
+    const exp=document.getElementById('exp-'+qi);
+    exp.classList.add('show',ok?'correct-exp':'wrong-exp');
+    exp.querySelector('h4').textContent=ok?'Correct!':'Incorrect';
+    exp.querySelector('pre').textContent=q.exp;
+  });
+  const s=getStore(); s.maths=s.maths||{}; s.maths.questions=(s.maths.questions||0)+total; setStore(s);
+  const xp=earned*5; if(xp>0)addXP(xp,'Panic Mode'); recordStreak();
+  lastResultPct=Math.round(earned/total*100); lastResultType='panic'; lastResultTopic='Exam Tomorrow Blitz';
+  setTimeout(()=>showResults(earned,total),500);
+}
+
+// ================================================================
+// RESULTS
+// ================================================================
+function showResults(earned,total){
+  const pct=Math.round(earned/total*100);
+  document.getElementById('resPct').textContent=pct+'%';
+  document.getElementById('resMarks').textContent=earned+'/'+total;
+  const c=document.getElementById('resCircle');
+  c.className='results-circle '+(pct>=70?'rc-great':pct>=50?'rc-ok':'rc-bad');
+  document.getElementById('resMsg').textContent=pct>=70?'You crushed it!':pct>=50?'Getting there!':'Keep grinding!';
+  document.getElementById('resDet').textContent=lastResultTopic;
+  document.getElementById('resXP').textContent='+'+(earned*5)+' XP earned';
+  history.push(screen); showScreen('resultsScreen');
+}
+function retryPractice(){
+  history.pop();
+  if(lastResultType==='speed') startSpeedRound();
+  else if(lastResultType==='panic') startPanicMode();
+  else if(lastResultType==='drill') { history.pop(); startDrill(drillTopic.id); }
+  else startPractice(practiceTopicIdx);
+}
+function viewSolutions(){ goBack(); }
+
+// ================================================================
+// WHATSAPP SHARE
+// ================================================================
+function shareWhatsApp(){
+  const msg=`I just scored ${lastResultPct}% on ${lastResultTopic} in CramBox! 🔥\n\nCramBox — pass your O-Levels from your phone. No data needed.\n\nGet it: [link]`;
+  const url='https://wa.me/?text='+encodeURIComponent(msg);
+  window.open(url,'_blank');
+}
+
+// ================================================================
+// BUILT-IN MATH ENGINE — Generates & solves questions offline
+// ================================================================
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=randInt(0,i);[a[i],a[j]]=[a[j],a[i]];} return a; }
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a;}
+
+const DRILL_TOPICS = [
+  {
+    id: 'linear', name: 'Linear Equations', icon: 'x',
+    generate() {
+      // ax + b = c  where x is a nice integer
+      const x = randInt(-10, 10);
+      const a = randInt(2, 9);
+      const b = randInt(-15, 15);
+      const c = a * x + b;
+      const sign = b >= 0 ? '+' : '-';
+      const bAbs = Math.abs(b);
+      const eq = `${a}x ${sign} ${bAbs} = ${c}`;
+      const steps = `${a}x ${sign} ${bAbs} = ${c}\n${a}x = ${c} ${b>=0?'-':'+'} ${bAbs}\n${a}x = ${a*x}\nx = ${x}`;
+      return { equation: eq, instruction: 'Solve for x', answer: x, steps, variable: 'x' };
+    }
+  },
+  {
+    id: 'linear2', name: 'Equations (Both Sides)', icon: '=',
+    generate() {
+      // ax + b = cx + d
+      const x = randInt(-8, 8);
+      let a = randInt(2, 8);
+      let c2 = randInt(1, a - 1); // ensure a > c so coefficient is positive
+      if (c2 >= a) c2 = a - 1;
+      const b = randInt(-10, 10);
+      const d = (a - c2) * x + b;
+      const signB = b >= 0 ? '+ ' + b : '- ' + Math.abs(b);
+      const signD = d >= 0 ? '+ ' + d : '- ' + Math.abs(d);
+      const eq = `${a}x ${signB} = ${c2}x ${signD}`;
+      const coeff = a - c2;
+      const rhs = d - b;
+      const steps = `${a}x ${signB} = ${c2}x ${signD}\n${a}x - ${c2}x = ${d} ${b>=0?'- '+b:'+ '+Math.abs(b)}\n${coeff}x = ${rhs}\nx = ${x}`;
+      return { equation: eq, instruction: 'Solve for x', answer: x, steps, variable: 'x' };
+    }
+  },
+  {
+    id: 'simultaneous', name: 'Simultaneous Equations', icon: 'xy',
+    generate() {
+      // x + y = s, x - y = d  (addition method)
+      const x = randInt(1, 12);
+      const y = randInt(1, 10);
+      const s = x + y;
+      const d = x - y;
+      const eq = `x + y = ${s}   and   x - y = ${d}`;
+      const steps = `Add the equations:\n2x = ${s} + ${d>=0?d:'('+d+')'} = ${s+d}\nx = ${(s+d)/2} = ${x}\ny = ${s} - ${x} = ${y}`;
+      // Ask for x
+      return { equation: eq, instruction: 'Find the value of x', answer: x, steps, variable: 'x' };
+    }
+  },
+  {
+    id: 'percentage_of', name: 'Percentage of Amount', icon: '%',
+    generate() {
+      const pcts = [5,10,15,20,25,30,40,50,60,75];
+      const pct = pcts[randInt(0, pcts.length-1)];
+      const amounts = [40,50,60,80,100,120,150,160,200,240,300,400,500];
+      const amount = amounts[randInt(0, amounts.length-1)];
+      const answer = pct * amount / 100;
+      const eq = `${pct}% of $${amount}`;
+      const steps = `${pct}% of ${amount}\n= ${pct}/100 x ${amount}\n= ${pct * amount} / 100\n= $${answer}`;
+      return { equation: eq, instruction: 'Calculate the amount', answer, steps, variable: '$' };
+    }
+  },
+  {
+    id: 'percentage_increase', name: 'Percentage Increase/Decrease', icon: '+-',
+    generate() {
+      const isIncrease = Math.random() > 0.5;
+      const pcts = [5,10,15,20,25,30,40,50];
+      const pct = pcts[randInt(0, pcts.length-1)];
+      const originals = [40,50,60,80,100,120,150,200,250,300,400,500];
+      const original = originals[randInt(0, originals.length-1)];
+      const change = original * pct / 100;
+      const answer = isIncrease ? original + change : original - change;
+      const word = isIncrease ? 'increased' : 'decreased';
+      const eq = `$${original} ${word} by ${pct}%`;
+      const op = isIncrease ? '+' : '-';
+      const steps = `${pct}% of $${original} = $${change}\nNew price = $${original} ${op} $${change}\n= $${answer}`;
+      return { equation: eq, instruction: 'Find the new price', answer, steps, variable: '$' };
+    }
+  },
+  {
+    id: 'fraction_to_pct', name: 'Fraction to Percentage', icon: '/',
+    generate() {
+      const denoms = [2,4,5,8,10,20,25,50];
+      const d = denoms[randInt(0, denoms.length-1)];
+      let n = randInt(1, d-1);
+      const g = gcd(n, d);
+      n = n / g;
+      const dSimp = d / g;
+      const answer = (n / dSimp) * 100;
+      if (answer !== Math.round(answer)) return this.generate(); // retry for clean answer
+      const eq = `${n}/${dSimp}`;
+      const steps = `${n}/${dSimp} x 100\n= ${n * 100}/${dSimp}\n= ${answer}%`;
+      return { equation: eq, instruction: 'Convert to a percentage', answer, steps, variable: '%' };
+    }
+  },
+  {
+    id: 'rectangle_area', name: 'Rectangle Area & Perimeter', icon: '[]',
+    generate() {
+      const l = randInt(3, 20);
+      const w = randInt(2, 15);
+      const isArea = Math.random() > 0.4;
+      if (isArea) {
+        const answer = l * w;
+        const eq = `Rectangle: length ${l} cm, width ${w} cm`;
+        const steps = `Area = length x width\n= ${l} x ${w}\n= ${answer} cm^2`;
+        return { equation: eq, instruction: 'Find the area (cm^2)', answer, steps, variable: 'cm^2' };
+      } else {
+        const answer = 2 * (l + w);
+        const eq = `Rectangle: length ${l} cm, width ${w} cm`;
+        const steps = `Perimeter = 2(l + w)\n= 2(${l} + ${w})\n= 2 x ${l+w}\n= ${answer} cm`;
+        return { equation: eq, instruction: 'Find the perimeter (cm)', answer, steps, variable: 'cm' };
+      }
+    }
+  },
+  {
+    id: 'triangle_area', name: 'Triangle Area', icon: '/\\',
+    generate() {
+      const b = randInt(4, 20);
+      const h = randInt(3, 16);
+      // Ensure clean answer
+      if ((b * h) % 2 !== 0) return this.generate();
+      const answer = (b * h) / 2;
+      const eq = `Triangle: base ${b} cm, height ${h} cm`;
+      const steps = `Area = 1/2 x base x height\n= 1/2 x ${b} x ${h}\n= ${b*h} / 2\n= ${answer} cm^2`;
+      return { equation: eq, instruction: 'Find the area (cm^2)', answer, steps, variable: 'cm^2' };
+    }
+  },
+  {
+    id: 'circle', name: 'Circle Area & Circumference', icon: 'O',
+    generate() {
+      const radii = [7, 14, 21, 3.5, 10.5]; // multiples of 7 or 3.5 for clean 22/7
+      const r = radii[randInt(0, radii.length-1)];
+      const isArea = Math.random() > 0.5;
+      if (isArea) {
+        const answer = (22/7) * r * r;
+        const eq = `Circle: radius ${r} cm (use pi = 22/7)`;
+        const steps = `Area = pi x r x r\n= 22/7 x ${r} x ${r}\n= ${(22/7)*r} x ${r}\n= ${answer} cm^2`;
+        return { equation: eq, instruction: 'Find the area (cm^2)', answer: Math.round(answer*100)/100, steps, variable: 'cm^2' };
+      } else {
+        const answer = 2 * (22/7) * r;
+        const eq = `Circle: radius ${r} cm (use pi = 22/7)`;
+        const steps = `Circumference = 2 x pi x r\n= 2 x 22/7 x ${r}\n= ${2*22/7} x ${r}\n= ${answer} cm`;
+        return { equation: eq, instruction: 'Find the circumference (cm)', answer: Math.round(answer*100)/100, steps, variable: 'cm' };
+      }
+    }
+  },
+  {
+    id: 'mean', name: 'Mean (Average)', icon: 'x-bar',
+    generate() {
+      const count = randInt(4, 7);
+      const nums = [];
+      let sum = 0;
+      // Generate numbers that give a clean mean
+      const target = randInt(3, 15);
+      for (let i = 0; i < count - 1; i++) {
+        const n = randInt(1, 20);
+        nums.push(n);
+        sum += n;
+      }
+      const last = target * count - sum;
+      if (last < 1 || last > 30) return this.generate();
+      nums.push(last);
+      const shuffled = shuffle(nums);
+      const eq = shuffled.join(', ');
+      const realSum = shuffled.reduce((a,b)=>a+b, 0);
+      const steps = `Sum = ${shuffled.join(' + ')} = ${realSum}\nCount = ${count}\nMean = ${realSum} / ${count} = ${target}`;
+      return { equation: eq, instruction: 'Find the mean', answer: target, steps, variable: '' };
+    }
+  },
+  {
+    id: 'median', name: 'Median', icon: 'M',
+    generate() {
+      const count = randInt(5, 9);
+      const isOdd = count % 2 === 1;
+      const nums = [];
+      for (let i = 0; i < count; i++) nums.push(randInt(1, 25));
+      const sorted = [...nums].sort((a,b) => a-b);
+      let answer;
+      if (isOdd) {
+        answer = sorted[Math.floor(count/2)];
+      } else {
+        const mid1 = sorted[count/2 - 1];
+        const mid2 = sorted[count/2];
+        answer = (mid1 + mid2) / 2;
+      }
+      const eq = shuffle(nums).join(', ');
+      let steps = `Arrange in order: ${sorted.join(', ')}\n`;
+      if (isOdd) {
+        steps += `${count} values — middle is position ${Math.floor(count/2)+1}\nMedian = ${answer}`;
+      } else {
+        steps += `${count} values (even) — middle two: ${sorted[count/2-1]} and ${sorted[count/2]}\nMedian = (${sorted[count/2-1]} + ${sorted[count/2]}) / 2 = ${answer}`;
+      }
+      return { equation: eq, instruction: 'Find the median', answer, steps, variable: '' };
+    }
+  },
+  {
+    id: 'mode', name: 'Mode', icon: '#',
+    generate() {
+      const mode = randInt(2, 15);
+      const freq = randInt(3, 4);
+      const nums = [];
+      for (let i = 0; i < freq; i++) nums.push(mode);
+      // Add other numbers that appear less
+      const others = new Set();
+      while (others.size < randInt(3, 5)) {
+        const n = randInt(1, 20);
+        if (n !== mode) others.add(n);
+      }
+      for (const n of others) {
+        const f = randInt(1, freq - 1);
+        for (let i = 0; i < f; i++) nums.push(n);
+      }
+      const shuffled = shuffle(nums);
+      const eq = shuffled.join(', ');
+      const steps = `Count each value:\n${mode} appears ${freq} times (most frequent)\nMode = ${mode}`;
+      return { equation: eq, instruction: 'Find the mode', answer: mode, steps, variable: '' };
+    }
+  }
+];
+
+// ================================================================
+// INFINITE DRILL MODE
+// ================================================================
+let drillTopic = null, drillNum = 0, drillCorrect = 0, drillStreak = 0, drillCurrentQ = null;
+
+function openDrillPicker() {
+  const container = document.getElementById('drillTopics');
+  container.innerHTML = '';
+  DRILL_TOPICS.forEach(t => {
+    const btn = document.createElement('div');
+    btn.className = 'drill-pick';
+    btn.innerHTML = `<div class="dp-icon">${t.icon}</div><span>${t.name}</span>`;
+    btn.onclick = () => startDrill(t.id);
+    container.appendChild(btn);
+  });
+  history.push(screen); showScreen('drillPickScreen');
+}
+
+function startDrill(topicId) {
+  drillTopic = DRILL_TOPICS.find(t => t.id === topicId);
+  drillNum = 0; drillCorrect = 0; drillStreak = 0;
+  history.push(screen); showScreen('drillScreen');
+  nextDrill();
+}
+
+function nextDrill() {
+  drillNum++;
+  drillCurrentQ = drillTopic.generate();
+
+  document.getElementById('drillTopicLabel').textContent = drillTopic.name;
+  document.getElementById('drillEquation').textContent = drillCurrentQ.equation;
+  document.getElementById('drillInstruction').textContent = drillCurrentQ.instruction;
+  document.getElementById('drillCount').textContent = 'Question ' + drillNum;
+  document.getElementById('drillScore').textContent = drillCorrect + ' correct';
+
+  const badge = document.getElementById('drillStreakBadge');
+  badge.textContent = drillStreak + ' in a row';
+  badge.className = 'drill-streak-badge ' + (drillStreak >= 3 ? 'drill-streak-hot' : 'drill-streak-cold');
+
+  // Reset UI
+  const inp = document.getElementById('drillAns');
+  inp.value = ''; inp.disabled = false; inp.style.borderColor = '';
+  inp.style.background = '';
+  inp.focus();
+  document.getElementById('drillCheckBtn').disabled = false;
+  document.getElementById('drillCheckBtn').style.display = '';
+  document.getElementById('drillFeedback').className = 'drill-feedback';
+  document.getElementById('drillFeedback').style.display = 'none';
+  document.getElementById('drillSolution').style.display = 'none';
+  document.getElementById('drillNextBtn').style.display = 'none';
+}
+
+function checkDrill() {
+  const inp = document.getElementById('drillAns');
+  const userVal = parseFloat(inp.value.trim().replace('$','').replace('%',''));
+  if (isNaN(userVal)) { inp.style.borderColor = 'var(--red)'; return; }
+
+  const correctVal = drillCurrentQ.answer;
+  // Allow small floating point tolerance
+  const isCorrect = Math.abs(userVal - correctVal) < 0.01;
+
+  inp.disabled = true;
+  document.getElementById('drillCheckBtn').style.display = 'none';
+
+  const fb = document.getElementById('drillFeedback');
+  const sol = document.getElementById('drillSolution');
+
+  if (isCorrect) {
+    drillCorrect++; drillStreak++;
+    inp.style.borderColor = 'var(--green)';
+    inp.style.background = 'var(--green-bg)';
+    fb.textContent = 'Correct!';
+    fb.className = 'drill-feedback show correct-fb';
+
+    // XP: more for streaks
+    const xp = drillStreak >= 5 ? 15 : drillStreak >= 3 ? 10 : 5;
+    addXP(xp, drillStreak >= 3 ? drillStreak + ' streak!' : 'Drill correct');
+  } else {
+    drillStreak = 0;
+    inp.style.borderColor = 'var(--red)';
+    inp.style.background = 'var(--red-bg)';
+    fb.innerHTML = 'Answer: <strong>' + correctVal + '</strong>';
+    fb.className = 'drill-feedback show wrong-fb';
+  }
+
+  // Show worked solution
+  sol.textContent = drillCurrentQ.steps;
+  sol.style.display = 'block';
+
+  // Update streak badge
+  const badge = document.getElementById('drillStreakBadge');
+  badge.textContent = drillStreak + ' in a row';
+  badge.className = 'drill-streak-badge ' + (drillStreak >= 3 ? 'drill-streak-hot' : 'drill-streak-cold');
+  document.getElementById('drillScore').textContent = drillCorrect + ' correct';
+
+  document.getElementById('drillNextBtn').style.display = 'block';
+  recordStreak();
+}
+
+function endDrill() {
+  if (drillNum > 0) {
+    lastResultPct = drillNum > 0 ? Math.round(drillCorrect / drillNum * 100) : 0;
+    lastResultType = 'drill'; lastResultTopic = 'Infinite Drill: ' + drillTopic.name;
+    const s = getStore();
+    s.maths = s.maths || {};
+    s.maths.questions = (s.maths.questions || 0) + drillNum;
+    setStore(s);
+    showResults(drillCorrect, drillNum);
+  } else {
+    goBack();
+  }
+}
+
+// Allow Enter key to submit drill answer
+document.addEventListener('keydown', (e) => {
+  if (screen === 'drillScreen' && e.key === 'Enter') {
+    const checkBtn = document.getElementById('drillCheckBtn');
+    const nextBtn = document.getElementById('drillNextBtn');
+    if (nextBtn.style.display === 'block') {
+      nextDrill();
+    } else if (checkBtn.style.display !== 'none') {
+      checkDrill();
+    }
+  }
+});
+
+// ================================================================
+// INIT
+// ================================================================
+updateHome();
+</script>
+</body>
+</html>
