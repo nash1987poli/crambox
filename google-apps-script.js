@@ -87,6 +87,15 @@ function onEdit(e) {
   if (col !== 2 || row <= 1) return;
   var codeCell = sheet.getRange(row, 1);
   if (codeCell.getValue() !== '') return;
-  var code = 'CRAM-' + String(row).padStart(4, '0');
+  var code = 'CB-' + randomAlphanumeric(8);
   codeCell.setValue(code);
+}
+
+function randomAlphanumeric(len) {
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var result = '';
+  for (var i = 0; i < len; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
 }
