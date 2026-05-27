@@ -771,14 +771,13 @@ function escHTML(str) {
 
 // Generate a device fingerprint from browser properties
 function getDeviceFingerprint() {
+  // Use only stable properties that survive browser updates
   const raw = [
-    navigator.userAgent,
     navigator.language,
     window.screen.width + 'x' + window.screen.height,
     window.screen.colorDepth,
     new Date().getTimezoneOffset(),
-    navigator.hardwareConcurrency || 0,
-    navigator.platform
+    navigator.hardwareConcurrency || 0
   ].join('|');
   // Simple hash
   let hash = 0;
