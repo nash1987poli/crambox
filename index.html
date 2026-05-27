@@ -398,7 +398,48 @@
     padding:4px 12px; border-radius:20px; font-weight:700; font-size:13px;
   }
   .drill-streak-hot { background:var(--gold-bg); color:var(--gold); }
+  .drill-streak-fire { background:var(--red-bg); color:var(--red); animation:firePulse 0.5s infinite alternate; }
   .drill-streak-cold { background:var(--bg2); color:var(--text2); }
+  @keyframes firePulse { from{transform:scale(1)} to{transform:scale(1.1)} }
+  /* Combo popup */
+  .combo-popup {
+    position:fixed; top:40%; left:50%; transform:translate(-50%,-50%) scale(0);
+    font-size:36px; font-weight:900; z-index:250; pointer-events:none;
+    text-shadow:0 2px 20px rgba(0,0,0,0.5); opacity:0;
+  }
+  .combo-popup.show {
+    animation:comboIn 0.8s ease forwards;
+  }
+  @keyframes comboIn {
+    0%{transform:translate(-50%,-50%) scale(0);opacity:0}
+    30%{transform:translate(-50%,-50%) scale(1.3);opacity:1}
+    100%{transform:translate(-50%,-50%) scale(0.8) translateY(-40px);opacity:0}
+  }
+  /* Confetti canvas */
+  #confettiCanvas {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    pointer-events:none; z-index:200;
+  }
+  /* Milestone popup */
+  .milestone-popup {
+    position:fixed; bottom:100px; left:50%; transform:translateX(-50%);
+    background:var(--card); border:2px solid var(--gold); color:var(--gold);
+    padding:12px 24px; border-radius:14px; font-weight:800; font-size:15px;
+    z-index:250; display:none; text-align:center;
+    animation:milestoneIn 0.5s ease;
+  }
+  @keyframes milestoneIn {
+    0%{transform:translateX(-50%) translateY(20px);opacity:0}
+    100%{transform:translateX(-50%) translateY(0);opacity:1}
+  }
+  /* Card shake */
+  .drill-q-card.shake {
+    animation:shake 0.4s ease;
+  }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)}
+    40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
+  }
   .drill-next {
     width:100%; padding:14px; background:var(--blue); color:white; border:none;
     border-radius:10px; font-size:15px; font-weight:700; cursor:pointer;
@@ -410,6 +451,52 @@
     text-align:left; white-space:pre-wrap; display:none; line-height:1.8;
     color:var(--text);
   }
+
+  /* Rank Card */
+  .rank-card {
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:16px; margin-bottom:12px; text-align:center;
+  }
+  .rank-title {
+    font-size:24px; font-weight:800; letter-spacing:1px; margin-bottom:8px;
+  }
+  .rank-progress {
+    height:8px; background:var(--bg2); border-radius:4px; overflow:hidden; margin-bottom:6px;
+  }
+  .rank-bar {
+    height:100%; border-radius:4px; transition:width 0.5s ease;
+  }
+  .rank-next {
+    font-size:12px; color:var(--text2);
+  }
+  /* Topic Mastery in Picker */
+  .drill-pick-info { flex:1; }
+  .drill-pick-mastery {
+    width:40px; height:40px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; font-size:11px; font-weight:800; flex-shrink:0;
+    border:3px solid var(--border);
+  }
+  .mastery-0 { border-color:var(--border); color:var(--text2); }
+  .mastery-1 { border-color:var(--gold); color:var(--gold); }
+  .mastery-2 { border-color:var(--green); color:var(--green); }
+  /* Level Up Celebration */
+  .levelup-overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%; z-index:300;
+    background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center;
+    flex-direction:column; animation:fadeIn 0.3s ease;
+  }
+  .levelup-overlay .lu-rank {
+    font-size:48px; font-weight:900; margin-bottom:8px;
+    animation:xpPop 0.5s ease;
+  }
+  .levelup-overlay .lu-msg {
+    font-size:16px; color:var(--text2); margin-bottom:24px;
+  }
+  .levelup-overlay .lu-btn {
+    padding:12px 32px; background:var(--accent); color:#000; border:none;
+    border-radius:10px; font-size:16px; font-weight:700; cursor:pointer;
+  }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
   /* Activation Gate */
   .gate-overlay {
@@ -476,6 +563,12 @@
 
 <div class="xp-popup" id="xpPopup"></div>
 
+<div class="levelup-overlay" id="levelUpOverlay" style="display:none" onclick="this.style.display='none'">
+  <div class="lu-rank" id="luRank"></div>
+  <div class="lu-msg" id="luMsg"></div>
+  <button class="lu-btn" onclick="document.getElementById('levelUpOverlay').style.display='none'">Continue</button>
+</div>
+
 <!-- ==================== HOME ==================== -->
 <div class="screen active" id="homeScreen">
 <div class="container">
@@ -486,6 +579,14 @@
       <div class="streak-label">days in a row</div>
     </div>
     <div class="streak-dots" id="streakDots"></div>
+  </div>
+
+  <div class="rank-card" id="rankCard">
+    <div class="rank-title" id="rankTitle">Beginner</div>
+    <div class="rank-progress">
+      <div class="rank-bar" id="rankBar" style="width:0%"></div>
+    </div>
+    <div class="rank-next" id="rankNext">100 XP to Bronze</div>
   </div>
 
   <div class="stats-row">
@@ -610,6 +711,10 @@
 </div>
 </div>
 
+<canvas id="confettiCanvas"></canvas>
+<div class="combo-popup" id="comboPopup"></div>
+<div class="milestone-popup" id="milestonePopup"></div>
+
 <!-- ==================== DRILL ACTIVE ==================== -->
 <div class="screen" id="drillScreen">
 <div class="container">
@@ -685,32 +790,14 @@ function getDeviceFingerprint() {
   return Math.abs(hash).toString(36).toUpperCase().padStart(8, '0').substring(0, 8);
 }
 
-// Activation codes stored as hashes so plaintext codes aren't visible in source
-// To add codes: hash them with hashCode() and add the hash => name mapping
-function hashCode(str) {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) {
-    h = ((h << 5) - h) + str.charCodeAt(i);
-    h |= 0;
-  }
-  return h.toString(36);
-}
-const VALID_CODE_HASHES = {
-  [hashCode('CRAM-2026')]: { name: 'Demo User' },
-  [hashCode('MATH-PASS')]: { name: 'Maths Student' },
-  [hashCode('ZIMS-EC01')]: { name: 'Student 01' },
-  [hashCode('ZIMS-EC02')]: { name: 'Student 02' },
-  [hashCode('ZIMS-EC03')]: { name: 'Student 03' },
-  [hashCode('ZIMS-EC04')]: { name: 'Student 04' },
-  [hashCode('ZIMS-EC05')]: { name: 'Student 05' },
-  [hashCode('ZIMS-EC06')]: { name: 'Student 06' },
-  [hashCode('ZIMS-EC07')]: { name: 'Student 07' },
-  [hashCode('ZIMS-EC08')]: { name: 'Student 08' },
-  [hashCode('ZIMS-EC09')]: { name: 'Student 09' },
-  [hashCode('ZIMS-EC10')]: { name: 'Student 10' },
-};
-function validateCode(code) {
-  return VALID_CODE_HASHES[hashCode(code)] || null;
+// Google Sheets activation backend
+// Replace this URL with your deployed Google Apps Script Web App URL
+const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGY5mNYk-oWSGOUJ1mrzp-nR1ZYFrWUUsqP0LBrv_jFRQdSIssaX8IDO1wSHFXKd5r/exec';
+
+async function validateCodeOnline(code, fp) {
+  const url = SHEET_SCRIPT_URL + '?action=validate&code=' + encodeURIComponent(code) + '&fp=' + encodeURIComponent(fp);
+  const res = await fetch(url, { redirect: 'follow' });
+  return await res.json();
 }
 
 function checkActivation() {
@@ -721,8 +808,8 @@ function checkActivation() {
   if (stored) {
     try {
       const lic = JSON.parse(stored);
-      // Check: code is valid AND device fingerprint matches
-      if (lic.code && lic.fp === fp && VALID_CODE_HASHES[lic.code]) {
+      // Returning user: code + fingerprint match = let them in (offline-safe)
+      if (lic.code && lic.fp === fp && lic.verified) {
         _unlockToken = Symbol();
         unlockApp(lic.code, _unlockToken);
         _unlockToken = null;
@@ -739,8 +826,9 @@ function checkActivation() {
   document.getElementById('gateOverlay').classList.remove('hidden');
 }
 
-function activateApp() {
+async function activateApp() {
   const input = document.getElementById('gateCode');
+  const btn = document.getElementById('gateBtn');
   let code = input.value.trim().toUpperCase();
 
   // Auto-format: add dash if missing
@@ -748,19 +836,40 @@ function activateApp() {
     code = code.substring(0,4) + '-' + code.substring(4);
   }
 
-  const codeEntry = validateCode(code);
-  if (!codeEntry) {
-    showGateError('Invalid code. Check your activation code and try again.');
+  if (!code) {
+    showGateError('Please enter your activation code.');
     return;
   }
 
+  // Show loading state
+  btn.disabled = true;
+  btn.textContent = 'Checking...';
+  document.getElementById('gateError').style.display = 'none';
+
   const fp = getDeviceFingerprint();
 
-  const license = { code: hashCode(code), fp, activated: new Date().toISOString(), name: codeEntry.name };
-  localStorage.setItem('crambox-license', JSON.stringify(license));
-  _unlockToken = Symbol();
-  unlockApp(code, _unlockToken);
-  _unlockToken = null;
+  try {
+    const result = await validateCodeOnline(code, fp);
+
+    if (!result.valid) {
+      showGateError(result.error || 'Invalid code. Check your activation code and try again.');
+      btn.disabled = false;
+      btn.textContent = 'Activate';
+      return;
+    }
+
+    // Store license locally (verified flag allows offline access on return)
+    const license = { code, fp, activated: new Date().toISOString(), name: result.name, verified: true };
+    localStorage.setItem('crambox-license', JSON.stringify(license));
+    _unlockToken = Symbol();
+    unlockApp(code, _unlockToken);
+    _unlockToken = null;
+
+  } catch (err) {
+    showGateError('Network error. Check your internet connection and try again.');
+    btn.disabled = false;
+    btn.textContent = 'Activate';
+  }
 }
 
 let _unlockToken = null;
@@ -807,17 +916,41 @@ let lastResultPct = 0, lastResultType = '', lastResultTopic = '';
 function getStore() { try { return JSON.parse(localStorage.getItem('crambox') || '{}'); } catch { return {}; } }
 function setStore(d) { localStorage.setItem('crambox', JSON.stringify(d)); }
 
+function getRank(xp) {
+  if (xp >= 2000) return { name: 'ZIMSEC Ready', color: 'var(--green)', next: null, min: 2000, max: Infinity };
+  if (xp >= 1000) return { name: 'Diamond', color: 'var(--blue)', next: 'ZIMSEC Ready', min: 1000, max: 2000 };
+  if (xp >= 600) return { name: 'Gold', color: 'var(--gold)', next: 'Diamond', min: 600, max: 1000 };
+  if (xp >= 300) return { name: 'Silver', color: '#aaa', next: 'Gold', min: 300, max: 600 };
+  if (xp >= 100) return { name: 'Bronze', color: '#cd7f32', next: 'Silver', min: 100, max: 300 };
+  return { name: 'Beginner', color: 'var(--text2)', next: 'Bronze', min: 0, max: 100 };
+}
+
 function addXP(amount, reason) {
   const s = getStore();
-  s.xp = (s.xp || 0) + amount;
-  s.level = Math.floor((s.xp || 0) / 100) + 1;
+  const oldXP = s.xp || 0;
+  s.xp = oldXP + amount;
+  s.level = Math.floor(s.xp / 100) + 1;
   setStore(s);
   // Show popup
   const popup = document.getElementById('xpPopup');
   popup.textContent = '+' + amount + ' XP — ' + reason;
   popup.style.display = 'block';
   setTimeout(() => popup.style.display = 'none', 1500);
+  // Check rank change
+  const oldRank = getRank(oldXP);
+  const newRank = getRank(s.xp);
+  if (oldRank.name !== newRank.name) {
+    setTimeout(() => showLevelUp(newRank), 1600);
+  }
   updateHome();
+}
+
+function showLevelUp(rank) {
+  const overlay = document.getElementById('levelUpOverlay');
+  document.getElementById('luRank').textContent = rank.name;
+  document.getElementById('luRank').style.color = rank.color;
+  document.getElementById('luMsg').textContent = rank.next ? 'Keep going!' : 'You are exam ready!';
+  overlay.style.display = 'flex';
 }
 
 function recordStreak() {
@@ -902,6 +1035,21 @@ function updateHome() {
   const ml = (s.maths||{}).lessons||[];
   const total = DATA.maths.topics.length;
   document.getElementById('mathsPct').textContent = Math.round((ml.length/total)*100)+'%';
+  // Rank
+  const rank = getRank(s.xp || 0);
+  document.getElementById('rankTitle').textContent = rank.name;
+  document.getElementById('rankTitle').style.color = rank.color;
+  const bar = document.getElementById('rankBar');
+  if (rank.next) {
+    const pct = Math.round(((s.xp || 0) - rank.min) / (rank.max - rank.min) * 100);
+    bar.style.width = pct + '%';
+    bar.style.background = rank.color;
+    document.getElementById('rankNext').textContent = (rank.max - (s.xp || 0)) + ' XP to ' + rank.next;
+  } else {
+    bar.style.width = '100%';
+    bar.style.background = rank.color;
+    document.getElementById('rankNext').textContent = 'Maximum rank achieved!';
+  }
 }
 
 // --- Theme ---
@@ -1752,8 +1900,538 @@ const DRILL_TOPICS = [
       return modeVal;
     },
     generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- INDICES (Laws of Powers) ---
+  {
+    id: 'indices', name: 'Indices (Powers)', icon: 'n^',
+    _raw() {
+      const base = randInt(2, 5);
+      const type = randInt(0, 2);
+      if (type === 0) {
+        const m = randInt(1, 5); const n = randInt(1, 5); const answer = m + n;
+        const eq = `${base}^${m} x ${base}^${n}`;
+        const steps = `a^m x a^n = a^(m+n)\n= ${base}^(${m}+${n})\n= ${base}^${answer}`;
+        return { equation: eq, instruction: 'Simplify — give the index', answer, steps, variable: '', _type: type, _m: m, _n: n };
+      } else if (type === 1) {
+        const n = randInt(1, 4); const answer = randInt(1, 5); const m = answer + n;
+        const eq = `${base}^${m} / ${base}^${n}`;
+        const steps = `a^m / a^n = a^(m-n)\n= ${base}^(${m}-${n})\n= ${base}^${answer}`;
+        return { equation: eq, instruction: 'Simplify — give the index', answer, steps, variable: '', _type: type, _m: m, _n: n };
+      } else {
+        const m = randInt(2, 4); const n = randInt(2, 3); const answer = m * n;
+        const eq = `(${base}^${m})^${n}`;
+        const steps = `(a^m)^n = a^(m x n)\n= ${base}^(${m} x ${n})\n= ${base}^${answer}`;
+        return { equation: eq, instruction: 'Simplify — give the index', answer, steps, variable: '', _type: type, _m: m, _n: n };
+      }
+    },
+    _verify(q) { return q._type === 0 ? q._m + q._n : q._type === 1 ? q._m - q._n : q._m * q._n; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- RATIO & PROPORTION ---
+  {
+    id: 'ratio', name: 'Ratio & Proportion', icon: ':',
+    _raw() {
+      const a = randInt(1, 5); const b = randInt(1, 5);
+      const parts = a + b; const mult = randInt(2, 10); const total = parts * mult;
+      const askFirst = Math.random() > 0.5;
+      const answer = askFirst ? a * mult : b * mult;
+      const which = askFirst ? 'first' : 'second';
+      const steps = `Total parts = ${a} + ${b} = ${parts}\nOne part = $${total} / ${parts} = $${mult}\n${askFirst?'First':'Second'} share = ${askFirst?a:b} x $${mult} = $${answer}`;
+      return { equation: `Share $${total} in the ratio ${a}:${b}`, instruction: `Find the ${which} share`, answer, steps, variable: '$', _a: a, _b: b, _total: total, _askFirst: askFirst };
+    },
+    _verify(q) { const m = q._total / (q._a + q._b); return q._askFirst ? q._a * m : q._b * m; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- QUADRATIC EQUATIONS ---
+  {
+    id: 'quadratic', name: 'Quadratic Equations', icon: 'x2',
+    _raw() {
+      const r1 = randInt(-9, 9); let r2 = randInt(-9, 9);
+      if (r2 === r1) r2 = r1 + randInt(1, 3);
+      const b = -(r1 + r2); const c = r1 * r2;
+      const signB = b >= 0 ? '+ ' + b : '- ' + Math.abs(b);
+      const signC = c >= 0 ? '+ ' + c : '- ' + Math.abs(c);
+      const eq = `x^2 ${signB}x ${signC} = 0`;
+      const smaller = Math.min(r1, r2);
+      const sr1 = r1 >= 0 ? '- ' + r1 : '+ ' + Math.abs(r1);
+      const sr2 = r2 >= 0 ? '- ' + r2 : '+ ' + Math.abs(r2);
+      const steps = `Factorise: (x ${sr1})(x ${sr2}) = 0\nx = ${r1} or x = ${r2}\nSmaller root = ${smaller}`;
+      return { equation: eq, instruction: 'Solve — give the smaller root', answer: smaller, steps, variable: 'x', _r1: r1, _r2: r2 };
+    },
+    _verify(q) { return Math.min(q._r1, q._r2); },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- HCF & LCM ---
+  {
+    id: 'hcf_lcm', name: 'HCF & LCM', icon: 'HCF',
+    _raw() {
+      const isHCF = Math.random() > 0.5;
+      const a = randInt(6, 48); const b = randInt(6, 48);
+      if (isHCF) {
+        const answer = gcd(a, b);
+        const steps = `Find common factors of ${a} and ${b}\nHCF = ${answer}`;
+        return { equation: `HCF of ${a} and ${b}`, instruction: 'Find the HCF', answer, steps, variable: '', _a: a, _b: b, _isHCF: true };
+      } else {
+        const answer = (a * b) / gcd(a, b);
+        const steps = `LCM = (${a} x ${b}) / HCF(${a},${b})\n= ${a * b} / ${gcd(a, b)}\n= ${answer}`;
+        return { equation: `LCM of ${a} and ${b}`, instruction: 'Find the LCM', answer, steps, variable: '', _a: a, _b: b, _isHCF: false };
+      }
+    },
+    _verify(q) { return q._isHCF ? gcd(q._a, q._b) : (q._a * q._b) / gcd(q._a, q._b); },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- NUMBER BASES (Binary to Decimal) ---
+  {
+    id: 'number_bases', name: 'Number Bases', icon: '01',
+    _raw() {
+      const decimal = randInt(5, 63);
+      const binary = decimal.toString(2);
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const bits = binary.split('').reverse();
+        let working = bits.map((b, i) => `${b} x 2^${i} = ${b * Math.pow(2, i)}`).reverse().join('\n');
+        const steps = `${binary} in base 2:\n${working}\nSum = ${decimal}`;
+        return { equation: `Convert ${binary}(base 2) to base 10`, instruction: 'Give the base 10 value', answer: decimal, steps, variable: '', _decimal: decimal, _binary: binary, _type: type };
+      } else {
+        const steps = `${decimal} / 2 — read remainders bottom to top\n= ${binary} (base 2)\nNumber of digits = ${binary.length}`;
+        return { equation: `Convert ${decimal} to base 2. How many digits?`, instruction: 'How many binary digits?', answer: binary.length, steps, variable: '', _decimal: decimal, _binary: binary, _type: type };
+      }
+    },
+    _verify(q) { return q._type === 0 ? q._decimal : q._binary.length; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- SETS & VENN DIAGRAMS ---
+  {
+    id: 'sets', name: 'Sets & Venn Diagrams', icon: 'UV',
+    _raw() {
+      const nA = randInt(8, 25); const nB = randInt(8, 25);
+      const maxIntersect = Math.min(nA, nB);
+      const nAB = randInt(2, Math.min(maxIntersect - 1, 12));
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const answer = nA + nB - nAB;
+        const steps = `n(A U B) = n(A) + n(B) - n(A n B)\n= ${nA} + ${nB} - ${nAB}\n= ${answer}`;
+        return { equation: `n(A) = ${nA}, n(B) = ${nB}, n(A n B) = ${nAB}`, instruction: 'Find n(A U B)', answer, steps, variable: '', _nA: nA, _nB: nB, _nAB: nAB, _type: type };
+      } else {
+        const onlyA = nA - nAB; const onlyB = nB - nAB;
+        const answer = onlyA;
+        const steps = `Only in A = n(A) - n(A n B)\n= ${nA} - ${nAB}\n= ${answer}`;
+        return { equation: `n(A) = ${nA}, n(B) = ${nB}, n(A n B) = ${nAB}`, instruction: 'How many are in A only?', answer, steps, variable: '', _nA: nA, _nB: nB, _nAB: nAB, _type: type };
+      }
+    },
+    _verify(q) { return q._type === 0 ? q._nA + q._nB - q._nAB : q._nA - q._nAB; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- COORDINATE GEOMETRY (Gradient) ---
+  {
+    id: 'gradient', name: 'Coordinate Geometry', icon: '/',
+    _raw() {
+      const x1 = randInt(-5, 5); const y1 = randInt(-5, 5);
+      const dx = randInt(1, 6); const dy = randInt(-8, 8);
+      const x2 = x1 + dx; const y2 = y1 + dy;
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const answer = dy / dx;
+        const steps = `Gradient = (y2 - y1) / (x2 - x1)\n= (${y2} - ${y1}) / (${x2} - ${x1})\n= ${dy} / ${dx}\n= ${answer}`;
+        return { equation: `Points (${x1}, ${y1}) and (${x2}, ${y2})`, instruction: 'Find the gradient', answer: Math.round(answer * 100) / 100, steps, variable: '', _x1: x1, _y1: y1, _x2: x2, _y2: y2, _type: type };
+      } else {
+        const mx = (x1 + x2) / 2; const my = (y1 + y2) / 2;
+        const answer = mx;
+        const steps = `Midpoint x = (${x1} + ${x2}) / 2 = ${mx}\nMidpoint y = (${y1} + ${y2}) / 2 = ${my}\nMidpoint = (${mx}, ${my})`;
+        return { equation: `Points (${x1}, ${y1}) and (${x2}, ${y2})`, instruction: 'Find the midpoint x-coordinate', answer: Math.round(mx * 100) / 100, steps, variable: '', _x1: x1, _y1: y1, _x2: x2, _y2: y2, _type: type };
+      }
+    },
+    _verify(q) { return q._type === 0 ? Math.round(((q._y2 - q._y1) / (q._x2 - q._x1)) * 100) / 100 : Math.round(((q._x1 + q._x2) / 2) * 100) / 100; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- PYTHAGORAS' THEOREM ---
+  {
+    id: 'pythagoras', name: "Pythagoras' Theorem", icon: 'rt',
+    _raw() {
+      const triples = [[3,4,5],[5,12,13],[8,15,17],[7,24,25],[6,8,10],[9,12,15],[10,24,26],[12,16,20],[15,20,25],[9,40,41]];
+      const scale = randInt(1, 3);
+      const [a, b, c] = triples[randInt(0, triples.length - 1)].map(v => v * scale);
+      const findHyp = Math.random() > 0.4;
+      if (findHyp) {
+        const steps = `c^2 = a^2 + b^2\n= ${a}^2 + ${b}^2\n= ${a*a} + ${b*b}\n= ${a*a+b*b}\nc = sqrt(${c*c}) = ${c}`;
+        return { equation: `Right triangle: sides ${a} cm and ${b} cm`, instruction: 'Find the hypotenuse (cm)', answer: c, steps, variable: 'cm', _a: a, _b: b, _c: c, _findHyp: true };
+      } else {
+        const steps = `a^2 = c^2 - b^2\n= ${c}^2 - ${b}^2\n= ${c*c} - ${b*b}\n= ${c*c-b*b}\na = sqrt(${a*a}) = ${a}`;
+        return { equation: `Right triangle: hypotenuse ${c} cm, one side ${b} cm`, instruction: 'Find the other side (cm)', answer: a, steps, variable: 'cm', _a: a, _b: b, _c: c, _findHyp: false };
+      }
+    },
+    _verify(q) { return q._findHyp ? Math.sqrt(q._a * q._a + q._b * q._b) : Math.sqrt(q._c * q._c - q._b * q._b); },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- TRIGONOMETRY (SOH CAH TOA) ---
+  {
+    id: 'trigonometry', name: 'Trigonometry', icon: 'sin',
+    _raw() {
+      const triples = [[3,4,5],[5,12,13],[8,15,17],[6,8,10],[9,12,15]];
+      const [opp, adj, hyp] = triples[randInt(0, triples.length - 1)];
+      const scale = randInt(1, 3);
+      const O = opp * scale; const A = adj * scale; const H = hyp * scale;
+      const type = randInt(0, 2);
+      if (type === 0) {
+        const answer = O;
+        const steps = `sin(theta) = O/H = ${opp}/${hyp}\nO = sin(theta) x H\n= (${opp}/${hyp}) x ${H}\n= ${answer}`;
+        return { equation: `sin(theta) = ${opp}/${hyp}, hypotenuse = ${H} cm`, instruction: 'Find the opposite side (cm)', answer, steps, variable: 'cm', _O: O, _A: A, _H: H, _opp: opp, _adj: adj, _hyp: hyp, _type: type };
+      } else if (type === 1) {
+        const answer = A;
+        const steps = `cos(theta) = A/H = ${adj}/${hyp}\nA = cos(theta) x H\n= (${adj}/${hyp}) x ${H}\n= ${answer}`;
+        return { equation: `cos(theta) = ${adj}/${hyp}, hypotenuse = ${H} cm`, instruction: 'Find the adjacent side (cm)', answer, steps, variable: 'cm', _O: O, _A: A, _H: H, _opp: opp, _adj: adj, _hyp: hyp, _type: type };
+      } else {
+        const answer = O;
+        const steps = `tan(theta) = O/A = ${opp}/${adj}\nO = tan(theta) x A\n= (${opp}/${adj}) x ${A}\n= ${answer}`;
+        return { equation: `tan(theta) = ${opp}/${adj}, adjacent = ${A} cm`, instruction: 'Find the opposite side (cm)', answer, steps, variable: 'cm', _O: O, _A: A, _H: H, _opp: opp, _adj: adj, _hyp: hyp, _type: type };
+      }
+    },
+    _verify(q) {
+      if (q._type === 0) return (q._opp / q._hyp) * q._H;
+      if (q._type === 1) return (q._adj / q._hyp) * q._H;
+      return (q._opp / q._adj) * q._A;
+    },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- PROBABILITY ---
+  {
+    id: 'probability', name: 'Probability', icon: 'P',
+    _raw() {
+      const colours = ['red','blue','green','yellow','white'];
+      const counts = [];
+      const numColours = randInt(2, 3);
+      let total = 0;
+      for (let i = 0; i < numColours; i++) { const c = randInt(2, 8); counts.push(c); total += c; }
+      const targetIdx = 0;
+      const targetColour = colours[targetIdx];
+      const favourable = counts[targetIdx];
+      const trials = total * randInt(2, 5);
+      const answer = (favourable / total) * trials;
+      const desc = counts.map((c, i) => `${c} ${colours[i]}`).join(', ');
+      const steps = `P(${targetColour}) = ${favourable}/${total}\nExpected in ${trials} trials = ${favourable}/${total} x ${trials}\n= ${answer}`;
+      return { equation: `Bag: ${desc}. Pick ${trials} times.`, instruction: `Expected ${targetColour} balls?`, answer, steps, variable: '', _favourable: favourable, _total: total, _trials: trials };
+    },
+    _verify(q) { return (q._favourable / q._total) * q._trials; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- STANDARD FORM ---
+  {
+    id: 'standard_form', name: 'Standard Form', icon: '10',
+    _raw() {
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const a = randInt(1, 9); const dec = randInt(0, 1) ? a : a + randInt(1, 9) / 10;
+        const n = randInt(2, 6);
+        const answer = dec * Math.pow(10, n);
+        const steps = `${dec} x 10^${n}\n= ${dec} x ${Math.pow(10, n)}\n= ${answer}`;
+        return { equation: `${dec} x 10^${n}`, instruction: 'Write as an ordinary number', answer, steps, variable: '', _dec: dec, _n: n, _type: type };
+      } else {
+        const n = randInt(2, 5);
+        const first = randInt(1, 9);
+        const answer = n;
+        const num = first * Math.pow(10, n);
+        const steps = `${num} = ${first} x 10^${n}\nThe power of 10 is ${n}`;
+        return { equation: `${num} = ${first} x 10^n. Find n.`, instruction: 'What is the power of 10?', answer, steps, variable: '', _dec: first, _n: n, _type: type };
+      }
+    },
+    _verify(q) { return q._type === 0 ? q._dec * Math.pow(10, q._n) : q._n; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- SIMPLE & COMPOUND INTEREST ---
+  {
+    id: 'simple_interest', name: 'Simple Interest', icon: 'SI',
+    _raw() {
+      const principals = [100,200,300,400,500,600,800,1000,1200,1500,2000,2500,5000];
+      const P = principals[randInt(0, principals.length - 1)];
+      const rates = [2,4,5,6,8,10,12,15,20,25];
+      const R = rates[randInt(0, rates.length - 1)];
+      const T = randInt(1, 5);
+      const SI = P * R * T / 100;
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const steps = `SI = PRT / 100\n= ${P} x ${R} x ${T} / 100\n= ${P * R * T} / 100\n= $${SI}`;
+        return { equation: `P = $${P}, R = ${R}%, T = ${T} years`, instruction: 'Find the Simple Interest', answer: SI, steps, variable: '$', _P: P, _R: R, _T: T, _type: type };
+      } else {
+        const total = P + SI;
+        const steps = `SI = PRT / 100 = ${P} x ${R} x ${T} / 100 = $${SI}\nTotal = P + SI = $${P} + $${SI} = $${total}`;
+        return { equation: `P = $${P}, R = ${R}%, T = ${T} years`, instruction: 'Find the total amount (P + SI)', answer: total, steps, variable: '$', _P: P, _R: R, _T: T, _type: type };
+      }
+    },
+    _verify(q) { const si = q._P * q._R * q._T / 100; return q._type === 0 ? si : q._P + si; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- SPEED, DISTANCE, TIME ---
+  {
+    id: 'speed_distance_time', name: 'Speed, Distance, Time', icon: 'v',
+    _raw() {
+      const speeds = [20,30,40,50,60,80,100,120];
+      const S = speeds[randInt(0, speeds.length - 1)];
+      const T = randInt(1, 6);
+      const D = S * T;
+      const type = randInt(0, 2);
+      if (type === 0) {
+        const steps = `Distance = Speed x Time\n= ${S} x ${T}\n= ${D} km`;
+        return { equation: `Speed = ${S} km/h, Time = ${T} hours`, instruction: 'Find the distance (km)', answer: D, steps, variable: 'km', _S: S, _T: T, _D: D, _type: type };
+      } else if (type === 1) {
+        const steps = `Speed = Distance / Time\n= ${D} / ${T}\n= ${S} km/h`;
+        return { equation: `Distance = ${D} km, Time = ${T} hours`, instruction: 'Find the speed (km/h)', answer: S, steps, variable: 'km/h', _S: S, _T: T, _D: D, _type: type };
+      } else {
+        const steps = `Time = Distance / Speed\n= ${D} / ${S}\n= ${T} hours`;
+        return { equation: `Distance = ${D} km, Speed = ${S} km/h`, instruction: 'Find the time (hours)', answer: T, steps, variable: 'hrs', _S: S, _T: T, _D: D, _type: type };
+      }
+    },
+    _verify(q) { return q._type === 0 ? q._S * q._T : q._type === 1 ? q._D / q._T : q._D / q._S; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- VOLUME (Cuboid & Cylinder) ---
+  {
+    id: 'volume', name: 'Volume', icon: 'V',
+    _raw() {
+      const isCuboid = Math.random() > 0.5;
+      if (isCuboid) {
+        const l = randInt(3, 12); const w = randInt(2, 10); const h = randInt(2, 8);
+        const answer = l * w * h;
+        const steps = `Volume = l x w x h\n= ${l} x ${w} x ${h}\n= ${answer} cm^3`;
+        return { equation: `Cuboid: ${l} cm x ${w} cm x ${h} cm`, instruction: 'Find the volume (cm^3)', answer, steps, variable: 'cm^3', _l: l, _w: w, _h: h, _isCuboid: true };
+      } else {
+        const radii = [7, 14, 3.5, 10.5];
+        const r = radii[randInt(0, radii.length - 1)];
+        const h = randInt(2, 10);
+        const answer = Math.round((22 / 7) * r * r * h * 100) / 100;
+        const steps = `Volume = pi x r^2 x h (pi = 22/7)\n= 22/7 x ${r}^2 x ${h}\n= 22/7 x ${r * r} x ${h}\n= ${answer} cm^3`;
+        return { equation: `Cylinder: radius ${r} cm, height ${h} cm (pi = 22/7)`, instruction: 'Find the volume (cm^3)', answer, steps, variable: 'cm^3', _r: r, _h: h, _isCuboid: false };
+      }
+    },
+    _verify(q) { return q._isCuboid ? q._l * q._w * q._h : Math.round((22 / 7) * q._r * q._r * q._h * 100) / 100; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- TRANSFORMATIONS ---
+  {
+    id: 'transformations', name: 'Transformations', icon: 'T',
+    _raw() {
+      const x = randInt(-8, 8); const y = randInt(-8, 8);
+      const type = randInt(0, 2);
+      if (type === 0) {
+        const answer = -y;
+        const steps = `Reflect (${x}, ${y}) in the x-axis:\ny changes sign\n= (${x}, ${-y})`;
+        return { equation: `Reflect (${x}, ${y}) in the x-axis`, instruction: 'What is the new y-coordinate?', answer, steps, variable: '', _x: x, _y: y, _type: type };
+      } else if (type === 1) {
+        const answer = -x;
+        const steps = `Reflect (${x}, ${y}) in the y-axis:\nx changes sign\n= (${-x}, ${y})`;
+        return { equation: `Reflect (${x}, ${y}) in the y-axis`, instruction: 'What is the new x-coordinate?', answer, steps, variable: '', _x: x, _y: y, _type: type };
+      } else {
+        const dx = randInt(-5, 5); const dy = randInt(-5, 5);
+        const answer = x + dx;
+        const steps = `Translate (${x}, ${y}) by (${dx}, ${dy}):\n= (${x}+${dx}, ${y}+${dy})\n= (${x + dx}, ${y + dy})`;
+        return { equation: `Translate (${x}, ${y}) by vector (${dx}, ${dy})`, instruction: 'What is the new x-coordinate?', answer, steps, variable: '', _x: x, _y: y, _dx: dx, _dy: dy, _type: type };
+      }
+    },
+    _verify(q) {
+      if (q._type === 0) return -q._y;
+      if (q._type === 1) return -q._x;
+      return q._x + q._dx;
+    },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- MATRICES (2x2 Determinant & Scalar) ---
+  {
+    id: 'matrices', name: 'Matrices', icon: 'det',
+    _raw() {
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const a = randInt(-5, 8); const b = randInt(-5, 8); const c = randInt(-5, 8); const d = randInt(-5, 8);
+        const answer = a * d - b * c;
+        const steps = `det = ad - bc\n= (${a})(${d}) - (${b})(${c})\n= ${a * d} - ${b * c}\n= ${answer}`;
+        return { equation: `Matrix [[${a}, ${b}], [${c}, ${d}]]`, instruction: 'Find the determinant', answer, steps, variable: '', _a: a, _b: b, _c: c, _d: d, _type: type };
+      } else {
+        const k = randInt(2, 5);
+        const a = randInt(-5, 8); const b = randInt(-5, 8); const c = randInt(-5, 8); const d = randInt(-5, 8);
+        const answer = k * a + k * d;
+        const steps = `${k} x [[${a}, ${b}], [${c}, ${d}]]\n= [[${k * a}, ${k * b}], [${k * c}, ${k * d}]]\nSum of diagonal = ${k * a} + ${k * d} = ${answer}`;
+        return { equation: `${k} x [[${a}, ${b}], [${c}, ${d}]]`, instruction: 'Multiply by scalar, give sum of main diagonal', answer, steps, variable: '', _a: a, _b: b, _c: c, _d: d, _k: k, _type: type };
+      }
+    },
+    _verify(q) { return q._type === 0 ? q._a * q._d - q._b * q._c : q._k * q._a + q._k * q._d; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- VARIATION (Direct & Inverse) ---
+  {
+    id: 'variation', name: 'Variation', icon: 'k',
+    _raw() {
+      const isDirect = Math.random() > 0.5;
+      if (isDirect) {
+        const k = randInt(2, 8);
+        const x1 = randInt(2, 6); const y1 = k * x1;
+        const x2 = randInt(3, 10); const answer = k * x2;
+        const steps = `y = kx (direct variation)\nk = y/x = ${y1}/${x1} = ${k}\ny = ${k} x ${x2} = ${answer}`;
+        return { equation: `y varies directly as x. y = ${y1} when x = ${x1}`, instruction: `Find y when x = ${x2}`, answer, steps, variable: '', _k: k, _x1: x1, _y1: y1, _x2: x2, _isDirect: true };
+      } else {
+        const k = randInt(12, 60);
+        const x1Opts = []; // find clean divisors of k
+        for (let i = 2; i <= Math.min(k / 2, 10); i++) { if (k % i === 0) x1Opts.push(i); }
+        if (x1Opts.length === 0) x1Opts.push(2);
+        const x1 = x1Opts[randInt(0, x1Opts.length - 1)]; const y1 = k / x1;
+        const x2Opts = x1Opts.filter(v => v !== x1);
+        const x2 = x2Opts.length > 0 ? x2Opts[randInt(0, x2Opts.length - 1)] : x1 + 1;
+        const answer = k / x2;
+        const steps = `y = k/x (inverse variation)\nk = xy = ${x1} x ${y1} = ${k}\ny = ${k}/${x2} = ${answer}`;
+        return { equation: `y varies inversely as x. y = ${y1} when x = ${x1}`, instruction: `Find y when x = ${x2}`, answer, steps, variable: '', _k: k, _x1: x1, _y1: y1, _x2: x2, _isDirect: false };
+      }
+    },
+    _verify(q) { return q._isDirect ? q._k * q._x2 : q._k / q._x2; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- INEQUALITIES ---
+  {
+    id: 'inequalities', name: 'Inequalities', icon: '<>',
+    _raw() {
+      const x = randInt(-8, 8);
+      const a = randInt(2, 8);
+      const b = randInt(-12, 12);
+      const rhs = a * x + b;
+      const ops = ['<', '>', '<=', '>='];
+      const op = ops[randInt(0, 3)];
+      const sign = b >= 0 ? '+' : '-';
+      const bAbs = Math.abs(b);
+      const eq = `${a}x ${sign} ${bAbs} ${op} ${rhs}`;
+      const steps = `${a}x ${sign} ${bAbs} ${op} ${rhs}\n${a}x ${op} ${rhs} ${b >= 0 ? '-' : '+'} ${bAbs}\n${a}x ${op} ${a * x}\nx ${op} ${x}`;
+      return { equation: eq, instruction: 'Solve for x (boundary value)', answer: x, steps, variable: 'x', _a: a, _b: b, _rhs: rhs };
+    },
+    _verify(q) { return (q._rhs - q._b) / q._a; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- PROFIT & LOSS ---
+  {
+    id: 'profit_loss', name: 'Profit & Loss', icon: '$',
+    _raw() {
+      const costPrices = [50,80,100,120,150,200,250,300,400,500];
+      const CP = costPrices[randInt(0, costPrices.length - 1)];
+      const pcts = [10,15,20,25,30,40,50];
+      const pct = pcts[randInt(0, pcts.length - 1)];
+      const isProfit = Math.random() > 0.4;
+      const change = CP * pct / 100;
+      const SP = isProfit ? CP + change : CP - change;
+      const word = isProfit ? 'profit' : 'loss';
+      const steps = `${pct}% ${word} on $${CP}\n${word} = ${pct}% of $${CP} = $${change}\nSelling price = $${CP} ${isProfit ? '+' : '-'} $${change} = $${SP}`;
+      return { equation: `Cost = $${CP}, ${pct}% ${word}`, instruction: 'Find the selling price', answer: SP, steps, variable: '$', _CP: CP, _pct: pct, _isProfit: isProfit };
+    },
+    _verify(q) { const ch = q._CP * q._pct / 100; return q._isProfit ? q._CP + ch : q._CP - ch; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
   }
 ];
+
+// ================================================================
+// DRILL SOUND EFFECTS & JUICE
+// ================================================================
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function ensureAudio() { if (!audioCtx) audioCtx = new AudioCtx(); }
+
+function playCorrect() {
+  ensureAudio();
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.connect(g); g.connect(audioCtx.destination);
+  o.type = 'sine'; o.frequency.setValueAtTime(880, audioCtx.currentTime);
+  o.frequency.setValueAtTime(1174, audioCtx.currentTime + 0.08);
+  g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+  o.start(); o.stop(audioCtx.currentTime + 0.25);
+}
+
+function playWrong() {
+  ensureAudio();
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.connect(g); g.connect(audioCtx.destination);
+  o.type = 'square'; o.frequency.setValueAtTime(200, audioCtx.currentTime);
+  o.frequency.setValueAtTime(150, audioCtx.currentTime + 0.1);
+  g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+  o.start(); o.stop(audioCtx.currentTime + 0.2);
+}
+
+function playCombo() {
+  ensureAudio();
+  const notes = [523, 659, 784, 1047];
+  notes.forEach((freq, i) => {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.type = 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.12, audioCtx.currentTime + i * 0.07);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.07 + 0.15);
+    o.start(audioCtx.currentTime + i * 0.07);
+    o.stop(audioCtx.currentTime + i * 0.07 + 0.15);
+  });
+}
+
+// Confetti
+function fireConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const pieces = [];
+  const colors = ['#00e676','#ffd740','#448aff','#b388ff','#ff5252','#ffffff'];
+  for (let i = 0; i < 40; i++) {
+    pieces.push({
+      x: canvas.width / 2 + (Math.random() - 0.5) * 100,
+      y: canvas.height * 0.45,
+      vx: (Math.random() - 0.5) * 12,
+      vy: -Math.random() * 14 - 4,
+      size: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      rv: (Math.random() - 0.5) * 10
+    });
+  }
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.4; p.rotation += p.rv;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 60) requestAnimationFrame(animate);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  animate();
+}
+
+// Combo popup
+function showCombo(streak) {
+  const el = document.getElementById('comboPopup');
+  if (streak >= 10) { el.textContent = streak + 'x UNSTOPPABLE!'; el.style.color = 'var(--red)'; }
+  else if (streak >= 7) { el.textContent = streak + 'x ON FIRE!'; el.style.color = 'var(--gold)'; }
+  else if (streak >= 5) { el.textContent = streak + 'x STREAK!'; el.style.color = 'var(--purple)'; }
+  else if (streak >= 3) { el.textContent = streak + 'x COMBO!'; el.style.color = 'var(--green)'; }
+  else return;
+  el.className = 'combo-popup show';
+  setTimeout(() => el.className = 'combo-popup', 900);
+}
+
+// Milestone popup
+function checkMilestone(num) {
+  const milestones = {
+    10: 'On a roll! Keep it up!',
+    20: '20 questions! You are grinding!',
+    30: '30 questions! Beast mode!',
+    50: '50 questions! Absolute legend!',
+    100: '100 questions! ZIMSEC will be easy!'
+  };
+  if (milestones[num]) {
+    const el = document.getElementById('milestonePopup');
+    el.textContent = milestones[num];
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 2500);
+  }
+}
 
 // ================================================================
 // INFINITE DRILL MODE
@@ -1763,10 +2441,15 @@ let drillTopic = null, drillNum = 0, drillCorrect = 0, drillStreak = 0, drillCur
 function openDrillPicker() {
   const container = document.getElementById('drillTopics');
   container.innerHTML = '';
+  const s = getStore();
+  const mastery = s.drillMastery || {};
   DRILL_TOPICS.forEach(t => {
     const btn = document.createElement('div');
     btn.className = 'drill-pick';
-    btn.innerHTML = `<div class="dp-icon">${t.icon}</div><span>${t.name}</span>`;
+    const stats = mastery[t.id] || { correct: 0, total: 0 };
+    const pct = stats.total > 0 ? Math.round(stats.correct / stats.total * 100) : 0;
+    const masteryClass = pct >= 80 ? 'mastery-2' : pct >= 50 ? 'mastery-1' : 'mastery-0';
+    btn.innerHTML = '<div class="dp-icon">' + t.icon + '</div><div class="drill-pick-info"><span>' + t.name + '</span></div><div class="drill-pick-mastery ' + masteryClass + '">' + (stats.total > 0 ? pct + '%' : '-') + '</div>';
     btn.onclick = () => startDrill(t.id);
     container.appendChild(btn);
   });
@@ -1792,7 +2475,8 @@ function nextDrill() {
 
   const badge = document.getElementById('drillStreakBadge');
   badge.textContent = drillStreak + ' in a row';
-  badge.className = 'drill-streak-badge ' + (drillStreak >= 3 ? 'drill-streak-hot' : 'drill-streak-cold');
+  const badgeClass2 = drillStreak >= 5 ? 'drill-streak-fire' : drillStreak >= 3 ? 'drill-streak-hot' : 'drill-streak-cold';
+  badge.className = 'drill-streak-badge ' + badgeClass2;
 
   // Reset UI
   const inp = document.getElementById('drillAns');
@@ -1829,6 +2513,10 @@ function checkDrill() {
     fb.textContent = 'Correct!';
     fb.className = 'drill-feedback show correct-fb';
 
+    // Sound + visual juice
+    if (drillStreak >= 3) { playCombo(); showCombo(drillStreak); fireConfetti(); }
+    else { playCorrect(); }
+
     // XP: more for streaks
     const xp = drillStreak >= 5 ? 15 : drillStreak >= 3 ? 10 : 5;
     addXP(xp, drillStreak >= 3 ? drillStreak + ' streak!' : 'Drill correct');
@@ -1838,16 +2526,25 @@ function checkDrill() {
     inp.style.background = 'var(--red-bg)';
     fb.innerHTML = 'Answer: <strong>' + correctVal + '</strong>';
     fb.className = 'drill-feedback show wrong-fb';
+    playWrong();
+    // Shake the card
+    const card = document.querySelector('.drill-q-card');
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 400);
   }
 
   // Show worked solution
   sol.textContent = drillCurrentQ.steps;
   sol.style.display = 'block';
 
+  // Check session milestone
+  checkMilestone(drillNum);
+
   // Update streak badge
   const badge = document.getElementById('drillStreakBadge');
   badge.textContent = drillStreak + ' in a row';
-  badge.className = 'drill-streak-badge ' + (drillStreak >= 3 ? 'drill-streak-hot' : 'drill-streak-cold');
+  const badgeClass = drillStreak >= 5 ? 'drill-streak-fire' : drillStreak >= 3 ? 'drill-streak-hot' : 'drill-streak-cold';
+  badge.className = 'drill-streak-badge ' + badgeClass;
   document.getElementById('drillScore').textContent = drillCorrect + ' correct';
 
   document.getElementById('drillNextBtn').style.display = 'block';
@@ -1861,6 +2558,12 @@ function endDrill() {
     const s = getStore();
     s.maths = s.maths || {};
     s.maths.questions = (s.maths.questions || 0) + drillNum;
+    // Track per-topic mastery
+    if (!s.drillMastery) s.drillMastery = {};
+    const m = s.drillMastery[drillTopic.id] || { correct: 0, total: 0 };
+    m.correct += drillCorrect;
+    m.total += drillNum;
+    s.drillMastery[drillTopic.id] = m;
     setStore(s);
     showResults(drillCorrect, drillNum);
   } else {
