@@ -795,8 +795,12 @@ function getDeviceFingerprint() {
 const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGY5mNYk-oWSGOUJ1mrzp-nR1ZYFrWUUsqP0LBrv_jFRQdSIssaX8IDO1wSHFXKd5r/exec';
 
 async function validateCodeOnline(code, fp) {
-  const url = SHEET_SCRIPT_URL + '?action=validate&code=' + encodeURIComponent(code) + '&fp=' + encodeURIComponent(fp);
-  const res = await fetch(url, { redirect: 'follow' });
+  const res = await fetch(SHEET_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'validate', code, fp }),
+    redirect: 'follow'
+  });
   return await res.json();
 }
 
