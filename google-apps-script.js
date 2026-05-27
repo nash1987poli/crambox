@@ -36,36 +36,46 @@ function doPost(e) {
 }
 
 function handleValidate(sheet, code, fp) {
-  var rows = sheet.getDataRange().getValues();
-
-  for (var i = 1; i < rows.length; i++) {
-    var sheetCode = String(rows[i][0]).toUpperCase().trim();
-    if (sheetCode !== code) continue;
-
-    var name = rows[i][1] || 'Student';
-    var status = String(rows[i][2]).toUpperCase().trim();
-    var existingFp = String(rows[i][3]).trim();
-
-    // Already used
-    if (status === 'USED') {
-      if (existingFp === fp) {
-        // Same device — allow re-activation
-        return jsonResponse({ valid: true, name: name, status: 'already_activated' });
-      }
-      // Different device — blocked
-      return jsonResponse({ valid: false, error: 'Code already used on another device' });
-    }
-
-    // Activate: mark as used
-    var row = i + 1;
-    sheet.getRange(row, 3).setValue('USED');
-    sheet.getRange(row, 4).setValue(fp);
-    sheet.getRange(row, 5).setValue(new Date().toISOString());
-
-    return jsonResponse({ valid: true, name: name, status: 'activated' });
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(10000);
+  } catch (e) {
+    return jsonResponse({ valid: false, error: 'Server busy, try again' });
   }
 
-  return jsonResponse({ valid: false, error: 'Invalid code' });
+  try {
+    var rows = sheet.getDataRange().getValues();
+
+    for (var i = 1; i < rows.length; i++) {
+      var sheetCode = String(rows[i][0]).toUpperCase().trim();
+      if (sheetCode !== code) continue;
+
+      var name = rows[i][1] || 'Student';
+      var status = String(rows[i][2]).toUpperCase().trim();
+      var existingFp = String(rows[i][3]).trim();
+
+      // Already used
+      if (status === 'USED') {
+        if (existingFp === fp) {
+          return jsonResponse({ valid: true, name: name, status: 'already_activated' });
+        }
+        return jsonResponse({ valid: false, error: 'Code already used on another device' });
+      }
+
+      // Activate: mark as used (atomic within lock)
+      var row = i + 1;
+      sheet.getRange(row, 3).setValue('USED');
+      sheet.getRange(row, 4).setValue(fp);
+      sheet.getRange(row, 5).setValue(new Date().toISOString());
+      SpreadsheetApp.flush();
+
+      return jsonResponse({ valid: true, name: name, status: 'activated' });
+    }
+
+    return jsonResponse({ valid: false, error: 'Invalid code' });
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function doGet(e) {
