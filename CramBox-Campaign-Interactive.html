@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CramBox — Interactive Campaign Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --green: #00e676;
+    --green-dark: #00c853;
+    --black: #0a0a0a;
+    --white: #f5f5f0;
+    --gray: #888;
+    --light: #1a1a1a;
+    --accent: #ff3d00;
+    --gold: #ffd740;
+    --red: #ff5252;
+    --blue: #448aff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ===== STICKY NAV ===== */
+  .topnav {
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid #1a1a1a;
+    z-index: 100;
+    padding: 14px 0;
+  }
+  .topnav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .topnav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    letter-spacing: -1px;
+  }
+  .topnav-logo span { color: var(--green); }
+  .topnav-links {
+    display: flex;
+    gap: 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  .topnav-links a {
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .topnav-links a:hover { color: var(--green); }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 65vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid #222;
+    padding-bottom: 48px;
+    margin-bottom: 48px;
+  }
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(48px, 10vw, 96px);
+    font-weight: 900;
+    letter-spacing: -3px;
+    line-height: 0.95;
+    margin-bottom: 24px;
+  }
+  .hero-title span { color: var(--green); }
+  .hero-sub {
+    font-size: 17px;
+    color: #aaa;
+    max-width: 620px;
+    margin-bottom: 36px;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .hero-cta button {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 14px 22px;
+    border-radius: 4px;
+    border: 1px solid #333;
+    background: #111;
+    color: var(--white);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .hero-cta button:hover { border-color: var(--green); color: var(--green); }
+  .hero-cta button.primary {
+    background: var(--green);
+    color: var(--black);
+    border-color: var(--green);
+    font-weight: 700;
+  }
+  .hero-cta button.primary:hover { background: var(--green-dark); color: var(--black); }
+
+  /* ===== SECTION HEADER ===== */
+  h2.section {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    margin: 64px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #222;
+  }
+  h2.section .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--green);
+    display: block;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  p.lead { color: #aaa; font-size: 15px; margin-bottom: 16px; max-width: 720px; }
+  strong { color: var(--white); }
+
+  /* ===== PRICING SIMULATOR ===== */
+  .sim {
+    background: linear-gradient(160deg, #111 0%, #0d0d12 100%);
+    border: 1px solid #222;
+    border-radius: 6px;
+    padding: 36px 32px;
+    margin: 28px 0;
+  }
+  .sim-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    align-items: start;
+  }
+  @media (max-width: 800px) {
+    .sim-grid { grid-template-columns: 1fr; gap: 24px; }
+  }
+
+  .sim-control h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .sim-price-display {
+    font-family: 'Syne', sans-serif;
+    font-size: 96px;
+    font-weight: 900;
+    color: var(--green);
+    line-height: 1;
+    margin: 8px 0 4px;
+  }
+  .sim-price-display .currency { font-size: 56px; color: var(--white); vertical-align: top; }
+  .sim-price-display .unit { font-size: 18px; color: var(--gray); font-family: 'DM Mono', monospace; letter-spacing: 1px; margin-left: 8px; }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #222;
+    outline: none;
+    margin: 24px 0;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--green);
+    cursor: pointer;
+    border: 3px solid var(--black);
+    box-shadow: 0 0 0 2px var(--green);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--green);
+    cursor: pointer;
+    border: 3px solid var(--black);
+    box-shadow: 0 0 0 2px var(--green);
+  }
+  .slider-marks {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #555;
+    margin-top: -8px;
+    letter-spacing: 1px;
+  }
+
+  .verdict {
+    margin-top: 24px;
+    padding: 16px 20px;
+    border-radius: 4px;
+    border-left: 3px solid var(--green);
+    background: rgba(0,230,118,0.06);
+  }
+  .verdict.warn { border-color: var(--gold); background: rgba(255,215,64,0.08); }
+  .verdict.bad { border-color: var(--red); background: rgba(255,82,82,0.08); }
+  .verdict-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .verdict.warn .verdict-label { color: var(--gold); }
+  .verdict.bad .verdict-label { color: var(--red); }
+  .verdict-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.3;
+  }
+  .verdict-detail {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #aaa;
+  }
+
+  .sim-output {
+    display: grid;
+    gap: 10px;
+  }
+  .stat {
+    background: #0a0a0a;
+    border: 1px solid #1e1e1e;
+    border-radius: 4px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    transition: border-color 0.2s;
+  }
+  .stat:hover { border-color: #2a2a2a; }
+  .stat-lbl {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .stat-sub {
+    font-size: 11px;
+    color: #555;
+  }
+  .stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-val.green { color: var(--green); }
+  .stat-val.gold { color: var(--gold); }
+  .stat-val.red { color: var(--red); }
+
+  /* meter bars */
+  .meter {
+    height: 4px;
+    background: #1a1a1a;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+    width: 120px;
+  }
+  .meter-fill {
+    height: 100%;
+    background: var(--green);
+    transition: width 0.3s, background 0.3s;
+  }
+
+  .assumptions {
+    margin-top: 28px;
+    padding: 16px 20px;
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.7;
+  }
+  .assumptions summary {
+    cursor: pointer;
+    color: var(--gray);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    list-style: none;
+  }
+  .assumptions summary::before { content: "▸ "; color: var(--green); }
+  .assumptions[open] summary::before { content: "▾ "; }
+  .assumptions p { color: #666; margin-top: 10px; font-size: 12px; }
+
+  /* ===== CAMPAIGN TABS ===== */
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin: 32px 0 0;
+    border-bottom: 1px solid #222;
+  }
+  .tab-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    padding: 14px 18px;
+    background: transparent;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .tab-btn:hover { color: var(--white); }
+  .tab-btn.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+  }
+  .tab-content {
+    display: none;
+    padding: 28px 0;
+    animation: fadeIn 0.25s ease;
+  }
+  .tab-content.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .tab-head {
+    margin-bottom: 18px;
+  }
+  .tab-head h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .tab-head p { color: #888; font-size: 14px; }
+
+  .channels { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px; }
+  .chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 4px 12px;
+    border: 1px solid var(--green);
+    border-radius: 20px;
+    color: var(--green);
+    letter-spacing: 1px;
+  }
+
+  /* COPY BLOCKS */
+  .copy-block {
+    background: #0d0d0d;
+    border: 1px solid #1e1e1e;
+    border-radius: 4px;
+    padding: 18px 20px;
+    margin: 12px 0;
+    position: relative;
+  }
+  .copy-block .platform {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 12px;
+    padding-right: 80px;
+  }
+  .copy-block .copy-text {
+    font-size: 14px;
+    color: #ccc;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: #222;
+    color: var(--gray);
+    border: 1px solid #333;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { background: var(--green); color: var(--black); border-color: var(--green); }
+  .copy-btn.copied { background: var(--green); color: var(--black); border-color: var(--green); }
+
+  /* SHARE CARD MOCKUP */
+  .share-mockup {
+    background: linear-gradient(180deg, #0a0a0a 0%, #141424 55%, #0a1a14 100%);
+    border: 1px solid #222;
+    border-radius: 12px;
+    aspect-ratio: 9/16;
+    max-width: 220px;
+    margin: 20px auto;
+    padding: 20px 14px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  }
+  .share-mockup .sm-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    margin-bottom: 24px;
+  }
+  .share-mockup .sm-logo span { color: var(--green); }
+  .share-mockup .sm-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+  .share-mockup .sm-mode { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gray); letter-spacing: 2px; margin-bottom: 10px; }
+  .share-mockup .sm-score { font-family: 'Syne', sans-serif; font-size: 54px; font-weight: 900; color: var(--green); line-height: 1; margin-bottom: 16px; }
+  .share-mockup .sm-streak { color: var(--gold); font-weight: 700; font-size: 12px; margin-bottom: 12px; }
+  .share-mockup .sm-rank { font-family: 'Syne', sans-serif; color: #cd7f32; font-weight: 900; font-size: 16px; margin-bottom: auto; }
+  .share-mockup .sm-cta { color: var(--green); font-size: 9px; margin-top: 10px; }
+
+  /* COUNTDOWN MOCKUP */
+  .countdown-mockup {
+    background: rgba(68,138,255,0.1);
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: center;
+    max-width: 300px;
+    margin: 20px auto;
+  }
+  .countdown-mockup .cm-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1.5px; opacity: 0.75; }
+  .countdown-mockup .cm-num { font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 900; line-height: 1; margin: 6px 0; }
+  .countdown-mockup .cm-sub { font-size: 12px; font-weight: 600; }
+  .countdown-mockup .cm-date { font-size: 11px; opacity: 0.7; margin-top: 4px; }
+
+  /* PILLARS */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2px;
+    margin: 24px 0;
+  }
+  .pillar {
+    background: #111;
+    border: 1px solid #222;
+    padding: 24px 22px;
+    border-radius: 4px;
+  }
+  .pillar .pillar-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--green); letter-spacing: 2px; margin-bottom: 12px; display: block; }
+  .pillar h4 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--white); margin-bottom: 8px; line-height: 1.15; }
+  .pillar p { font-size: 13px; color: #888; }
+
+  /* TIER BLOCKS */
+  .tier {
+    background: #111;
+    border: 1px solid #222;
+    border-left: 3px solid var(--green);
+    padding: 22px 26px;
+    border-radius: 4px;
+    margin: 10px 0;
+  }
+  .tier h4 { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--green); letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; }
+  .tier p { color: #aaa; font-size: 14px; margin-bottom: 8px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--green);
+    color: var(--black);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    z-index: 1000;
+    opacity: 0;
+    transition: all 0.25s;
+    pointer-events: none;
+    font-weight: 700;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid #1a1a1a;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #333;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 24px 16px 60px; }
+    .topnav-links { display: none; }
+    .hero-title { font-size: 48px; letter-spacing: -2px; }
+    .sim { padding: 24px 18px; }
+    .sim-price-display { font-size: 72px; }
+    .tab-btn { padding: 10px 12px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== TOP NAV ===== -->
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-logo">Cram<span>Box</span></div>
+    <div class="topnav-links">
+      <a href="#concept">CONCEPT</a>
+      <a href="#pricing">PRICING</a>
+      <a href="#campaign">CAMPAIGN</a>
+      <a href="#distribution">CHANNELS</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== HERO ===== -->
+  <div class="hero">
+    <div class="hero-tag">Interactive Campaign Plan · v2 · Week 1</div>
+    <div class="hero-title">The phone<br>wins. <span>The clock<br>doesn't wait.</span></div>
+    <div class="hero-sub">Built around three product mechanics that do the marketing automatically — the live exam countdown, one-tap WhatsApp Status share cards, and zero-friction access from minute one. Use the slider below to test pricing. Use the tabs to navigate the 7-day plan and copy every line.</div>
+    <div class="hero-cta">
+      <button class="primary" onclick="document.getElementById('pricing').scrollIntoView()">Test the Price →</button>
+      <button onclick="document.getElementById('campaign').scrollIntoView()">Browse the Campaign</button>
+    </div>
+  </div>
+
+  <!-- ===== CONCEPT ===== -->
+  <h2 class="section" id="concept"><span class="num">01 — THE CONCEPT</span>Three Pillars</h2>
+  <p class="lead">Three changes shipped to <strong>zimsec-prep.vercel.app</strong> this week. Each one rewires part of the campaign.</p>
+
+  <div class="pillars">
+    <div class="pillar">
+      <span class="pillar-num">01 / URGENCY</span>
+      <h4>Live Exam Countdown</h4>
+      <p>Every home screen shows days-until-Paper-1. Pulses red as the date nears. The app reminds itself.</p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-num">02 / DISTRIBUTION</span>
+      <h4>Share-My-Score Card</h4>
+      <p>One tap generates a 1080×1920 WhatsApp Status image with name, score, streak, rank. Every score is a flex. Every flex is free reach.</p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-num">03 / FRICTION</span>
+      <h4>Everything Unlocked</h4>
+      <p>No "complete the lesson first" gates. Open, hit Panic Mode, attack your weakest topic. Promise on box matches experience inside.</p>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px;" class="mock-row">
+    <div>
+      <div class="countdown-mockup">
+        <div class="cm-label">NEXT EXAM</div>
+        <div class="cm-num">150</div>
+        <div class="cm-sub">days until Paper 1</div>
+        <div class="cm-date">26 October 2026</div>
+      </div>
+      <p style="text-align:center; font-size:12px; color:#666;">↑ What every student sees on open.</p>
+    </div>
+    <div>
+      <div class="share-mockup">
+        <div class="sm-logo">Cram<span>Box</span></div>
+        <div class="sm-name">Tendai M</div>
+        <div class="sm-mode">SPEED ROUND</div>
+        <div class="sm-score">92%</div>
+        <div class="sm-streak">🔥 7 day streak</div>
+        <div class="sm-rank">BRONZE</div>
+        <div class="sm-cta">zimsec-prep.vercel.app · $3 once</div>
+      </div>
+      <p style="text-align:center; font-size:12px; color:#666;">↑ Auto-generated after every score.</p>
+    </div>
+  </div>
+
+  <!-- ===== PRICING SIMULATOR ===== -->
+  <h2 class="section" id="pricing"><span class="num">02 — IS $6 TOO PRICEY?</span>Pricing Simulator</h2>
+  <p class="lead">Move the slider. Watch how price drags on conversion, distribution, and word-of-mouth. The trade isn't $3 vs $6 in revenue — it's mass virality vs margin.</p>
+
+  <div class="sim">
+    <div class="sim-grid">
+
+      <!-- LEFT: CONTROL -->
+      <div class="sim-control">
+        <h3>Set the price</h3>
+        <div class="sim-price-display">
+          <span class="currency">$</span><span id="priceDisplay">3</span><span class="unit">/ code</span>
+        </div>
+        <input type="range" id="priceSlider" min="1" max="10" step="1" value="3" oninput="updatePricing(this.value)">
+        <div class="slider-marks">
+          <span>$1</span><span>$3</span><span>$5</span><span>$7</span><span>$10</span>
+        </div>
+
+        <div class="verdict" id="verdict">
+          <div class="verdict-label" id="verdictLabel">RECOMMENDED</div>
+          <div class="verdict-text" id="verdictText">Sweet spot. Maximum viral coefficient.</div>
+          <div class="verdict-detail" id="verdictDetail">$3 hits the "price of airtime" mental model — frictionless impulse buy, friends recommend without hesitation.</div>
+        </div>
+
+        <details class="assumptions">
+          <summary>How this is calculated</summary>
+          <p><strong>Visits/week:</strong> 500 (Week 1 organic reach from the campaign).<br>
+          <strong>Conversion curve:</strong> exponential decay — $1 ≈ 65%, $3 ≈ 30%, $6 ≈ 12%, $10 ≈ 5%. Models impulse-buy friction.<br>
+          <strong>Share rate:</strong> proportion of activated users who post a score card to WhatsApp Status. Higher at lower prices (pride + low regret).<br>
+          <strong>Reach per share:</strong> 150 contacts (avg WA personal list in target demo).<br>
+          <strong>Viral coefficient:</strong> how many new activations each existing user produces. 1.0+ = self-sustaining growth.<br>
+          <em>These are directional models, not forecasts. Tune them once you have real data.</em></p>
+        </details>
+      </div>
+
+      <!-- RIGHT: OUTPUTS -->
+      <div class="sim-output">
+        <div class="stat">
+          <div>
+            <span class="stat-lbl">Conversion Rate</span>
+            <div class="meter"><div class="meter-fill" id="convMeter" style="width:30%"></div></div>
+          </div>
+          <div class="stat-val green" id="convVal">30%</div>
+        </div>
+        <div class="stat">
+          <div>
+            <span class="stat-lbl">Codes Sold (Week 1)</span>
+            <span class="stat-sub">From 500 organic visits</span>
+          </div>
+          <div class="stat-val" id="codesVal">150</div>
+        </div>
+        <div class="stat">
+          <div>
+            <span class="stat-lbl">Week 1 Revenue</span>
+            <span class="stat-sub" id="revSub">at $3 × 150 codes</span>
+          </div>
+          <div class="stat-val gold" id="revVal">$450</div>
+        </div>
+        <div class="stat">
+          <div>
+            <span class="stat-lbl">Score Cards Shared</span>
+            <span class="stat-sub" id="shareSub">~40% of activated users</span>
+          </div>
+          <div class="stat-val" id="sharedVal">60</div>
+        </div>
+        <div class="stat">
+          <div>
+            <span class="stat-lbl">Free Reach via Status</span>
+            <span class="stat-sub">Cards × 150 WA contacts</span>
+          </div>
+          <div class="stat-val green" id="reachVal">9,000</div>
+        </div>
+        <div class="stat">
+          <div>
+            <span class="stat-lbl">Viral Coefficient</span>
+            <span class="stat-sub" id="viralSub">&gt;1.0 = self-sustaining</span>
+          </div>
+          <div class="stat-val" id="viralVal">1.4</div>
+        </div>
+        <div class="stat">
+          <div>
+            <span class="stat-lbl">vs Private Tutor / month</span>
+            <span class="stat-sub">$30 tutor benchmark</span>
+          </div>
+          <div class="stat-val gold" id="vsVal">10×</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CAMPAIGN TABS ===== -->
+  <h2 class="section" id="campaign"><span class="num">03 — EXECUTION</span>7-Day Plan · Click any tab</h2>
+  <p class="lead">Every copy block has a one-click copy button. Paste straight into WhatsApp, Facebook, or your TikTok script.</p>
+
+  <div class="tab-bar" id="tabBar">
+    <button class="tab-btn active" data-tab="d1" onclick="showTab('d1')">DAY 1 · DROP</button>
+    <button class="tab-btn" data-tab="d2" onclick="showTab('d2')">DAY 2 · DEMO</button>
+    <button class="tab-btn" data-tab="d3" onclick="showTab('d3')">DAY 3 · PARENTS</button>
+    <button class="tab-btn" data-tab="d4" onclick="showTab('d4')">DAY 4 · PROOF</button>
+    <button class="tab-btn" data-tab="d5" onclick="showTab('d5')">DAY 5 · BUNDLE</button>
+    <button class="tab-btn" data-tab="d6" onclick="showTab('d6')">DAY 6-7 · SCHOOLS</button>
+    <button class="tab-btn" data-tab="hooks" onclick="showTab('hooks')">RECURRING</button>
+  </div>
+
+  <!-- DAY 1 -->
+  <div class="tab-content active" id="d1">
+    <div class="tab-head">
+      <h3>⚡ Day 1 · The Drop</h3>
+      <p>Monday June 1 · 7:00am · Everything goes live simultaneously. The countdown is the headline.</p>
+    </div>
+    <div class="channels">
+      <span class="chip">WhatsApp Status</span>
+      <span class="chip">Facebook Personal</span>
+      <span class="chip">Facebook Groups</span>
+      <span class="chip">TikTok</span>
+      <span class="chip">Direct WA</span>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">WhatsApp Status · Image + Text</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">150 DAYS.
+
+Until Paper 1.
+Until $30 tutors stop mattering.
+Until October decides everything.
+
+CramBox. ZIMSEC Maths. On your phone.
+$<span class="price-inline">3</span>. Once. No data.
+
+→ zimsec-prep.vercel.app</div>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">Facebook · Student-Facing</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">They told you to put the phone down and study.
+
+What if the phone WAS the studying?
+
+CramBox just dropped. ZIMSEC Maths prep on any phone. Works offline. $<span class="price-inline">3</span> once — no subscription, no app to download.
+
+Open it and the first thing you see is a countdown. 150 days until Paper 1. That's how serious this is.
+
+Every topic unlocked from minute one. Hit Panic Mode if exams scare you. Hit Infinite Drill if you want to lock it in. Score 90%+ and share the card straight to your WhatsApp Status — let your friends see what you did.
+
+$<span class="price-inline">3</span>. One time. zimsec-prep.vercel.app
+
+Tag a Form 4 student who needs this. 👇</div>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">Facebook · Parent-Facing</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">Parents of Form 4 students — this is worth 2 minutes.
+
+A Zimbabwean-built O-Level Maths prep tool just launched. Runs on any phone, works offline, costs $<span class="price-inline">3</span> once.
+
+❌ Private tutor = $30-50/month
+❌ Maths textbook = $10-15
+✅ CramBox = $<span class="price-inline">3</span>. No monthly fee.
+
+Three things that matter:
+• Live countdown to October exams on the home screen — built-in urgency.
+• Every topic in the ZIMSEC 4004 syllabus available from day one.
+• Score cards auto-generate for WhatsApp sharing — small motivation loop.
+
+Built in Zimbabwe. For Zimbabwean students.
+
+Link: zimsec-prep.vercel.app
+Payment via EcoCash.</div>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">WhatsApp Direct · Pilot Code Recipients</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">Hey [Name], CramBox is live.
+
+ZIMSEC Maths prep — phone, offline, $<span class="price-inline">3</span> once. Every topic open from day one.
+
+You're getting one of the first codes. When you score well in Speed Round or Panic Mode, tap "Share My Score" and post to your WhatsApp Status. The image is built for that one-tap flow.
+
+Your code: [CODE]
+Activate: zimsec-prep.vercel.app
+
+Tell me what you think.</div>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="tab-content" id="d2">
+    <div class="tab-head">
+      <h3>📱 Day 2 · The Demo</h3>
+      <p>Tuesday June 2 · Show the product working. The hero is the countdown → unlock → score → share-card flow.</p>
+    </div>
+    <div class="channels">
+      <span class="chip">TikTok</span>
+      <span class="chip">Facebook</span>
+      <span class="chip">WhatsApp Status</span>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">TikTok / Facebook Video · 30-sec Screen Record</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">[Screen record — no voice needed, just music]
+
+Sequence:
+1. Open link → home screen → COUNTDOWN BANNER pulsing
+2. Enter activation code → "ACTIVATED"
+3. Tap any topic — opens immediately (no lock screen)
+4. Switch to Panic Mode — frantic timer, fast questions
+5. Get one wrong → explanation appears
+6. End round with 80%+ → tap "📲 Share My Score"
+7. CLOSE-UP on generated WhatsApp Status card
+8. Tap "Share via WhatsApp" → wa.me opens
+
+Caption: "Tell me this doesn't slap. $<span class="price-inline">3</span>. ZIMSEC Maths. Offline. Built-in flex. → zimsec-prep.vercel.app"</div>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">Facebook · Day 2 Post</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">Day 2. CramBox is live. Here's what it looks like.
+
+[embed video]
+
+The part I'm most proud of: the Share My Score card.
+
+Score 90% on Panic Mode → one tap → you get a clean 1080×1920 image with your name, your score, your streak, and your rank. Designed for WhatsApp Status. The win travels.
+
+Combined with the live countdown to Paper 1 on the home screen, the app does what no flyer can: makes O-Level prep feel like a sport.
+
+$<span class="price-inline">3</span>. zimsec-prep.vercel.app</div>
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="tab-content" id="d3">
+    <div class="tab-head">
+      <h3>👨‍👩‍👧 Day 3 · The Parent Play</h3>
+      <p>Wednesday June 3 · Shift to parents. They're the buyers. Lead with the countdown — parents respond to deadlines.</p>
+    </div>
+    <div class="channels">
+      <span class="chip">Church WA Groups</span>
+      <span class="chip">Neighbourhood Groups</span>
+      <span class="chip">FB Parent Groups</span>
+      <span class="chip">Personal WA</span>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">WhatsApp Group · Church / Neighbourhood / Parents</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">Good morning everyone 🙏
+
+Sharing for parents of Form 4 children.
+
+There are 150 days until Paper 1.
+
+A Zimbabwean O-Level Maths prep app just launched — built here, based on the actual 4004 syllabus.
+
+• Works offline — no daily data
+• Any Android or iPhone browser
+• $<span class="price-inline">3</span> once — not per month
+• Every topic available from day one
+• Built-in countdown so children stay aware of how close exams are
+• Payment via EcoCash
+
+Link: zimsec-prep.vercel.app</div>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">Facebook · Parent Framing</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">A message to parents:
+
+Your child's phone is already in their hand. The question isn't whether they're using it — it's what they're using it for.
+
+CramBox is a ZIMSEC O-Level Maths tool that runs on the phone they already have.
+
+Zero data after first load. No app to download. $<span class="price-inline">3</span> once, lasts through October exams.
+
+The home screen shows a live countdown — today it reads 150 days. That number drops every morning. It changes the conversation about screen time.
+
+zimsec-prep.vercel.app</div>
+    </div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="tab-content" id="d4">
+    <div class="tab-head">
+      <h3>🗣️ Day 4 · Social Proof — In Their Own Hands</h3>
+      <p>Thursday June 4 · You don't chase testimonials. The Share My Score card IS the testimonial — autogenerated, branded, on every active user's Status. Reshare what's in the wild.</p>
+    </div>
+    <div class="channels">
+      <span class="chip">Facebook</span>
+      <span class="chip">WhatsApp Status (reshare)</span>
+      <span class="chip">TikTok</span>
+    </div>
+
+    <div class="share-mockup">
+      <div class="sm-logo">Cram<span>Box</span></div>
+      <div class="sm-name">Tendai M</div>
+      <div class="sm-mode">SPEED ROUND</div>
+      <div class="sm-score">92%</div>
+      <div class="sm-streak">🔥 7 day streak</div>
+      <div class="sm-rank">BRONZE</div>
+      <div class="sm-cta">zimsec-prep.vercel.app · $<span class="price-inline">3</span> once</div>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">Facebook · Reshare Student Cards</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">Day 4. The Status feeds are already filling up.
+
+[Embed 3-4 student score cards from past 48 hours]
+
+What's happening:
+→ [X] codes activated
+→ [X] students posting scores to WhatsApp Status
+→ Most common reaction: "where was this last year"
+
+Not in yet? zimsec-prep.vercel.app — $<span class="price-inline">3</span> via EcoCash.
+
+If you have a Form 4 student in your life and want a free trial code, reply here. First 5 people.</div>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">TikTok · Score Card Compilation</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">[Video: rapid montage of 8-10 different score cards from real users, beat-matched]
+
+VO: "I built this 4 days ago. The Status feeds tell the story."
+
+[Final frame: stack of cards, URL on bottom]
+
+Caption: "Every score is a flex. Every flex is free advertising. → zimsec-prep.vercel.app"</div>
+    </div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="tab-content" id="d5">
+    <div class="tab-head">
+      <h3>🔄 Day 5 · The Bundle — Two Loops</h3>
+      <p>Friday June 5 · Sharing already happens via score cards. The bundle becomes ACCESS — making sure friends who can't afford it still get in.</p>
+    </div>
+    <div class="channels">
+      <span class="chip">All Channels</span>
+      <span class="chip">WhatsApp Groups</span>
+      <span class="chip">Facebook</span>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">WhatsApp Broadcast + Facebook</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">FRIDAY UPDATE.
+
+From today: every CramBox purchase comes with a free extra code to give to someone who can't afford it.
+
+$<span class="price-inline">3</span>. Two codes. You keep one, you choose who gets the other.
+
+This goes alongside the score-sharing happening organically — every win posted to Status pulls new students in. The bundle makes sure the friends who get hooked but can't pay can still play.
+
+zimsec-prep.vercel.app · EcoCash · Codes within the hour.</div>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">WhatsApp · School / Student Groups</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">Hey everyone 👋
+
+CramBox deal this week:
+
+Buy 1 code = get 1 free code to share.
+
+$<span class="price-inline">3</span> total for 2 codes. You study, your friend studies. October exams covered. 149 days left.
+
+Offline. Any phone. zimsec-prep.vercel.app · EcoCash.
+
+PS — you've probably seen some score cards on Status this week. That's the app, doing its job.</div>
+    </div>
+  </div>
+
+  <!-- DAY 6-7 -->
+  <div class="tab-content" id="d6">
+    <div class="tab-head">
+      <h3>🏫 Days 6-7 · Schools + Weekend Push</h3>
+      <p>Sat-Sun June 6-7 · Students home. Parents accessible. Teacher pitch leads with "your students already showed each other on Status."</p>
+    </div>
+    <div class="channels">
+      <span class="chip">Teacher Direct WA</span>
+      <span class="chip">School Groups</span>
+      <span class="chip">Weekend Facebook</span>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">WhatsApp Direct · Maths Teachers You Know</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">Hi [Teacher Name],
+
+Nash here. I built a ZIMSEC O-Level Maths app called CramBox — offline, full 4004 syllabus, $<span class="price-inline">3</span> per student.
+
+You've probably already seen some Form 4 students sharing scores on WhatsApp Status this week — the app auto-generates a shareable card. That's been the main spread mechanism.
+
+I'd like to offer your class 30 free activation codes to try it this month. No strings — if students find it useful, great.
+
+In return: share the link in your class/school WhatsApp group with a brief word about it.
+
+Work for you? I can send codes today.
+
+Try it first (look for the countdown on the home screen): zimsec-prep.vercel.app</div>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">Weekend Facebook Post</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">It's been one week.
+
+The countdown in the app reads 144 days. 4 months and a fortnight until Paper 1.
+
+CramBox has been live for 7 days. [X] students activated. [X] drills done. [X] score cards posted to Status. $<span class="price-inline">3</span> each.
+
+If you have a Form 4 student in your life and haven't checked this — this weekend is the time.
+
+zimsec-prep.vercel.app
+
+Maths first. English and Science coming next month.
+
+Tag someone. Share this. Let's get to 100 students before July.</div>
+    </div>
+  </div>
+
+  <!-- RECURRING -->
+  <div class="tab-content" id="hooks">
+    <div class="tab-head">
+      <h3>🔁 Recurring Hooks · Reuse All Year</h3>
+      <p>Two templates you run every week. Drop in the live numbers from your activation sheet.</p>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">Weekly Countdown Post · Every Monday</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">[N] days until Paper 1.
+
+[X] students on CramBox. [Y] score cards posted this week.
+
+Not in yet? zimsec-prep.vercel.app · $<span class="price-inline">3</span> · EcoCash.
+
+Already in? Tap Share My Score after every drill. Show your friends what's possible.</div>
+    </div>
+
+    <div class="copy-block">
+      <span class="platform">Score Card Reshare Caption · Whenever a student posts</span>
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
+      <div class="copy-text">[Student name] just dropped [X]% on [mode] 🔥
+
+This is what 7 days of drilling looks like.
+
+Your turn → zimsec-prep.vercel.app</div>
+    </div>
+  </div>
+
+  <!-- ===== DISTRIBUTION ===== -->
+  <h2 class="section" id="distribution"><span class="num">04 — DISTRIBUTION</span>Channel Priority Stack</h2>
+
+  <div class="tier" style="border-left-color: var(--gold);">
+    <h4 style="color: var(--gold);">Tier 0 — Owned by the Product (Free, Automatic)</h4>
+    <p><strong>Score cards on user WhatsApp Status</strong> — every active user with a decent score distributes for you. Zero cost. Reinforce "share what you score" everywhere.</p>
+    <p><strong>The countdown</strong> — drops by 1 every day. Free re-engagement message inside the product. Use the live number in weekly recaps.</p>
+  </div>
+
+  <div class="tier">
+    <h4>Tier 1 — Highest Leverage (Do These First)</h4>
+    <p><strong>Personal WhatsApp broadcast</strong> to contacts with Form 4-age children. Direct, trusted, no algorithm. Worth 10× a Facebook post.</p>
+    <p><strong>Active school WhatsApp groups</strong> — 3-5 Form 4 class groups. One message to 50 students = most efficient distribution unit.</p>
+    <p><strong>Teachers</strong> — one teacher = 40 students. The free-code-for-broadcast offer is the trade.</p>
+  </div>
+
+  <div class="tier">
+    <h4>Tier 2 — Volume (Do These Consistently)</h4>
+    <p><strong>Facebook personal + groups</strong> — Zimbabwean Parents, Harare community, school-specific groups. Parent copy in parent spaces, student copy in student spaces.</p>
+    <p><strong>WhatsApp Status</strong> — post daily. Reshare notable student score cards.</p>
+    <p><strong>TikTok</strong> — demo video + score-card compilation. No face needed.</p>
+  </div>
+
+  <div class="tier" style="border-left-color: #444;">
+    <h4 style="color: #888;">Tier 3 — Later (Week 2+)</h4>
+    <p><strong>Facebook paid ads</strong> — parent copy, Zimbabwe, age 30-55. $10-20 budget. Only after organic proves out.</p>
+    <p><strong>Instagram</strong> — lower priority. Facebook + WhatsApp are where Zimbabwean parents live.</p>
+  </div>
+
+  <div class="footer">CramBox Interactive Campaign Plan · v2 · Curious Inc · June 2026 · Confidential</div>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script>
+// ===== TAB SWITCHING =====
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  document.querySelector('[data-tab="'+id+'"]').classList.add('active');
+}
+
+// ===== COPY TO CLIPBOARD =====
+function copyBlock(btn) {
+  var block = btn.parentElement.querySelector('.copy-text');
+  var text = block.innerText;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){ flashCopied(btn); });
+  } else {
+    // Fallback for older browsers
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); flashCopied(btn); } catch(e) { alert('Copy failed — select manually.'); }
+    document.body.removeChild(ta);
+  }
+}
+
+function flashCopied(btn) {
+  btn.classList.add('copied');
+  btn.textContent = 'Copied';
+  var toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(function(){
+    btn.classList.remove('copied');
+    btn.textContent = 'Copy';
+    toast.classList.remove('show');
+  }, 1500);
+}
+
+// ===== PRICING SIMULATOR =====
+// Models (directional, not forecasts):
+// - conversion(price): exponential decay — captures impulse-buy friction
+// - shareRate(price):  decays — lower price → more pride + less regret → more sharing
+// - assumes 500 organic visits/week, avg 150 WA contacts per share
+
+function conversionPct(p) {
+  // 65% at $1, 30% at $3, 18% at $5, 12% at $6, 7% at $8, 5% at $10
+  return Math.max(5, 75 * Math.exp(-0.31 * p));
+}
+function shareRatePct(p) {
+  // 50% at $1, 40% at $3, 28% at $5, 22% at $6, 12% at $10
+  return Math.max(8, 55 * Math.exp(-0.18 * p));
+}
+function viralCoeff(codes, shared, reach) {
+  // Coefficient = (new activations driven per user). Reach × tiny conversion = new buyers.
+  if (codes === 0) return 0;
+  var newBuyers = reach * 0.005; // 0.5% of reached eyeballs eventually convert
+  return (newBuyers / codes);
+}
+
+function updatePricing(p) {
+  p = parseInt(p, 10);
+  document.getElementById('priceDisplay').textContent = p;
+
+  var conv = conversionPct(p);
+  var visits = 500;
+  var codes = Math.round(visits * conv / 100);
+  var rev = codes * p;
+  var sRate = shareRatePct(p);
+  var shared = Math.round(codes * sRate / 100);
+  var reach = shared * 150;
+  var viral = viralCoeff(codes, shared, reach);
+  var vsTutor = (30 / p).toFixed(1);
+
+  document.getElementById('convVal').textContent = Math.round(conv) + '%';
+  document.getElementById('convMeter').style.width = Math.min(100, conv) + '%';
+  document.getElementById('convMeter').style.background = conv > 25 ? 'var(--green)' : conv > 12 ? 'var(--gold)' : 'var(--red)';
+
+  document.getElementById('codesVal').textContent = codes;
+  document.getElementById('revVal').textContent = '$' + rev;
+  document.getElementById('revSub').textContent = 'at $' + p + ' × ' + codes + ' codes';
+  document.getElementById('sharedVal').textContent = shared;
+  document.getElementById('shareSub').textContent = '~' + Math.round(sRate) + '% of activated users';
+  document.getElementById('reachVal').textContent = reach.toLocaleString();
+  document.getElementById('viralVal').textContent = viral.toFixed(2);
+  document.getElementById('viralVal').className = 'stat-val ' + (viral >= 1 ? 'green' : viral >= 0.5 ? 'gold' : 'red');
+  document.getElementById('viralSub').textContent = viral >= 1 ? 'Self-sustaining growth' : viral >= 0.5 ? 'Needs paid push' : 'Stalls without ads';
+  document.getElementById('vsVal').textContent = vsTutor + '×';
+
+  // Update verdict
+  var v = document.getElementById('verdict');
+  var vl = document.getElementById('verdictLabel');
+  var vt = document.getElementById('verdictText');
+  var vd = document.getElementById('verdictDetail');
+  v.className = 'verdict';
+
+  if (p <= 2) {
+    vl.textContent = 'LOSS LEADER';
+    vt.textContent = "Data, not money. Use only to seed the market.";
+    vd.textContent = "Volume is huge but margin is gone. Justify only if Week 1 goal is pure distribution proof or you have a paid follow-on product.";
+    v.classList.add('warn');
+  } else if (p === 3) {
+    vl.textContent = 'RECOMMENDED';
+    vt.textContent = "Sweet spot. Maximum viral coefficient.";
+    vd.textContent = "$3 hits the airtime/Coke mental model — frictionless impulse buy, friends recommend without hesitation. Highest expected reach.";
+  } else if (p === 4) {
+    vl.textContent = 'STILL VIABLE';
+    vt.textContent = "Slight friction. Worth testing if revenue matters now.";
+    vd.textContent = "33% more revenue per code, but ~30% fewer conversions and noticeably less sharing. Run A/B in Week 2 before committing.";
+  } else if (p === 5) {
+    vl.textContent = 'TEST TERRITORY';
+    vt.textContent = "Crosses the 'casual buy' threshold.";
+    vd.textContent = "Above $4 students start asking parents. That introduces a decision-making lag and kills impulse virality. Bundle with extra value (more subjects?) before going here.";
+    v.classList.add('warn');
+  } else if (p === 6) {
+    vl.textContent = 'MARGIN OVER REACH';
+    vt.textContent = "Double the price, half the spread.";
+    vd.textContent = "Revenue may stay flat (fewer buyers × higher price) but the Share-Score viral loop weakens hard. Only do this once Maths + Science + English are bundled in.";
+    v.classList.add('warn');
+  } else if (p <= 8) {
+    vl.textContent = 'PREMIUM PRICING';
+    vt.textContent = "Different campaign entirely.";
+    vd.textContent = "Now you're competing with one hour of tutoring. Need testimonials, parent endorsements, school deals. The Week 1 'just send the link' playbook stops working.";
+    v.classList.add('bad');
+  } else {
+    vl.textContent = 'TOO HIGH FOR THIS MARKET';
+    vt.textContent = "Word-of-mouth dies. Ads become mandatory.";
+    vd.textContent = "Above $8 in Zimbabwe O-Level demo, organic distribution collapses. Only viable with paid acquisition + a full premium positioning (mentor included, guaranteed pass, etc.).";
+    v.classList.add('bad');
+  }
+
+  // Update inline price tokens in copy blocks
+  document.querySelectorAll('.price-inline').forEach(function(el){ el.textContent = p; });
+}
+
+// Init
+updatePricing(3);
+</script>
+
+</body>
+</html>

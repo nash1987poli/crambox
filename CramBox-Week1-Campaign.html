@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CramBox — Week 1 Campaign Plan v2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --green: #00e676;
+    --green-dark: #00c853;
+    --black: #0a0a0a;
+    --white: #f5f5f0;
+    --gray: #888;
+    --light: #1a1a1a;
+    --accent: #ff3d00;
+    --gold: #ffd740;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    line-height: 1.6;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* COVER */
+  .cover {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid #222;
+    padding-bottom: 64px;
+    margin-bottom: 64px;
+  }
+
+  .cover-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .cover-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(64px, 12vw, 120px);
+    font-weight: 900;
+    letter-spacing: -4px;
+    line-height: 0.9;
+    margin-bottom: 24px;
+  }
+
+  .cover-logo span { color: var(--green); }
+
+  .cover-concept {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 6vw, 56px);
+    font-weight: 800;
+    color: var(--green);
+    margin-bottom: 24px;
+    line-height: 1.1;
+  }
+
+  .cover-sub {
+    font-size: 16px;
+    color: var(--gray);
+    max-width: 540px;
+    margin-bottom: 48px;
+  }
+
+  .cover-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #444;
+    letter-spacing: 1px;
+  }
+
+  /* SECTION HEADERS */
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    margin: 64px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #222;
+    color: var(--white);
+  }
+
+  h1 .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--green);
+    display: block;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    margin: 32px 0 12px;
+  }
+
+  h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 24px 0 8px;
+  }
+
+  p { color: #aaa; margin-bottom: 12px; font-size: 15px; }
+  strong { color: var(--white); }
+
+  /* CONCEPT BOX */
+  .concept-box {
+    background: var(--green);
+    color: var(--black);
+    padding: 40px;
+    border-radius: 4px;
+    margin: 32px 0;
+  }
+
+  .concept-box .headline {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 8vw, 72px);
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 0.95;
+    margin-bottom: 20px;
+  }
+
+  .concept-box p {
+    color: rgba(0,0,0,0.78);
+    font-size: 16px;
+    max-width: 540px;
+  }
+
+  /* THREE PILLARS */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2px;
+    margin: 32px 0;
+  }
+
+  .pillar {
+    background: #111;
+    border: 1px solid #222;
+    padding: 28px 24px;
+    border-radius: 4px;
+  }
+
+  .pillar .pillar-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .pillar h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 8px;
+    line-height: 1.1;
+  }
+
+  .pillar p { font-size: 13px; color: #888; }
+
+  /* DAY CARDS */
+  .day-card {
+    background: #111;
+    border: 1px solid #222;
+    padding: 28px 32px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2px;
+  }
+
+  .day-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--green);
+  }
+
+  .day-card.accent::before { background: var(--accent); }
+  .day-card.gold::before { background: var(--gold); }
+
+  .day-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .day-card.accent .day-label { color: var(--accent); }
+  .day-card.gold .day-label { color: var(--gold); }
+
+  .day-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .day-desc { font-size: 14px; color: #666; margin-bottom: 16px; }
+
+  /* COPY BLOCKS */
+  .copy-block {
+    background: #0d0d0d;
+    border: 1px solid #1e1e1e;
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin: 12px 0;
+  }
+
+  .copy-block .platform {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .copy-block .copy-text {
+    font-size: 15px;
+    color: #ccc;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+
+  .copy-block .copy-text strong { color: var(--green); }
+
+  /* CONTRAST */
+  .contrast {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin: 24px 0;
+  }
+
+  .contrast-cell {
+    padding: 24px;
+    background: #111;
+    border: 1px solid #222;
+  }
+
+  .contrast-cell.them .amount {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: #333;
+    text-decoration: line-through;
+  }
+
+  .contrast-cell.us .amount {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--green);
+  }
+
+  .contrast-cell .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* CHIPS */
+  .channels { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 4px 12px;
+    border: 1px solid #333;
+    border-radius: 20px;
+    color: var(--gray);
+    letter-spacing: 1px;
+  }
+  .chip.active { border-color: var(--green); color: var(--green); }
+
+  /* METRICS */
+  .metric-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2px;
+    margin: 24px 0;
+  }
+
+  .metric { background: #111; border: 1px solid #222; padding: 24px; text-align: center; }
+  .metric-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--green);
+    display: block;
+  }
+  .metric-lbl {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gray);
+    margin-top: 4px;
+    display: block;
+    letter-spacing: 1px;
+  }
+
+  /* FEATURE BOX */
+  .feature-box {
+    background: #111;
+    border: 1px solid var(--green);
+    padding: 28px 32px;
+    border-radius: 4px;
+    margin: 24px 0;
+  }
+  .feature-box h3 { color: var(--green); margin-top: 0; }
+  .feature-box .badge {
+    display: inline-block;
+    background: var(--green);
+    color: var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  /* MOCKUP SHARE CARD */
+  .share-mockup {
+    background: linear-gradient(180deg, #0a0a0a 0%, #141424 55%, #0a1a14 100%);
+    border: 1px solid #222;
+    border-radius: 12px;
+    aspect-ratio: 9/16;
+    max-width: 240px;
+    margin: 16px auto;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  }
+  .share-mockup .sm-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    margin-bottom: 28px;
+  }
+  .share-mockup .sm-logo span { color: var(--green); }
+  .share-mockup .sm-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .share-mockup .sm-mode {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--gray);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .share-mockup .sm-score {
+    font-family: 'Syne', sans-serif;
+    font-size: 64px;
+    font-weight: 900;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+  .share-mockup .sm-streak {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .share-mockup .sm-rank {
+    font-family: 'Syne', sans-serif;
+    color: #cd7f32;
+    font-weight: 900;
+    font-size: 18px;
+    margin-bottom: auto;
+  }
+  .share-mockup .sm-cta {
+    color: var(--green);
+    font-size: 10px;
+    margin-top: 12px;
+  }
+
+  /* COUNTDOWN MOCKUP */
+  .countdown-mockup {
+    background: rgba(68,138,255,0.1);
+    border: 1px solid #448aff;
+    color: #448aff;
+    border-radius: 12px;
+    padding: 18px 24px;
+    text-align: center;
+    max-width: 320px;
+    margin: 16px auto;
+  }
+  .countdown-mockup .cm-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    opacity: 0.75;
+  }
+  .countdown-mockup .cm-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 56px;
+    font-weight: 900;
+    line-height: 1;
+    margin: 6px 0;
+  }
+  .countdown-mockup .cm-sub { font-size: 13px; font-weight: 600; }
+  .countdown-mockup .cm-date { font-size: 11px; opacity: 0.7; margin-top: 4px; }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid #1a1a1a;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #333;
+    letter-spacing: 1px;
+  }
+
+  /* QUOTE */
+  blockquote {
+    border-left: 3px solid var(--green);
+    padding: 16px 24px;
+    margin: 24px 0;
+    background: #0d0d0d;
+  }
+  blockquote p {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.4;
+  }
+
+  @media print {
+    body { background: #fff; color: #000; }
+    .concept-box { background: #000; color: #fff; }
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 24px 16px 60px; }
+    .contrast { grid-template-columns: 1fr; }
+    .cover-logo { font-size: 64px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-tag">Week 1 Campaign Plan · v2 · June 1–7, 2026</div>
+  <div class="cover-logo">Cram<span>Box</span></div>
+  <div class="cover-concept">"THE PHONE WINS.<br>THE CLOCK DOESN'T WAIT."</div>
+  <div class="cover-sub">A 7-day disruptive launch campaign for the Zimbabwean O-Level market — now powered by three product mechanics that do the marketing automatically: the live exam countdown, one-tap WhatsApp Status share cards, and zero-friction access from minute one.</div>
+  <div class="cover-meta">Curious Inc · v2 May 2026 · Confidential</div>
+</div>
+
+
+<!-- WHAT CHANGED -->
+<h1><span class="num">00 — WHAT'S NEW IN V2</span>The Product Now Markets Itself</h1>
+
+<p>Three changes shipped to <strong>zimsec-prep.vercel.app</strong> this week — each one rewires part of the campaign.</p>
+
+<div class="pillars">
+  <div class="pillar">
+    <span class="pillar-num">01 / URGENCY</span>
+    <h4>Live Exam Countdown</h4>
+    <p>Every home screen now shows days-until-Paper 1. A built-in nagging clock that pulses red as the date nears. No more reminder posts — the app reminds itself.</p>
+  </div>
+  <div class="pillar">
+    <span class="pillar-num">02 / DISTRIBUTION</span>
+    <h4>Share-My-Score Card</h4>
+    <p>One tap after any score generates a 1080×1920 WhatsApp Status image with the student's name, score, streak, and rank. Every score is a flex. Every flex is a free ad.</p>
+  </div>
+  <div class="pillar">
+    <span class="pillar-num">03 / FRICTION</span>
+    <h4>Everything Unlocked</h4>
+    <p>No "complete the lesson first" gates. Open the app, hit Panic Mode, attack your weakest topic. The promise on the box matches the experience inside.</p>
+  </div>
+</div>
+
+<div class="countdown-mockup">
+  <div class="cm-label">NEXT EXAM</div>
+  <div class="cm-num">150</div>
+  <div class="cm-sub">days until Paper 1</div>
+  <div class="cm-date">26 October 2026</div>
+</div>
+
+<p style="text-align:center; font-size:13px; color:#666; margin-top:-8px;">↑ What every student sees the moment they open CramBox.</p>
+
+
+<!-- CONCEPT -->
+<h1><span class="num">01 — CAMPAIGN CONCEPT</span>The Disruptive Insight</h1>
+
+<div class="concept-box">
+  <div class="headline">THE PHONE<br>WINS.</div>
+  <p>Every parent told them to put it down. Every teacher confiscated it. Society made the phone the enemy of education. CramBox makes the phone the weapon. The device that was the problem is now the pass.</p>
+</div>
+
+<p>The insight hasn't changed. What's changed is the <strong>proof</strong>. The product now demonstrates the claim in three ways:</p>
+
+<p><strong>1. The phone tracks the deadline.</strong> 150-day countdown, pulsing red as October approaches. Parents see urgency. Students see purpose.</p>
+
+<p><strong>2. The phone broadcasts the win.</strong> Score 92% in Speed Round → tap share → it lands on every contact's WhatsApp Status with your name on it. The phone literally wins, in public.</p>
+
+<p><strong>3. The phone removes the gate.</strong> No tutorials. No lessons-before-practice. Open it, panic, practice. The phone respects the student's time.</p>
+
+<h2>The Cost Contrast — The Rational Killer</h2>
+
+<div class="contrast">
+  <div class="contrast-cell them">
+    <div class="amount">$30</div>
+    <span class="label">Private tutor / month</span>
+  </div>
+  <div class="contrast-cell us">
+    <div class="amount">$3</div>
+    <span class="label">CramBox. Once. Ever.</span>
+  </div>
+</div>
+
+<p>This contrast doesn't need explanation. It just needs to be seen. Every piece of campaign content should contain it, directly or indirectly.</p>
+
+
+<!-- DAY BY DAY -->
+<h1><span class="num">02 — EXECUTION</span>7-Day Deployment Plan</h1>
+
+
+<!-- DAY 1 -->
+<div class="day-card">
+  <div class="day-label">Day 1 · Monday June 1 · LAUNCH DAY</div>
+  <div class="day-title">⚡ THE DROP</div>
+  <div class="day-desc">Everything goes live simultaneously at 7:00am. The countdown banner becomes the headline. WhatsApp status, Facebook, TikTok — the URL is the only CTA. No teaser, no countdown ad campaign; the countdown is inside the product.</div>
+
+  <div class="channels">
+    <span class="chip active">WhatsApp Status</span>
+    <span class="chip active">Facebook Personal</span>
+    <span class="chip active">Facebook Groups</span>
+    <span class="chip active">TikTok</span>
+    <span class="chip active">SMS/Direct</span>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">WhatsApp Status · Image + Text (use the 150-day countdown screenshot)</span>
+    <div class="copy-text">150 DAYS.
+
+Until Paper 1.
+Until $30 tutors stop mattering.
+Until October decides everything.
+
+CramBox. ZIMSEC Maths. On your phone.
+$3. Once. No data.
+
+→ zimsec-prep.vercel.app</div>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">Facebook Post (Student-Facing)</span>
+    <div class="copy-text">They told you to put the phone down and study.
+
+What if the phone WAS the studying?
+
+CramBox just dropped. ZIMSEC Maths prep on any phone. Works offline. $3 once — no subscription, no app to download.
+
+Open it and the first thing you see is a countdown. 150 days until Paper 1. That's how serious this is.
+
+Every topic unlocked from minute one. Hit Panic Mode if exams scare you. Hit Infinite Drill if you want to lock it in. Score 90%+ and share the card straight to your WhatsApp Status — let your friends see what you did.
+
+$3. One time. zimsec-prep.vercel.app
+
+Tag a Form 4 student who needs this. 👇</div>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">Facebook Post (Parent-Facing) — Post in Parent/Community Groups</span>
+    <div class="copy-text">Parents of Form 4 students — this is worth 2 minutes of your time.
+
+A Zimbabwean-built O-Level Maths prep tool just launched. Runs on any phone (including basic Android), works offline after the first load, costs $3 once.
+
+For context:
+❌ Private tutor = $30-50/month
+❌ Maths textbook = $10-15
+✅ CramBox = $3. No monthly fee.
+
+Three things that matter:
+• The app shows your child a live countdown to October exams every time they open it — built-in urgency.
+• Every topic in the ZIMSEC 4004 syllabus is available from day one. No artificial gating.
+• When your child scores well, the app generates a shareable card for WhatsApp — small motivation loop that costs nothing.
+
+Built in Zimbabwe. For Zimbabwean students.
+
+Link: zimsec-prep.vercel.app
+
+(Payment via EcoCash. Questions, reply here or WhatsApp me directly.)</div>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">TikTok Video Script (30 seconds)</span>
+    <div class="copy-text">[HOOK — first 3 seconds, screen record of app opening]
+"Your parents paid $30 for your classmate's tutor. You have $3. Watch."
+
+[SCREEN RECORD — show countdown banner: "150 DAYS until Paper 1"]
+"The countdown is real. The clock doesn't care."
+
+[CUT to Panic Mode — questions firing fast, XP going up]
+"This is CramBox. ZIMSEC Maths. Every topic unlocked. $3 once. No data."
+
+[CUT to score screen → tap "Share My Score" → show the WhatsApp Status card]
+"Score it. Share it. Make them watch."
+
+[CLOSE — text overlay]
+THE PHONE WINS.
+zimsec-prep.vercel.app · link in bio</div>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">WhatsApp Direct — Send to 20 pilot students with codes</span>
+    <div class="copy-text">Hey [Name], CramBox is live.
+
+ZIMSEC Maths prep — runs on your phone, works offline, $3 once. Every topic open from day one.
+
+You're getting one of the first codes. One thing I'd love: when you score well in Speed Round or Panic Mode, tap "Share My Score" and post it to your WhatsApp Status. The image is built to make that one-tap easy.
+
+Your code: [CODE]
+Activate at: zimsec-prep.vercel.app
+
+Tell me what you think.</div>
+  </div>
+</div>
+
+
+<!-- DAY 2 -->
+<div class="day-card">
+  <div class="day-label">Day 2 · Tuesday June 2</div>
+  <div class="day-title">📱 THE DEMO</div>
+  <div class="day-desc">No more explaining. Show the product working. The hero of the demo is the new countdown + share-card flow. Screen recording posted everywhere.</div>
+
+  <div class="channels">
+    <span class="chip active">TikTok</span>
+    <span class="chip active">Facebook</span>
+    <span class="chip active">WhatsApp Status</span>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">TikTok / Facebook Video — Screen Record, no face needed</span>
+    <div class="copy-text">[Record your phone screen — no voice needed, just music]
+
+Show in sequence:
+1. Open the link → home screen → COUNTDOWN BANNER pulsing
+2. Enter activation code → "ACTIVATED"
+3. Tap any topic — opens immediately (no lock screen)
+4. Switch to Panic Mode — frantic timer, fast questions
+5. Get one wrong → explanation appears
+6. End round with 80%+ score → tap "📲 Share My Score"
+7. CLOSE-UP on the generated WhatsApp Status card with name, score, streak, rank
+8. Tap "Share via WhatsApp" → wa.me opens
+
+Caption: "Tell me this doesn't slap. $3. ZIMSEC Maths. Offline. Built-in flex. → zimsec-prep.vercel.app"</div>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">Facebook Post</span>
+    <div class="copy-text">Day 2. CramBox is live. Here's what it actually looks like.
+
+[embed video]
+
+The part I'm most proud of this week: the Share My Score card.
+
+Score 90% on Panic Mode → one tap → you get a clean 1080×1920 image with your name, your score, your streak, and your rank. Designed to go straight to WhatsApp Status. The win travels.
+
+Combined with the live countdown to Paper 1 on the home screen, the app does what no flyer can: it makes O-Level prep feel like a sport.
+
+$3. zimsec-prep.vercel.app
+Tag your Form 4 students.</div>
+  </div>
+</div>
+
+
+<!-- DAY 3 -->
+<div class="day-card gold">
+  <div class="day-label">Day 3 · Wednesday June 3</div>
+  <div class="day-title">👨‍👩‍👧 THE PARENT PLAY</div>
+  <div class="day-desc">Shift the message entirely to parents. They're the buyers. Lead with the countdown — parents respond to deadlines.</div>
+
+  <div class="channels">
+    <span class="chip active">Church WhatsApp Groups</span>
+    <span class="chip active">Neighbourhood Groups</span>
+    <span class="chip active">Facebook Parents Groups</span>
+    <span class="chip active">Personal WhatsApp</span>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">WhatsApp Group Message — Church / Neighbourhood / Parent Groups</span>
+    <div class="copy-text">Good morning everyone 🙏
+
+Sharing something for those with Form 4 children.
+
+There are 150 days until Paper 1.
+
+A Zimbabwean O-Level Maths prep app just launched — built here, by someone who went through ZIMSEC. Based on the actual 4004 syllabus.
+
+What's different:
+• Works offline — no daily data cost
+• Any Android or iPhone browser — no app store download
+• $3 once — not per month
+• Every topic available from day one
+• Built-in countdown so children stay aware of how close exams are
+• Payment via EcoCash
+
+Link: zimsec-prep.vercel.app
+
+Happy to answer any questions.</div>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">Facebook Post — Parent framing</span>
+    <div class="copy-text">A message to parents:
+
+Your child's phone is already in their hand. The question isn't whether they're using it — it's what they're using it for.
+
+CramBox is a ZIMSEC O-Level Maths tool that runs on the phone they already have.
+
+Zero data after first load. No app to download. $3 once, lasts through October exams.
+
+The home screen shows a live countdown — today it reads 150 days. That number drops every morning. It changes the conversation about screen time.
+
+zimsec-prep.vercel.app
+
+If you try it and have questions, I'm in the comments.</div>
+  </div>
+</div>
+
+
+<!-- DAY 4 -->
+<div class="day-card">
+  <div class="day-label">Day 4 · Thursday June 4</div>
+  <div class="day-title">🗣️ SOCIAL PROOF — IN THEIR OWN HANDS</div>
+  <div class="day-desc">v2 difference: you don't need to chase testimonials. The Share My Score card IS the testimonial — autogenerated, branded, on every active user's WhatsApp Status. Reshare what's already in the wild.</div>
+
+  <div class="channels">
+    <span class="chip active">Facebook</span>
+    <span class="chip active">WhatsApp Status (reshare)</span>
+    <span class="chip active">TikTok</span>
+  </div>
+
+  <div class="feature-box">
+    <span class="badge">v2 MECHANIC</span>
+    <h3>THE SHARE CARD IS THE PROOF</h3>
+    <p style="color:#aaa; font-size:14px;">By Day 4, your pilot users have posted dozens of score cards to their own WhatsApp Status feeds. You don't need to ask for screenshots — you screenshot <em>theirs</em>. Each card already has your branding (Cram<span style="color:var(--green)">Box</span>, the URL, "$3 once"). It's distribution and proof in one asset.</p>
+  </div>
+
+  <div class="share-mockup">
+    <div class="sm-logo">Cram<span>Box</span></div>
+    <div class="sm-name">Tendai M</div>
+    <div class="sm-mode">SPEED ROUND</div>
+    <div class="sm-score">92%</div>
+    <div class="sm-streak">🔥 7 day streak</div>
+    <div class="sm-rank">BRONZE</div>
+    <div class="sm-cta">zimsec-prep.vercel.app · $3 once</div>
+  </div>
+
+  <p style="text-align:center; font-size:12px; color:#666;">↑ Sample auto-generated card — what your users are already posting.</p>
+
+  <div class="copy-block">
+    <span class="platform">Facebook Post — Reshare student cards</span>
+    <div class="copy-text">Day 4. The Status feeds are already filling up.
+
+[Embed 3-4 actual student score cards from the past 48 hours, blurred if no permission, captioned with permission]
+
+Here's what's happening:
+→ [X] codes activated
+→ [X] students posting their scores to WhatsApp Status
+→ Most common reaction: "where was this last year"
+
+If you haven't tried it: zimsec-prep.vercel.app
+Code: $3 via EcoCash.
+
+If you have a Form 4 student in your life and want a free trial code, reply here. First 5 people.</div>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">TikTok — Compilation of student cards</span>
+    <div class="copy-text">[Video: rapid montage of 8-10 different score cards from real users, beat-matched]
+
+VO: "I built this 4 days ago. The Status feeds tell the story."
+
+[Final frame: stack of cards, URL on bottom]
+
+Caption: "Every score is a flex. Every flex is free advertising. → zimsec-prep.vercel.app"</div>
+  </div>
+</div>
+
+
+<!-- DAY 5 -->
+<div class="day-card accent">
+  <div class="day-label">Day 5 · Friday June 5</div>
+  <div class="day-title">🔄 THE BUNDLE — NOT JUST CODES, A VIRAL LOOP</div>
+  <div class="day-desc">v2 update: the referral mechanic is reframed. Sharing already happens organically through the score cards. The bundle (buy 1 give 1) becomes the ACCESS layer — making sure friends who can't afford $3 still get in.</div>
+
+  <div class="channels">
+    <span class="chip active">All Channels</span>
+    <span class="chip active">WhatsApp Groups</span>
+    <span class="chip active">Facebook</span>
+  </div>
+
+  <div class="feature-box">
+    <h3>THE TWO LOOPS — RUNNING IN PARALLEL</h3>
+    <p style="color:#aaa; font-size:14px; margin-bottom:8px;"><strong style="color:var(--green)">Loop 1 — Free (automatic):</strong> Every score card posted to WhatsApp Status reaches that user's full contact list. No incentive needed — students share wins instinctively.</p>
+    <p style="color:#aaa; font-size:14px; margin-bottom:8px;"><strong style="color:var(--green)">Loop 2 — Paid (the bundle):</strong> $3 buys one paid code + one free code to give. Solves the access objection for friends without EcoCash. Manual fulfilment this week; automate via Paynow in July.</p>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">WhatsApp Broadcast + Facebook Post</span>
+    <div class="copy-text">FRIDAY UPDATE.
+
+From today: every CramBox code purchase comes with a free extra code to give to someone who can't afford it.
+
+$3. Two codes. You keep one, you choose who gets the other.
+
+This goes alongside the score-sharing happening organically — every win posted to Status is already pulling new students in. The bundle makes sure the friends who get hooked but can't pay can still play.
+
+Get your codes: zimsec-prep.vercel.app
+
+Pay via EcoCash. I'll send both codes within the hour.</div>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">WhatsApp — Send into active school/student groups</span>
+    <div class="copy-text">Hey everyone 👋
+
+CramBox (ZIMSEC Maths prep app) is running a deal this week:
+
+Buy 1 code = get 1 free code to share.
+
+$3 total for 2 codes. You study, your friend studies. October exams covered. 149 days left.
+
+Works offline. Any phone. zimsec-prep.vercel.app
+
+EcoCash payment. Codes sent same hour.
+
+PS — you've probably already seen some of the score cards on Status this week. That's the app, doing its job.</div>
+  </div>
+</div>
+
+
+<!-- DAY 6-7 -->
+<div class="day-card">
+  <div class="day-label">Day 6-7 · Weekend June 6-7</div>
+  <div class="day-title">🏫 THE SCHOOL CHANNEL + WEEKEND PUSH</div>
+  <div class="day-desc">Weekend is when students are home, parents are accessible, and school WhatsApp groups are active. The teacher pitch now leads with "your students already showed each other on Status."</div>
+
+  <div class="channels">
+    <span class="chip active">Teacher WhatsApp Direct</span>
+    <span class="chip active">School Groups</span>
+    <span class="chip active">Weekend Facebook Push</span>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">WhatsApp Direct — Send to Maths teachers you know</span>
+    <div class="copy-text">Hi [Teacher Name],
+
+Nash here. I built a ZIMSEC O-Level Maths app called CramBox — runs offline on any phone, covers the full 4004 syllabus, and costs $3 per student.
+
+You've probably already seen some Form 4 students sharing their scores on WhatsApp Status this week — the app auto-generates a shareable score card. That's been the main way it's spreading.
+
+I'd like to offer your class 30 free activation codes to try it this month. No strings — if students find it useful, great. If not, nothing lost.
+
+In return, I just ask that you share the link in your class/school WhatsApp group with a brief word about it.
+
+Would that work? I can send the codes today.
+
+Link so you can try it yourself first (look for the countdown on the home screen): zimsec-prep.vercel.app</div>
+  </div>
+
+  <div class="copy-block">
+    <span class="platform">Weekend Facebook Post — Urgency</span>
+    <div class="copy-text">It's been one week.
+
+The countdown in the app reads 144 days. That's 4 months and a fortnight until Paper 1.
+
+CramBox has been live for 7 days. [X] students activated. [X] drill sessions completed. [X] score cards posted to WhatsApp Status. $3 each.
+
+If you have a Form 4 student in your life and you haven't checked this out yet — this weekend is the time.
+
+The link hasn't changed: zimsec-prep.vercel.app
+
+Maths first. English and Science coming next month.
+
+Tag someone. Share this. Let's get to 100 students before July.</div>
+  </div>
+</div>
+
+
+<!-- TARGETS -->
+<h1><span class="num">03 — TARGETS</span>Week 1 Success Metrics</h1>
+
+<div class="metric-row">
+  <div class="metric">
+    <span class="metric-num">50</span>
+    <span class="metric-lbl">Codes Activated</span>
+  </div>
+  <div class="metric">
+    <span class="metric-num">20</span>
+    <span class="metric-lbl">Codes Sold ($3 each)</span>
+  </div>
+  <div class="metric">
+    <span class="metric-num">30</span>
+    <span class="metric-lbl">Score Cards Shared</span>
+  </div>
+  <div class="metric">
+    <span class="metric-num">$60</span>
+    <span class="metric-lbl">Week 1 Revenue Floor</span>
+  </div>
+</div>
+
+<p>Revenue is not the Week 1 goal. <strong>Proof of distribution is.</strong> 50 activated codes proves WhatsApp chain works. <strong>30 score cards shared to Status feeds proves the viral loop works</strong> — that's the metric that predicts whether you hit 1,000 by September without spending on ads.</p>
+
+
+<!-- DISTRIBUTION STACK -->
+<h1><span class="num">04 — DISTRIBUTION</span>Channel Priority Stack</h1>
+
+<div class="day-card">
+  <h3>Tier 0 — Owned by the Product (Free, Automatic)</h3>
+  <p><strong>Score cards on user WhatsApp Status</strong> — every active user with a decent score now distributes for you. Zero cost, zero effort. The whole campaign should reinforce "share what you score."</p>
+  <p><strong>The countdown</strong> — every day the number drops by 1. That's a free re-engagement message inside the product. Use it in your weekly recap posts ("the app says 143 today").</p>
+</div>
+
+<div class="day-card">
+  <h3>Tier 1 — Highest Leverage (Do These First)</h3>
+  <p><strong>Personal WhatsApp broadcast</strong> to everyone in your contacts with a Form 4-age child. Direct, trusted, no algorithm. Every person you message directly is worth 10x a Facebook post.</p>
+  <p><strong>Active school WhatsApp groups</strong> — get into 3-5 Form 4 class groups and post the student-facing copy. One message to a 50-student group is your most efficient distribution unit.</p>
+  <p><strong>Teachers</strong> — one teacher with 40 students is worth 40 individual messages. The free-code offer (30 codes for a group broadcast) is the trade.</p>
+</div>
+
+<div class="day-card">
+  <h3>Tier 2 — Volume (Do These Consistently)</h3>
+  <p><strong>Facebook personal + groups</strong> — Zimbabwean Parents groups, Harare community groups, school-specific Facebook groups. Parent copy in parent spaces, student copy in student spaces.</p>
+  <p><strong>WhatsApp Status</strong> — post daily yourself. Repost notable student score cards (with permission).</p>
+  <p><strong>TikTok</strong> — the demo video and the score-card compilation. No face needed.</p>
+</div>
+
+<div class="day-card">
+  <h3>Tier 3 — Later (Week 2+)</h3>
+  <p><strong>Facebook paid ads</strong> — run the parent-facing copy targeting Zimbabwe, age 30-55. $10-20 budget. Only after organic message is converting.</p>
+  <p><strong>Instagram</strong> — lower priority; Facebook + WhatsApp are where Zimbabwean parents live.</p>
+</div>
+
+
+<!-- PAYMENT -->
+<h1><span class="num">05 — PAYMENT FLOW</span>Manual EcoCash Process (Week 1)</h1>
+
+<blockquote>
+  <p>"The payment process being manual is not a weakness this week. It's a relationship opportunity. Every EcoCash confirmation is a chance to send a personal message and ask: 'When you score 80%+, tap Share My Score. That's how you pay it forward.'"</p>
+</blockquote>
+
+<div class="copy-block">
+  <span class="platform">Payment Instructions — Include in every post and DM</span>
+  <div class="copy-text">To get your CramBox code:
+
+1. Send $3 via EcoCash to [YOUR NUMBER]
+2. Reference: CRAMBOX
+3. Screenshot your payment confirmation
+4. Send the screenshot to this number on WhatsApp
+5. I'll send your activation code within 1 hour
+
+Link to activate: zimsec-prep.vercel.app
+Set your display name when prompted — it appears on your share cards.</div>
+</div>
+
+
+<!-- ASSETS NEEDED -->
+<h1><span class="num">06 — ASSETS</span>What You Need to Ship This</h1>
+
+<div class="day-card">
+  <h3>Day 1 Must-Haves</h3>
+  <ul style="list-style:none; margin-left:0;">
+    <li style="padding:6px 0; border-bottom:1px solid #1a1a1a; color:#aaa;">☐ &nbsp; Product URL working on mobile (zimsec-prep.vercel.app) — confirm countdown shows</li>
+    <li style="padding:6px 0; border-bottom:1px solid #1a1a1a; color:#aaa;">☐ &nbsp; 50 activation codes generated in Google Sheet</li>
+    <li style="padding:6px 0; border-bottom:1px solid #1a1a1a; color:#aaa;">☐ &nbsp; <strong>Screenshot of countdown banner</strong> — for WhatsApp Status Day 1</li>
+    <li style="padding:6px 0; border-bottom:1px solid #1a1a1a; color:#aaa;">☐ &nbsp; <strong>Your own sample Share Score card</strong> — use it in Day 1 posts to demo the mechanic</li>
+    <li style="padding:6px 0; border-bottom:1px solid #1a1a1a; color:#aaa;">☐ &nbsp; EcoCash payment number confirmed and tested</li>
+    <li style="padding:6px 0; border-bottom:1px solid #1a1a1a; color:#aaa;">☐ &nbsp; 30-second screen recording showing countdown → unlocked topic → score → share card</li>
+    <li style="padding:6px 0; border-bottom:1px solid #1a1a1a; color:#aaa;">☐ &nbsp; List of 10-15 teachers or school contacts to message directly</li>
+    <li style="padding:6px 0; color:#aaa;">☐ &nbsp; 3-5 school/parent WhatsApp groups to post into on Day 1</li>
+  </ul>
+</div>
+
+<div class="day-card">
+  <h3>Week 1 Build-As-You-Go</h3>
+  <ul style="list-style:none; margin-left:0;">
+    <li style="padding:6px 0; border-bottom:1px solid #1a1a1a; color:#aaa;">☐ &nbsp; Save every share card you spot on Status (ask permission to repost)</li>
+    <li style="padding:6px 0; border-bottom:1px solid #1a1a1a; color:#aaa;">☐ &nbsp; Simple A4 flyer PDF for teachers to share (Day 3+) — include the countdown</li>
+    <li style="padding:6px 0; color:#aaa;">☐ &nbsp; Activation counter + share-card counter — tally for weekly recap posts</li>
+  </ul>
+</div>
+
+
+<!-- BONUS -->
+<h1><span class="num">07 — RECURRING HOOKS</span>Templates You'll Reuse All Year</h1>
+
+<div class="copy-block">
+  <span class="platform">Weekly Countdown Post (run every Monday)</span>
+  <div class="copy-text">[N] days until Paper 1.
+
+[X] students on CramBox. [Y] score cards posted this week.
+
+If you're not in yet: zimsec-prep.vercel.app · $3 · EcoCash.
+
+If you are: tap Share My Score after every drill. Show your friends what's possible.</div>
+</div>
+
+<div class="copy-block">
+  <span class="platform">Score Card Reshare Caption (use whenever a student posts)</span>
+  <div class="copy-text">[Student name] just dropped [X]% on [mode] 🔥
+
+This is what 7 days of drilling looks like.
+
+Your turn → zimsec-prep.vercel.app</div>
+</div>
+
+
+<div class="footer">
+  CramBox Week 1 Campaign Plan v2 · Curious Inc · June 2026 · Confidential
+</div>
+
+</body>
+</html>
