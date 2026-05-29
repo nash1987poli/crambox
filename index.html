@@ -534,6 +534,68 @@
   .gate-device code {
     background:var(--bg2); padding:2px 6px; border-radius:4px; font-size:10px;
   }
+
+  /* ===== EXAM COUNTDOWN BANNER (Feature 2) ===== */
+  .exam-countdown {
+    border-radius:16px; padding:16px 20px; margin-bottom:16px;
+    text-align:center; cursor:pointer; border:1px solid var(--border);
+    transition:transform 0.15s; display:none;
+  }
+  .exam-countdown:hover { transform:translateY(-1px); }
+  .exam-countdown .ec-label {
+    font-size:11px; letter-spacing:1.5px; font-weight:700;
+    text-transform:uppercase; opacity:0.75;
+  }
+  .exam-countdown .ec-num { font-size:52px; font-weight:900; line-height:1; margin:6px 0; }
+  .exam-countdown .ec-sub { font-size:13px; font-weight:600; }
+  .exam-countdown .ec-date { font-size:11px; opacity:0.7; margin-top:4px; }
+  .exam-countdown .ec-msg { font-size:16px; font-weight:700; margin-top:4px; }
+  .exam-calm    { background:var(--blue-bg);  color:var(--blue);  border-color:var(--blue); }
+  .exam-warning { background:var(--gold-bg);  color:var(--gold);  border-color:var(--gold); }
+  .exam-urgent  { background:var(--red-bg);   color:var(--red);   border-color:var(--red); }
+  .exam-pulse   { animation:examPulse 1.6s ease-in-out infinite; }
+  @keyframes examPulse {
+    0%,100% { box-shadow:0 0 0 0 rgba(255,82,82,0.45); }
+    50%     { box-shadow:0 0 0 10px rgba(255,82,82,0); }
+  }
+
+  /* ===== SHARE MY SCORE (Feature 1) ===== */
+  .edit-name-btn {
+    background:transparent; border:none; color:var(--text2); cursor:pointer;
+    font-size:14px; padding:4px 6px; line-height:1;
+  }
+  .edit-name-btn:hover { color:var(--accent); }
+  .share-score-btn {
+    width:100%; padding:14px; margin-top:12px; background:var(--green);
+    color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer;
+  }
+  .share-score-btn:hover { filter:brightness(1.05); }
+  .share-modal {
+    position:fixed; top:0; left:0; width:100%; height:100%; z-index:9000;
+    background:rgba(0,0,0,0.92); display:none; flex-direction:column;
+    align-items:center; padding:16px; overflow-y:auto;
+  }
+  .share-modal.show { display:flex; }
+  .share-modal-inner {
+    width:100%; max-width:360px; display:flex; flex-direction:column;
+    gap:12px; padding-bottom:24px;
+  }
+  .share-modal-close {
+    align-self:flex-end; background:transparent; border:none; color:#fff;
+    font-size:26px; font-weight:700; cursor:pointer; padding:4px 12px;
+  }
+  .share-preview {
+    width:100%; height:auto; border-radius:14px; background:#000;
+    box-shadow:0 10px 40px rgba(0,0,0,0.6); display:block;
+  }
+  .share-modal-actions { display:flex; flex-direction:column; gap:10px; }
+  .share-modal-actions button {
+    width:100%; padding:14px; border:none; border-radius:10px;
+    font-size:15px; font-weight:700; cursor:pointer;
+  }
+  .share-modal-actions .save-img-btn { background:var(--gold); color:#000; }
+  .share-modal-actions .send-wa-btn  { background:#25d366;   color:#fff; }
+  .share-hint { font-size:12px; color:#bbb; text-align:center; margin-top:-4px; }
 </style>
 </head>
 <body>
@@ -543,7 +605,7 @@
   <div class="gate-card">
     <div class="gate-logo">Cram<span>Box</span></div>
     <div class="gate-sub">Enter your activation code to start</div>
-    <input type="text" class="gate-input" id="gateCode" placeholder="XXXX-XXXX" maxlength="9" autocomplete="off">
+    <input type="text" class="gate-input" id="gateCode" placeholder="Enter activation code" maxlength="20" autocomplete="off">
     <button class="gate-btn" id="gateBtn" onclick="activateApp()">Activate</button>
     <div class="gate-error" id="gateError"></div>
     <div class="gate-device">Device ID: <code id="gateDeviceId">...</code></div>
@@ -555,6 +617,7 @@
     <button class="back-btn" id="backBtn" onclick="goBack()">Back</button>
     <div class="logo">Cram<span>Box</span></div>
     <div class="header-right">
+      <button class="edit-name-btn" id="editNameBtn" onclick="editNickname()" title="Edit display name">✎</button>
       <span class="xp-badge" id="xpBadge">0 XP</span>
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">Light</button>
     </div>
@@ -572,6 +635,7 @@
 <!-- ==================== HOME ==================== -->
 <div class="screen active" id="homeScreen">
 <div class="container">
+  <div class="exam-countdown" id="examCountdown" onclick="onExamBannerTap()"></div>
   <div class="streak-bar">
     <div class="streak-info">
       <h3>Daily Streak</h3>
@@ -712,6 +776,19 @@
 </div>
 
 <canvas id="confettiCanvas"></canvas>
+
+<!-- ==================== SHARE MODAL ==================== -->
+<div class="share-modal" id="shareModal">
+  <div class="share-modal-inner">
+    <button class="share-modal-close" onclick="closeShareModal()">×</button>
+    <canvas class="share-preview" id="shareCanvas" width="1080" height="1920"></canvas>
+    <div class="share-modal-actions">
+      <button class="save-img-btn" onclick="saveShareImage()">💾 Save Image</button>
+      <button class="send-wa-btn" onclick="shareToWhatsAppFromModal()">📲 Share via WhatsApp</button>
+    </div>
+    <div class="share-hint">Save the image, then attach it manually in your WhatsApp Status.</div>
+  </div>
+</div>
 <div class="combo-popup" id="comboPopup"></div>
 <div class="milestone-popup" id="milestonePopup"></div>
 
@@ -752,7 +829,7 @@
       <button onclick="viewSolutions()">Solutions</button>
       <button class="primary" onclick="goHome()">Continue</button>
     </div>
-    <button class="share-btn" onclick="shareWhatsApp()">Share on WhatsApp</button>
+    <button class="share-score-btn" onclick="openShareModal()">📲 Share My Score</button>
   </div>
 </div>
 </div>
@@ -791,14 +868,16 @@ function getDeviceFingerprint() {
 
 // Google Sheets activation backend
 // Replace this URL with your deployed Google Apps Script Web App URL
-const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGY5mNYk-oWSGOUJ1mrzp-nR1ZYFrWUUsqP0LBrv_jFRQdSIssaX8IDO1wSHFXKd5r/exec';
+const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4LqyvphHN2cjm-DC7HBCe3gSipaq2OhmtJUPutc53CWCrRRiZz16IRG7q2jyn2Oaw/exec';
 
 async function validateCodeOnline(code, fp) {
+  // POST keeps activation code out of URL query strings (which get logged by browsers, proxies, and Google's request logs).
+  // Content-Type is text/plain to avoid CORS preflight against Apps Script; server uses JSON.parse(e.postData.contents).
   const res = await fetch(SHEET_SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'validate', code, fp }),
-    redirect: 'follow'
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'validate', code: code, fp: fp })
   });
   return await res.json();
 }
@@ -835,8 +914,12 @@ async function activateApp() {
   let code = input.value.trim().toUpperCase();
 
   // Auto-format: add dash if missing
-  if (code.length >= 4 && !code.includes('-')) {
-    code = code.substring(0,4) + '-' + code.substring(4);
+  if (!code.includes('-')) {
+    if (code.startsWith('CB')) {
+      code = 'CB-' + code.substring(2);
+    } else if (code.startsWith('CRAM')) {
+      code = 'CRAM-' + code.substring(4);
+    }
   }
 
   if (!code) {
@@ -892,8 +975,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inp = document.getElementById('gateCode');
   inp.addEventListener('input', () => {
     let v = inp.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
-    if (v.length === 4 && !v.includes('-')) v += '-';
-    if (v.length > 9) v = v.substring(0, 9);
+    if (v.length > 20) v = v.substring(0, 20);
     inp.value = v;
   });
   inp.addEventListener('keydown', (e) => {
@@ -1000,6 +1082,7 @@ function saveScore(subj, idx, earned, total) {
 }
 
 function updateHome() {
+  renderExamCountdown();
   const s = getStore();
   // XP badge
   document.getElementById('xpBadge').textContent = (s.xp||0) + ' XP';
@@ -1600,6 +1683,7 @@ function submitPanic(){
 // RESULTS
 // ================================================================
 function showResults(earned,total){
+  captureShareContext(earned,total);
   const pct=Math.round(earned/total*100);
   document.getElementById('resPct').textContent=pct+'%';
   document.getElementById('resMarks').textContent=earned+'/'+total;
@@ -1623,7 +1707,7 @@ function viewSolutions(){ goBack(); }
 // WHATSAPP SHARE
 // ================================================================
 function shareWhatsApp(){
-  const msg=`I just scored ${lastResultPct}% on ${lastResultTopic} in CramBox! 🔥\n\nCramBox — pass your O-Levels from your phone. No data needed.\n\nGet it: [link]`;
+  const msg=`I just scored ${lastResultPct}% on ${lastResultTopic} in CramBox! 🔥\n\nCramBox — pass your O-Levels from your phone. No data needed.\n\nGet it: https://zimsec-prep.vercel.app`;
   const url='https://wa.me/?text='+encodeURIComponent(msg);
   window.open(url,'_blank');
 }
@@ -2568,6 +2652,7 @@ function endDrill() {
     m.total += drillNum;
     s.drillMastery[drillTopic.id] = m;
     setStore(s);
+    window._shareCtxExtra = { scoreText: drillCorrect + ' correct', subtitle: 'Best streak: ' + drillStreak + ' in a row' };
     showResults(drillCorrect, drillNum);
   } else {
     goBack();
@@ -2586,6 +2671,243 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+// ================================================================
+// EXAM COUNTDOWN (Feature 2)
+// ================================================================
+const EXAM_DATES = [
+  { paper: "Paper 1", date: "2026-10-26", subject: "Mathematics 4004" },
+  { paper: "Paper 2", date: "2026-10-28", subject: "Mathematics 4004" }
+];
+
+function getNextExam() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const upcoming = EXAM_DATES
+    .map(function(e){ return { paper:e.paper, subject:e.subject, d:new Date(e.date+'T00:00:00') }; })
+    .filter(function(e){ return e.d >= today; })
+    .sort(function(a,b){ return a.d - b.d; });
+  return upcoming[0] || null;
+}
+
+function renderExamCountdown() {
+  const banner = document.getElementById('examCountdown');
+  if (!banner) return;
+  const next = getNextExam();
+  if (!next) { banner.style.display = 'none'; return; }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = Math.round((next.d - today) / 86400000);
+
+  let cls = 'exam-calm';
+  if (days < 7)        cls = 'exam-urgent exam-pulse';
+  else if (days < 30)  cls = 'exam-urgent';
+  else if (days <= 60) cls = 'exam-warning';
+
+  banner.className = 'exam-countdown ' + cls;
+  banner.style.display = 'block';
+
+  const months = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+  const dateFmt = next.d.getDate() + ' ' + months[next.d.getMonth()] + ' ' + next.d.getFullYear();
+
+  if (days === 0) {
+    banner.innerHTML =
+      '<div class="ec-label">EXAM DAY</div>' +
+      '<div class="ec-msg">Today is ' + escHTML(next.paper) + ' day. You\'ve got this.</div>';
+  } else {
+    banner.innerHTML =
+      '<div class="ec-label">NEXT EXAM</div>' +
+      '<div class="ec-num">' + days + '</div>' +
+      '<div class="ec-sub">days until ' + escHTML(next.paper) + '</div>' +
+      '<div class="ec-date">' + escHTML(dateFmt) + '</div>';
+  }
+}
+
+function onExamBannerTap() { startPanicMode(); }
+
+// ================================================================
+// NICKNAME (Feature 1)
+// ================================================================
+function getNickname() {
+  const s = getStore();
+  return (s.nickname || '').trim();
+}
+function setNickname(name) {
+  const s = getStore();
+  s.nickname = name;
+  setStore(s);
+}
+function sanitiseNickname(raw) {
+  if (raw == null) return '';
+  return raw.trim().replace(/[^A-Za-z0-9 ]/g, '').replace(/\s+/g, ' ').substring(0, 20);
+}
+function promptNickname() {
+  const current = getNickname();
+  const input = prompt('Pick a display name for sharing (max 20 chars, letters/numbers/spaces):', current);
+  if (input === null) return null;
+  let clean = sanitiseNickname(input);
+  if (!clean) clean = 'Anonymous Cramfox';
+  setNickname(clean);
+  return clean;
+}
+function editNickname() { promptNickname(); }
+
+// ================================================================
+// SHARE MY SCORE — canvas card generator (Feature 1)
+// ================================================================
+function captureShareContext(earned, total) {
+  const pct = total > 0 ? Math.round(earned / total * 100) : 0;
+  const modeLabels = {
+    speed:    'SPEED ROUND',
+    panic:    'PANIC MODE',
+    drill:    'INFINITE DRILL',
+    practice: 'PRACTICE'
+  };
+  const extra = window._shareCtxExtra || {};
+  window._shareCtxExtra = null;
+  window._shareCtx = {
+    mode: modeLabels[lastResultType] || 'PRACTICE',
+    topic: lastResultTopic || '',
+    pct: pct,
+    earned: earned,
+    total: total,
+    scoreText: extra.scoreText || (pct + '%'),
+    subtitle: (extra.subtitle != null) ? extra.subtitle : (earned + ' / ' + total + ' marks')
+  };
+}
+
+function cssVarValue(varStr) {
+  if (!varStr) return '#ffffff';
+  if (varStr.indexOf('var(') !== 0) return varStr;
+  const name = varStr.replace('var(', '').replace(')', '').trim();
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return v || '#ffffff';
+}
+
+function openShareModal() {
+  let nick = getNickname();
+  if (!nick) {
+    nick = promptNickname();
+    if (!nick) return;
+  }
+  if (!window._shareCtx) {
+    window._shareCtx = { mode:'PRACTICE', topic:lastResultTopic||'', scoreText:(lastResultPct||0)+'%', subtitle:'' };
+  }
+  renderShareCard(document.getElementById('shareCanvas'));
+  document.getElementById('shareModal').classList.add('show');
+}
+function closeShareModal() {
+  document.getElementById('shareModal').classList.remove('show');
+}
+
+function renderShareCard(canvas) {
+  const ctx = canvas.getContext('2d');
+  const W = 1080, H = 1920;
+  canvas.width = W; canvas.height = H;
+
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0,    '#0a0a0a');
+  grad.addColorStop(0.55, '#141424');
+  grad.addColorStop(1,    '#0a1a14');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  const glow = ctx.createRadialGradient(W/2, 100, 50, W/2, 100, W*0.9);
+  glow.addColorStop(0, 'rgba(0,230,118,0.22)');
+  glow.addColorStop(1, 'rgba(0,230,118,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
+
+  const store = getStore();
+  const streak = store.streak || 0;
+  const rank = getRank(store.xp || 0);
+  const data = window._shareCtx || { mode:'PRACTICE', scoreText:'0%', subtitle:'' };
+  const nick = getNickname() || 'Anonymous Cramfox';
+  const fontFamily = '-apple-system, "Segoe UI", Roboto, sans-serif';
+
+  ctx.font = '900 84px ' + fontFamily;
+  const cramW = ctx.measureText('Cram').width;
+  const boxW  = ctx.measureText('Box').width;
+  const startX = (W - (cramW + boxW)) / 2;
+  ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#f0f0f0';
+  ctx.fillText('Cram', startX, 200);
+  ctx.fillStyle = '#00e676';
+  ctx.fillText('Box',  startX + cramW, 200);
+
+  ctx.textAlign = 'center';
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '800 76px ' + fontFamily;
+  const nickDisplay = nick.length > 18 ? nick.substring(0,17) + '…' : nick;
+  ctx.fillText(nickDisplay, W/2, 400);
+
+  ctx.fillStyle = '#999999';
+  ctx.font = '700 42px ' + fontFamily;
+  ctx.fillText(data.mode, W/2, 490);
+
+  ctx.fillStyle = '#00e676';
+  const scoreFontSize = data.scoreText.length > 6 ? 200 : 280;
+  ctx.font = '900 ' + scoreFontSize + 'px ' + fontFamily;
+  ctx.fillText(data.scoreText, W/2, 900);
+
+  if (data.subtitle) {
+    ctx.fillStyle = '#cccccc';
+    ctx.font = '500 38px ' + fontFamily;
+    ctx.fillText(data.subtitle, W/2, 985);
+  }
+
+  ctx.fillStyle = '#ffd740';
+  ctx.font = '700 60px ' + fontFamily;
+  ctx.fillText('🔥 ' + streak + ' day streak', W/2, 1200);
+
+  ctx.fillStyle = '#888888';
+  ctx.font = '600 32px ' + fontFamily;
+  ctx.fillText('RANK', W/2, 1340);
+  ctx.fillStyle = cssVarValue(rank.color);
+  ctx.font = '900 88px ' + fontFamily;
+  ctx.fillText(rank.name.toUpperCase(), W/2, 1430);
+
+  if (data.topic) {
+    ctx.fillStyle = '#777777';
+    ctx.font = '500 28px ' + fontFamily;
+    const topicShort = data.topic.length > 40 ? data.topic.substring(0,39) + '…' : data.topic;
+    ctx.fillText(topicShort, W/2, 1530);
+  }
+
+  ctx.fillStyle = '#888888';
+  ctx.font = '600 34px ' + fontFamily;
+  ctx.fillText('Get yours → zimsec-prep.vercel.app', W/2, 1780);
+  ctx.fillStyle = '#00e676';
+  ctx.font = '800 40px ' + fontFamily;
+  ctx.fillText('$3 once. Pass O-Levels.', W/2, 1840);
+}
+
+function saveShareImage() {
+  const canvas = document.getElementById('shareCanvas');
+  if (!canvas.toBlob) {
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl; a.download = 'crambox-score.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    return;
+  }
+  canvas.toBlob(function(blob) {
+    if (!blob) { alert('Could not save image. Try again.'); return; }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'crambox-score.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+  }, 'image/png');
+}
+
+function shareToWhatsAppFromModal() {
+  const data = window._shareCtx || { scoreText:'0%', mode:'PRACTICE' };
+  const text = 'I just scored ' + data.scoreText + ' on CramBox ' + data.mode +
+    '! ZIMSEC Maths on your phone, $3 once. Try it: zimsec-prep.vercel.app';
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+}
 
 // ================================================================
 // INIT

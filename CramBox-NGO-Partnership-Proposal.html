@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CramBox — NGO Partnership Proposal</title>
+<style>
+  @page { size: A4; margin: 18mm; }
+  @media print { .page-break { page-break-before: always; } .no-print { display: none; } body { font-size: 10.5pt; } }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',-apple-system,sans-serif; color:#1a1a1a; line-height:1.7; background:#fff; max-width:210mm; margin:0 auto; padding:40px; }
+
+  /* Cover */
+  .cover { min-height:92vh; display:flex; flex-direction:column; justify-content:center; text-align:center; position:relative; }
+  .cover::after { content:''; position:absolute; bottom:0; left:0; right:0; height:6px; background:linear-gradient(90deg,#00e676,#00b0ff,#7c4dff); }
+  .cover-badge { display:inline-block; padding:6px 20px; background:#111; color:#00e676; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:32px; }
+  .cover-logo { font-size:56px; font-weight:900; letter-spacing:-3px; margin-bottom:4px; }
+  .cover-logo span { color:#00e676; }
+  .cover-tagline { font-size:18px; color:#666; margin-bottom:48px; }
+  .cover-title { font-size:32px; font-weight:800; line-height:1.2; margin-bottom:12px; }
+  .cover-subtitle { font-size:16px; color:#555; margin-bottom:48px; }
+  .cover-meta { font-size:12px; color:#999; }
+  .cover-meta strong { color:#333; }
+
+  /* Typography */
+  h1 { font-size:26px; font-weight:800; margin:48px 0 16px; color:#111; border-bottom:3px solid #00e676; padding-bottom:8px; }
+  h2 { font-size:19px; font-weight:700; margin:28px 0 10px; color:#222; }
+  h3 { font-size:15px; font-weight:700; margin:18px 0 6px; color:#333; }
+  p { margin-bottom:12px; color:#333; font-size:14px; }
+  ul, ol { margin:8px 0 16px 24px; font-size:14px; }
+  li { margin-bottom:5px; color:#333; }
+  strong { color:#111; }
+
+  /* Boxes */
+  .box-green { background:#f0fff4; border-left:4px solid #00e676; padding:16px 20px; margin:16px 0; border-radius:0 8px 8px 0; }
+  .box-blue { background:#e3f2fd; border-left:4px solid #1565c0; padding:16px 20px; margin:16px 0; border-radius:0 8px 8px 0; }
+  .box-gold { background:#fff8e1; border-left:4px solid #f9a825; padding:16px 20px; margin:16px 0; border-radius:0 8px 8px 0; }
+  .box-purple { background:#ede7f6; border-left:4px solid #7c4dff; padding:16px 20px; margin:16px 0; border-radius:0 8px 8px 0; }
+  .box-dark { background:#111; color:#fff; padding:20px 24px; margin:16px 0; border-radius:8px; }
+  .box-dark strong { color:#00e676; }
+  .box-dark p { color:#ccc; }
+
+  /* Tables */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13px; }
+  th { background:#111; color:#fff; padding:10px 12px; text-align:left; font-weight:600; }
+  td { padding:10px 12px; border-bottom:1px solid #eee; }
+  tr:nth-child(even) td { background:#fafafa; }
+  .right { text-align:right; }
+
+  /* Metrics */
+  .metric-row { display:flex; gap:12px; margin:16px 0; flex-wrap:wrap; }
+  .metric-card { flex:1; min-width:100px; background:#f5f5f5; border-radius:12px; padding:16px; text-align:center; }
+  .metric-num { font-size:28px; font-weight:800; color:#00c853; }
+  .metric-lbl { font-size:11px; color:#666; margin-top:4px; }
+  .metric-card.blue .metric-num { color:#1565c0; }
+  .metric-card.purple .metric-num { color:#7c4dff; }
+  .metric-card.gold .metric-num { color:#f9a825; }
+
+  /* Phases */
+  .phase { border:1px solid #e0e0e0; border-radius:12px; padding:20px; margin:16px 0; position:relative; overflow:hidden; }
+  .phase::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; }
+  .phase-1::before { background:#00e676; }
+  .phase-2::before { background:#00b0ff; }
+  .phase-3::before { background:#7c4dff; }
+  .phase-4::before { background:#f9a825; }
+  .phase h3 { margin-top:4px; }
+
+  /* Footer */
+  .footer { margin-top:48px; padding-top:16px; border-top:1px solid #eee; font-size:11px; color:#999; text-align:center; }
+
+  /* TOC */
+  .toc a { color:#333; text-decoration:none; display:block; padding:5px 0; border-bottom:1px dotted #ddd; font-size:14px; }
+  .toc a:hover { color:#00c853; }
+  .toc .num { color:#00c853; font-weight:700; margin-right:8px; }
+
+  /* Print button */
+  .print-btn { position:fixed; bottom:20px; right:20px; background:#00c853; color:#fff; border:none; padding:12px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.2); z-index:100; }
+  .print-btn:hover { background:#00e676; }
+
+  .sdg-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:12px 0; }
+  .sdg { padding:10px; border-radius:8px; text-align:center; font-size:11px; font-weight:700; color:#fff; }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">Save as PDF</button>
+
+<!-- ==================== COVER ==================== -->
+<div class="cover">
+  <div class="cover-badge">Partnership Proposal</div>
+  <div class="cover-logo">Cram<span>Box</span></div>
+  <div class="cover-tagline">Pass Your Exams From Your Phone</div>
+  <div class="cover-title">Scaling Exam Preparation Across Africa:<br>An NGO Partnership Proposal</div>
+  <div class="cover-subtitle">A zero-data, offline-capable, mobile-first learning platform<br>for secondary school students across the continent</div>
+  <div class="cover-meta">
+    Prepared by <strong>Curious Inc</strong> | May 2026<br>
+    Contact: Nash Barara | cre8ivepoligongrid@gmail.com
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ==================== TOC ==================== -->
+<h1>Contents</h1>
+<div class="toc">
+  <a href="#problem"><span class="num">1</span> The Problem</a>
+  <a href="#solution"><span class="num">2</span> The Solution: CramBox</a>
+  <a href="#impact"><span class="num">3</span> Impact & Alignment with SDGs</a>
+  <a href="#market"><span class="num">4</span> Market Opportunity: 170M+ Students</a>
+  <a href="#model"><span class="num">5</span> Partnership Model</a>
+  <a href="#tiers"><span class="num">6</span> Partnership Tiers & Pricing</a>
+  <a href="#budget"><span class="num">7</span> Operational Budget & Infrastructure Costs</a>
+  <a href="#rollout"><span class="num">8</span> Pan-African Rollout Plan</a>
+  <a href="#sustainability"><span class="num">9</span> Sustainability & Revenue Model</a>
+  <a href="#team"><span class="num">10</span> About Curious Inc</a>
+  <a href="#next"><span class="num">11</span> Next Steps</a>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ==================== 1. THE PROBLEM ==================== -->
+<h1 id="problem">1. The Problem: Africa's Exam Preparation Crisis</h1>
+
+<div class="box-dark">
+  <p><strong>100 million</strong> children and youth aged 6-18 in Sub-Saharan Africa are excluded from formal learning. Of those in school, only <strong>15%</strong> achieve minimum learning outcomes. The teacher-to-student ratio averages <strong>1:40</strong>.</p>
+</div>
+
+<div class="metric-row">
+  <div class="metric-card"><div class="metric-num">100M</div><div class="metric-lbl">Out-of-school youth in SSA</div></div>
+  <div class="metric-card blue"><div class="metric-num">15%</div><div class="metric-lbl">Meet minimum learning outcomes</div></div>
+  <div class="metric-card gold"><div class="metric-num">1:40</div><div class="metric-lbl">Teacher-to-student ratio</div></div>
+  <div class="metric-card purple"><div class="metric-num">33%</div><div class="metric-lbl">Secondary completion rate</div></div>
+</div>
+
+<p>Across Sub-Saharan Africa, students preparing for national examinations face compounding barriers:</p>
+
+<ul>
+  <li><strong>Textbooks are scarce and expensive</strong> — $10-30 per subject, often shared among 5+ students</li>
+  <li><strong>Private tutoring is out of reach</strong> — $20-50/month in countries where median income is under $200</li>
+  <li><strong>Mobile data is prohibitively expensive</strong> — streaming educational videos on YouTube costs $1-3/day in data alone, often 5-10% of daily income</li>
+  <li><strong>Existing EdTech solutions are Western-centric</strong> — Khan Academy, Quizlet, and others don't cover ZIMSEC, WAEC, KNEC, or CAPS curricula</li>
+  <li><strong>The digital divide persists</strong> — only 46% mobile internet penetration, with rural access under 10%</li>
+</ul>
+
+<p>The result: millions of capable students fail exams not because they lack ability, but because they lack access to quality revision materials in the format they actually use — their phones.</p>
+
+<div class="page-break"></div>
+
+<!-- ==================== 2. THE SOLUTION ==================== -->
+<h1 id="solution">2. The Solution: CramBox</h1>
+
+<div class="box-green">
+  <strong>CramBox is a mobile-first, offline-capable exam preparation platform built specifically for African national curricula.</strong> It runs entirely in the browser — no app store download, no ongoing data costs, no expensive device required. One 127KB page load, then it works forever.
+</div>
+
+<h2>2.1 How It Works</h2>
+<table>
+  <tr><th>Feature</th><th>What It Does</th><th>Why It Matters</th></tr>
+  <tr><td><strong>Step-by-step lessons</strong></td><td>Animated, narrated walkthroughs of each topic</td><td>Replaces a textbook AND a tutor</td></tr>
+  <tr><td><strong>Practice tests</strong></td><td>MCQ + written answer questions with instant marking</td><td>Immediate feedback, no teacher needed</td></tr>
+  <tr><td><strong>Infinite drill engine</strong></td><td>12 procedural generators create unlimited questions</td><td>Never runs out of practice material</td></tr>
+  <tr><td><strong>Speed rounds</strong></td><td>Timed MCQs simulating exam pressure</td><td>Builds exam-day performance</td></tr>
+  <tr><td><strong>Panic mode</strong></td><td>"Exam Tomorrow" blitz across all topics</td><td>Last-minute revision for desperate students</td></tr>
+  <tr><td><strong>Gamification</strong></td><td>XP, streaks, ranks, mastery badges, sound effects</td><td>Keeps students coming back daily</td></tr>
+  <tr><td><strong>WhatsApp sharing</strong></td><td>One-tap score sharing to WhatsApp</td><td>Viral distribution through student networks</td></tr>
+  <tr><td><strong>Dark/light mode</strong></td><td>Theme toggle with persistence</td><td>Comfortable studying at night</td></tr>
+</table>
+
+<h2>2.2 Technical Advantages for Low-Resource Environments</h2>
+<table>
+  <tr><th>Constraint</th><th>CramBox Solution</th></tr>
+  <tr><td>No data / expensive data</td><td>127KB single load, then fully offline. Zero ongoing data cost.</td></tr>
+  <tr><td>Cheap/old smartphones</td><td>Pure HTML/CSS/JS — runs on any browser, any device, any OS.</td></tr>
+  <tr><td>No app store access</td><td>Web-based — no download from Google Play or App Store required.</td></tr>
+  <tr><td>Shared devices</td><td>Device-locked activation prevents unauthorized sharing while allowing family device sharing with separate codes.</td></tr>
+  <tr><td>No electricity/intermittent power</td><td>Runs offline once loaded. Progress saved to localStorage.</td></tr>
+  <tr><td>Low digital literacy</td><td>Simple, intuitive UI. One activation code, then tap-to-learn.</td></tr>
+</table>
+
+<h2>2.3 Current Status (May 2026)</h2>
+<table>
+  <tr><th>Component</th><th>Status</th></tr>
+  <tr><td>Mathematics 4004 (ZIMSEC O-Level)</td><td>Live — 5 lessons, 12 drill generators, all study modes</td></tr>
+  <tr><td>Activation system</td><td>Live — Google Sheets backend, random codes, device locking</td></tr>
+  <tr><td>Security</td><td>Hardened — race conditions, fingerprint stability, code enumeration all resolved</td></tr>
+  <tr><td>Code review</td><td>Passed — Greptile automated review, 5/5 confidence score</td></tr>
+  <tr><td>Hosting</td><td>Live — deployed on Vercel global CDN</td></tr>
+  <tr><td>Live URL</td><td>https://zimsec-prep.vercel.app</td></tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ==================== 3. IMPACT ==================== -->
+<h1 id="impact">3. Impact & Alignment with UN Sustainable Development Goals</h1>
+
+<div class="sdg-grid">
+  <div class="sdg" style="background:#c5192d;">SDG 4<br>Quality Education</div>
+  <div class="sdg" style="background:#fd6925;">SDG 5<br>Gender Equality</div>
+  <div class="sdg" style="background:#a21942;">SDG 10<br>Reduced Inequalities</div>
+  <div class="sdg" style="background:#fd9d24;">SDG 9<br>Innovation</div>
+</div>
+
+<h2>SDG 4: Quality Education</h2>
+<p>CramBox directly addresses Target 4.1 (ensure all youth complete quality secondary education) and Target 4.4 (increase youth with relevant skills). By providing curriculum-aligned, exam-specific content on devices students already own, CramBox extends quality instruction beyond the classroom at near-zero marginal cost.</p>
+
+<h2>SDG 5: Gender Equality</h2>
+<p>In many African contexts, girls face disproportionate barriers to tutoring access — safety concerns with travel, cultural restrictions on after-school activities, and family financial priorities favoring boys' education. CramBox eliminates these barriers: students study at home, on their own time, on a shared family device.</p>
+
+<h2>SDG 10: Reduced Inequalities</h2>
+<p>A rural student with a $40 smartphone now has access to the same quality revision materials as a student in Harare with a private tutor. CramBox compresses the inequality gap between urban and rural, wealthy and poor.</p>
+
+<h2>Measurable Impact Metrics</h2>
+<table>
+  <tr><th>Metric</th><th>How We Measure</th><th>Target (Year 1)</th></tr>
+  <tr><td>Students activated</td><td>Activation codes used (Google Sheets)</td><td>5,000 — 10,000</td></tr>
+  <tr><td>Daily active learners</td><td>Streak tracking / analytics</td><td>40-60% of activated users</td></tr>
+  <tr><td>Questions answered</td><td>localStorage aggregation</td><td>500,000+</td></tr>
+  <tr><td>Exam pass rate improvement</td><td>Before/after comparison with control group</td><td>15-25% improvement</td></tr>
+  <tr><td>Gender ratio</td><td>Registration data</td><td>50/50 male/female</td></tr>
+  <tr><td>Rural reach</td><td>Distribution channel tracking</td><td>30%+ rural students</td></tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ==================== 4. MARKET ==================== -->
+<h1 id="market">4. Market Opportunity: 170M+ Students Across 6 Exam Boards</h1>
+
+<p>Africa's secondary exam ecosystem is fragmented across national and regional boards. CramBox's architecture — a single HTML file per curriculum — makes it uniquely suited to adapt to each board with minimal engineering cost.</p>
+
+<h2>4.1 Target Exam Boards & Estimated Candidates</h2>
+<table>
+  <tr><th>Exam Board</th><th>Countries</th><th>Annual Candidates (est.)</th><th>Localization Effort</th></tr>
+  <tr><td><strong>ZIMSEC</strong></td><td>Zimbabwe</td><td>250,000 — 300,000</td><td>Done (live now)</td></tr>
+  <tr><td><strong>WAEC</strong></td><td>Nigeria, Ghana, Sierra Leone, Liberia, Gambia</td><td>3,500,000+</td><td>Content swap + local tips</td></tr>
+  <tr><td><strong>KNEC</strong></td><td>Kenya</td><td>1,200,000+</td><td>Content swap</td></tr>
+  <tr><td><strong>UNEB</strong></td><td>Uganda</td><td>350,000+</td><td>Content swap</td></tr>
+  <tr><td><strong>CAPS/NSC</strong></td><td>South Africa</td><td>900,000+</td><td>Content swap + language</td></tr>
+  <tr><td><strong>Cambridge IGCSE</strong></td><td>Pan-African (international schools)</td><td>500,000+</td><td>Content swap</td></tr>
+</table>
+
+<div class="metric-row">
+  <div class="metric-card"><div class="metric-num">170M+</div><div class="metric-lbl">Secondary students in SSA</div></div>
+  <div class="metric-card blue"><div class="metric-num">6.7M+</div><div class="metric-lbl">Annual exam candidates (target boards)</div></div>
+  <div class="metric-card gold"><div class="metric-num">65%</div><div class="metric-lbl">Smartphone penetration (2026)</div></div>
+  <div class="metric-card purple"><div class="metric-num">$40</div><div class="metric-lbl">New entry-level 4G phone (GSMA pilot)</div></div>
+</div>
+
+<h2>4.2 Why Now</h2>
+<ul>
+  <li><strong>Smartphone costs are collapsing</strong> — GSMA and African operators are piloting $40 4G smartphones across 6 countries in 2026 (DRC, Ethiopia, Nigeria, Rwanda, Tanzania, Uganda)</li>
+  <li><strong>WhatsApp is ubiquitous</strong> — it IS the internet in most of Africa, making it the perfect distribution channel</li>
+  <li><strong>$1.54B World Bank AIM4Learning program</strong> just launched for Eastern and Southern Africa, targeting learning outcomes for 70M+ children</li>
+  <li><strong>World Bank + Mastercard Foundation EdTech partnership</strong> is actively funding hybrid learning and digital skills across the continent</li>
+  <li><strong>UNICEF Venture Fund</strong> actively seeks early-stage EdTech solutions for developing markets</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ==================== 5. PARTNERSHIP MODEL ==================== -->
+<h1 id="model">5. Partnership Model</h1>
+
+<div class="box-blue">
+  <strong>We propose a "Build Once, Deploy Everywhere" partnership</strong> where the NGO funds curriculum development, localization, and distribution for target countries — while Curious Inc handles all product development, hosting, and technical operations. Students receive CramBox for free or at heavily subsidized rates.
+</div>
+
+<h2>5.1 What the NGO Provides</h2>
+<ul>
+  <li><strong>Funding</strong> for curriculum development, content experts, and localization</li>
+  <li><strong>Distribution access</strong> to schools, teacher networks, and community organizations</li>
+  <li><strong>Local partnerships</strong> with education ministries and exam boards for content validation</li>
+  <li><strong>Impact measurement</strong> — pre/post exam performance data, usage analytics</li>
+  <li><strong>Credibility</strong> — NGO brand association accelerates school adoption</li>
+</ul>
+
+<h2>5.2 What Curious Inc Provides</h2>
+<ul>
+  <li><strong>The CramBox platform</strong> — proven, deployed, security-hardened, code-reviewed</li>
+  <li><strong>Product development</strong> — new subjects, new exam boards, new features</li>
+  <li><strong>Technical operations</strong> — hosting, activation system, monitoring</li>
+  <li><strong>AI-powered content pipeline</strong> — rapid curriculum development using Claude AI</li>
+  <li><strong>Design & creative</strong> — marketing materials, school flyers, demo videos</li>
+</ul>
+
+<h2>5.3 What Students Receive</h2>
+<ul>
+  <li><strong>Free access</strong> (NGO-funded) or heavily subsidized ($0.50-1.00 per student)</li>
+  <li><strong>Curriculum-aligned content</strong> for their specific national exam</li>
+  <li><strong>Unlimited practice</strong> via procedurally generated drill questions</li>
+  <li><strong>Zero ongoing data costs</strong> after initial page load</li>
+  <li><strong>Study tool on the device they already own</strong></li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ==================== 6. TIERS ==================== -->
+<h1 id="tiers">6. Partnership Tiers & Pricing</h1>
+
+<div class="phase phase-1">
+  <h3>Tier 1: Country Pilot — $8,000</h3>
+  <p><strong>1 country, 1 subject (Mathematics), 5,000 students</strong></p>
+  <ul>
+    <li>Localize CramBox to one national exam board</li>
+    <li>15-20 structured lessons + 12 drill generators for that curriculum</li>
+    <li>Teacher validation of all content with local exam markers</li>
+    <li>5,000 free activation codes for distribution via schools</li>
+    <li>3-month support window with bug fixes and updates</li>
+    <li>Impact report at end of pilot</li>
+  </ul>
+  <p><strong>Cost per student: $1.60</strong></p>
+</div>
+
+<div class="phase phase-2">
+  <h3>Tier 2: Country Full — $25,000</h3>
+  <p><strong>1 country, 4-5 subjects, 20,000 students</strong></p>
+  <ul>
+    <li>Everything in Tier 1, plus:</li>
+    <li>4-5 core subjects (Maths, English, Science, Commerce/Business, Geography)</li>
+    <li>20,000 activation codes</li>
+    <li>WhatsApp distribution bot for automated code delivery</li>
+    <li>Teacher dashboard for progress monitoring</li>
+    <li>6-month support window</li>
+    <li>Quarterly impact reports</li>
+  </ul>
+  <p><strong>Cost per student: $1.25</strong></p>
+</div>
+
+<div class="phase phase-3">
+  <h3>Tier 3: Regional — $75,000</h3>
+  <p><strong>3 countries, 4-5 subjects per country, 100,000 students</strong></p>
+  <ul>
+    <li>Everything in Tier 2, applied to 3 countries/exam boards</li>
+    <li>100,000 activation codes across all countries</li>
+    <li>Paynow/M-Pesa integration for sustainable self-pay after grant period</li>
+    <li>Automated payment + code delivery infrastructure</li>
+    <li>12-month support + feature development</li>
+    <li>Dedicated Curious Inc liaison</li>
+  </ul>
+  <p><strong>Cost per student: $0.75</strong></p>
+</div>
+
+<div class="phase phase-4">
+  <h3>Tier 4: Pan-African — $200,000</h3>
+  <p><strong>6 exam boards, all major subjects, 500,000+ students</strong></p>
+  <ul>
+    <li>Full coverage: ZIMSEC, WAEC, KNEC, UNEB, CAPS, Cambridge IGCSE</li>
+    <li>5+ subjects per board</li>
+    <li>500,000+ activation codes</li>
+    <li>Open-source content contribution portal for teachers</li>
+    <li>Multi-language support (English, French, Portuguese, Swahili)</li>
+    <li>Telco zero-rating partnerships (free data for CramBox)</li>
+    <li>18-month rolling development + support</li>
+    <li>Co-branded platform with NGO identity</li>
+  </ul>
+  <p><strong>Cost per student: $0.40</strong></p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ==================== 7. BUDGET ==================== -->
+<h1 id="budget">7. Operational Budget & Infrastructure Costs</h1>
+
+<div class="box-gold">
+  <strong>Full transparency:</strong> Below is every tool, service, and cost required to build and operate CramBox at scale. We believe in showing partners exactly where their money goes.
+</div>
+
+<h2>7.1 Development Infrastructure (Monthly)</h2>
+<table>
+  <tr><th>Service</th><th>Plan</th><th>Monthly Cost</th><th>What It Does</th></tr>
+  <tr><td><strong>Claude Max (Anthropic)</strong></td><td>Max 20x</td><td class="right">$200</td><td>AI-powered curriculum development, code generation, content writing. The engine behind rapid localization to new exam boards.</td></tr>
+  <tr><td><strong>Greptile</strong></td><td>Pro (1 seat)</td><td class="right">$30</td><td>Automated AI code review on every commit. Ensures code quality and catches security vulnerabilities.</td></tr>
+  <tr><td><strong>Vercel</strong></td><td>Pro</td><td class="right">$20</td><td>Global CDN hosting with edge deployment. Fast page loads from any African country.</td></tr>
+  <tr><td><strong>GitHub</strong></td><td>Free</td><td class="right">$0</td><td>Source code repository, version control, CI/CD pipeline.</td></tr>
+  <tr><td><strong>Google Workspace</strong></td><td>Starter</td><td class="right">$7</td><td>Google Sheets activation backend, Apps Script, email.</td></tr>
+  <tr><td><strong>Domain</strong></td><td>crambox.africa (or similar)</td><td class="right">$2</td><td>Custom domain ($15-25/year).</td></tr>
+  <tr><td><strong>Cloudflare</strong></td><td>Free</td><td class="right">$0</td><td>DNS, DDoS protection, SSL, additional CDN layer.</td></tr>
+  <tr><td><strong>Analytics (Plausible)</strong></td><td>Growth</td><td class="right">$9</td><td>Privacy-friendly usage analytics. No cookies, GDPR compliant.</td></tr>
+  <tr><td colspan="2"><strong>Total Infrastructure</strong></td><td class="right"><strong>$268/mo</strong></td><td><strong>$3,216/year</strong></td></tr>
+</table>
+
+<h2>7.2 Content Development (Per Country/Exam Board)</h2>
+<table>
+  <tr><th>Item</th><th>Cost</th><th>Notes</th></tr>
+  <tr><td>Curriculum research & mapping</td><td>$500</td><td>Map exam syllabus to topic structure</td></tr>
+  <tr><td>Content creation (per subject)</td><td>$800</td><td>15-20 lessons + practice questions, AI-assisted</td></tr>
+  <tr><td>Drill generator development (per subject)</td><td>$400</td><td>10-15 procedural engines with forward-verification</td></tr>
+  <tr><td>Teacher review & validation (per subject)</td><td>$300</td><td>Local exam marker verifies accuracy</td></tr>
+  <tr><td><strong>Total per subject</strong></td><td><strong>$2,000</strong></td><td></td></tr>
+  <tr><td><strong>Total per country (5 subjects)</strong></td><td><strong>$10,500</strong></td><td>Including $500 curriculum mapping</td></tr>
+</table>
+
+<h2>7.3 Distribution & Operations (Per Country)</h2>
+<table>
+  <tr><th>Item</th><th>Cost</th><th>Notes</th></tr>
+  <tr><td>Activation code infrastructure</td><td>$0</td><td>Google Sheets (included in Workspace)</td></tr>
+  <tr><td>WhatsApp Business API</td><td>$50/mo</td><td>Automated code delivery at scale</td></tr>
+  <tr><td>Marketing materials (flyers, demos)</td><td>$200</td><td>Design by Curious Inc (in-house)</td></tr>
+  <tr><td>Payment gateway setup (Paynow/M-Pesa)</td><td>$0 setup</td><td>1.5-3% per transaction (funded by revenue)</td></tr>
+  <tr><td>Local partner coordination</td><td>$300/mo</td><td>Communication, school visits, support</td></tr>
+</table>
+
+<h2>7.4 Full Year Budget Summary (Tier 3: 3 Countries)</h2>
+<table>
+  <tr><th>Category</th><th>Annual Cost</th></tr>
+  <tr><td>Infrastructure (hosting, AI, tools)</td><td>$3,216</td></tr>
+  <tr><td>Content development (3 countries x 5 subjects)</td><td>$31,500</td></tr>
+  <tr><td>Distribution & operations (3 countries x 12 months)</td><td>$12,600</td></tr>
+  <tr><td>Contingency (15%)</td><td>$7,097</td></tr>
+  <tr><td><strong>Total Annual Budget</strong></td><td><strong>$54,413</strong></td></tr>
+  <tr><td><strong>Students served</strong></td><td><strong>100,000</strong></td></tr>
+  <tr><td><strong>Cost per student</strong></td><td><strong>$0.54</strong></td></tr>
+</table>
+
+<div class="box-green">
+  <strong>$0.54 per student per year.</strong> Compare this to: textbook ($15-30), private tutor ($240-600/year), or existing EdTech apps ($3-10/month with ongoing data costs). CramBox is 30-100x cheaper than alternatives while being specifically designed for the environments where these students live.
+</div>
+
+<div class="page-break"></div>
+
+<!-- ==================== 8. ROLLOUT ==================== -->
+<h1 id="rollout">8. Pan-African Rollout Plan</h1>
+
+<h2>Phase 1: Proof of Concept (June — September 2026)</h2>
+<div class="box-blue">
+  <strong>Zimbabwe (ZIMSEC) — already live</strong>
+  <ul>
+    <li>Mathematics launched, additional subjects in development</li>
+    <li>Target: 1,000-5,000 students by September exam season</li>
+    <li>Collect impact data to support NGO grant applications</li>
+    <li>Refine distribution model (WhatsApp, schools, EcoCash)</li>
+  </ul>
+</div>
+
+<h2>Phase 2: East Africa Expansion (October 2026 — March 2027)</h2>
+<ul>
+  <li><strong>Kenya (KNEC)</strong> — 1.2M annual candidates, strong smartphone penetration, M-Pesa ubiquitous</li>
+  <li><strong>Uganda (UNEB)</strong> — 350K candidates, English-speaking, similar curriculum structure</li>
+  <li>Leverage Zimbabwe learnings for faster localization</li>
+  <li>Target: 20,000-50,000 students across both countries</li>
+</ul>
+
+<h2>Phase 3: West Africa (April — September 2027)</h2>
+<ul>
+  <li><strong>Nigeria/Ghana (WAEC)</strong> — 3.5M+ annual candidates, largest market on the continent</li>
+  <li>WAEC covers 5 countries with one curriculum — massive scale efficiency</li>
+  <li>Target: 100,000+ students</li>
+</ul>
+
+<h2>Phase 4: Southern Africa + French/Portuguese (October 2027 — 2028)</h2>
+<ul>
+  <li><strong>South Africa (CAPS/NSC)</strong> — 900K candidates, most developed mobile market</li>
+  <li><strong>Francophone Africa</strong> — translate platform for DRC, Senegal, Ivory Coast</li>
+  <li><strong>Lusophone Africa</strong> — Mozambique, Angola</li>
+  <li>Target: 500,000+ students continent-wide</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ==================== 9. SUSTAINABILITY ==================== -->
+<h1 id="sustainability">9. Sustainability & Revenue Model</h1>
+
+<div class="box-purple">
+  <strong>CramBox is designed to become self-sustaining.</strong> NGO funding covers the initial build-out and distribution. Once established in each market, the platform sustains itself through low-cost direct sales — $2-3 per student in a market of millions.
+</div>
+
+<h2>9.1 Revenue Streams (Post-Grant Period)</h2>
+<table>
+  <tr><th>Stream</th><th>Model</th><th>Projected Revenue</th></tr>
+  <tr><td><strong>Direct student sales</strong></td><td>$2-3 per student via mobile money</td><td>$15,000-30,000/year per country</td></tr>
+  <tr><td><strong>School licenses</strong></td><td>$1/student bulk rate (min 20)</td><td>$5,000-15,000/year per country</td></tr>
+  <tr><td><strong>Exam season premium</strong></td><td>$5 for full bundle during peak months</td><td>$10,000-20,000/year per country</td></tr>
+  <tr><td><strong>Content licensing</strong></td><td>License curriculum to other platforms</td><td>Negotiable</td></tr>
+</table>
+
+<h2>9.2 Path to Self-Sustainability</h2>
+<table>
+  <tr><th>Milestone</th><th>When</th><th>Monthly Revenue</th><th>Monthly Cost</th><th>Status</th></tr>
+  <tr><td>Zimbabwe breakeven</td><td>Month 4-6</td><td>$500+</td><td>$268</td><td>Self-sustaining</td></tr>
+  <tr><td>3-country breakeven</td><td>Month 10-12</td><td>$2,000+</td><td>$870</td><td>Self-sustaining</td></tr>
+  <tr><td>Pan-African breakeven</td><td>Month 18-24</td><td>$10,000+</td><td>$2,500</td><td>Self-sustaining + growing</td></tr>
+</table>
+
+<p>The near-zero marginal cost of serving additional students ($0.00 per student after the HTML file is loaded) means CramBox reaches profitability extremely early compared to traditional EdTech platforms that have per-user server costs.</p>
+
+<div class="page-break"></div>
+
+<!-- ==================== 10. ABOUT ==================== -->
+<h1 id="team">10. About Curious Inc</h1>
+
+<p><strong>Curious Inc</strong> is an AI-powered creative agency founded by Nash Barara, a 3D graphic designer, animator, and motion designer with 11+ years in the advertising industry. Curious Inc combines deep creative expertise with cutting-edge AI tooling to deliver production-quality work at startup speed and cost.</p>
+
+<h2>Why We Built CramBox</h2>
+<p>Nash grew up in Zimbabwe. He knows what it's like to prepare for O-Levels with limited resources. CramBox started as a personal project to help students he knew — and quickly became something bigger. The same AI tools that power Curious Inc's agency work (Claude, Gemini) enabled one person to build what would normally require a team of 10.</p>
+
+<h2>Our Edge</h2>
+<ul>
+  <li><strong>AI-native development</strong> — Claude AI enables us to localize to a new exam board in days, not months</li>
+  <li><strong>Design expertise</strong> — 11 years of professional design ensures CramBox looks and feels premium despite its tiny footprint</li>
+  <li><strong>African context</strong> — we understand the constraints (data costs, device limitations, payment systems) because we live them</li>
+  <li><strong>Lean operation</strong> — near-zero overhead means almost every dollar of funding goes directly to students</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ==================== 11. NEXT STEPS ==================== -->
+<h1 id="next">11. Next Steps</h1>
+
+<div class="box-dark">
+  <p>We are seeking a partnership that puts CramBox into the hands of <strong>10,000+ students</strong> within the next 12 months. Here's how we start:</p>
+</div>
+
+<table>
+  <tr><th>Step</th><th>Action</th><th>Timeline</th></tr>
+  <tr><td><strong>1. Live Demo</strong></td><td>We demo CramBox on your phone — takes 5 minutes. Try it: <strong>https://zimsec-prep.vercel.app</strong></td><td>Immediate</td></tr>
+  <tr><td><strong>2. Alignment Call</strong></td><td>30-minute call to discuss target countries, subjects, and student volumes</td><td>Week 1</td></tr>
+  <tr><td><strong>3. Pilot Agreement</strong></td><td>Define scope, budget, timeline, and impact metrics for Tier 1 or 2 pilot</td><td>Week 2-3</td></tr>
+  <tr><td><strong>4. Content Development</strong></td><td>Localize CramBox to agreed exam board with teacher validation</td><td>Week 4-8</td></tr>
+  <tr><td><strong>5. Pilot Launch</strong></td><td>Distribute codes through partner schools and measure impact</td><td>Week 9-12</td></tr>
+  <tr><td><strong>6. Scale Decision</strong></td><td>Review impact data, decide on Tier 3/4 expansion</td><td>Month 4-6</td></tr>
+</table>
+
+<h2>Contact</h2>
+<div class="box-green">
+  <strong>Nash Barara</strong> — Founder, Curious Inc<br>
+  Email: cre8ivepoligongrid@gmail.com<br>
+  Live Product: https://zimsec-prep.vercel.app<br>
+  Location: Zimbabwe
+</div>
+
+<div class="footer">
+  <p>CramBox NGO Partnership Proposal | Curious Inc | May 2026</p>
+  <p>This document is confidential and intended for prospective partners only.</p>
+  <p style="margin-top:8px; font-size:10px; color:#bbb;">
+    Market data sources: World Bank, UNICEF, GSMA Intelligence, MOHAC Africa, IMF, ZIMSEC, WAEC
+  </p>
+</div>
+
+</body>
+</html>

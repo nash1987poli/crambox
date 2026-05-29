@@ -79,7 +79,14 @@ function handleValidate(sheet, code, fp) {
 }
 
 function doGet(e) {
-  // GET requests should not perform validation — codes must not appear in URLs.
+  var action = (e.parameter.action || '');
+  if (action === 'validate') {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Codes');
+    if (!sheet) return jsonResponse({ valid: false, error: 'Sheet not found' });
+    var code = (e.parameter.code || '').toUpperCase().trim();
+    var fp = e.parameter.fp || '';
+    return handleValidate(sheet, code, fp);
+  }
   return jsonResponse({ status: 'ok', message: 'CramBox Activation API' });
 }
 
