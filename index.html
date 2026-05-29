@@ -1267,28 +1267,26 @@ function openSubject(key) {
   list.innerHTML = '';
   d.topics.forEach((t, i) => {
     const complete = done.includes(i);
-    const locked = i > 0 && !done.includes(i-1);
     const score = scores['t'+i];
-    // Lesson card
+    // Lesson card (always unlocked)
     const c = document.createElement('div');
-    c.className = 'topic-card' + (locked?' locked':'');
-    c.onclick = () => locked ? alert('Complete Topic '+i+' first!') : openTopic(i,'lesson');
+    c.className = 'topic-card';
+    c.onclick = () => openTopic(i,'lesson');
     c.innerHTML = `<div class="topic-inner">
-      <div class="topic-num ${complete?'done':''}">${locked?'&#128274;':complete?'&#10003;':i+1}</div>
-      <div class="topic-det"><h4>${t.title}</h4><p>${locked?'Locked':t.sub+(score!=null?' — Best: '+score+'%':'')}</p></div>
-      <span class="topic-tag ${locked?'tag-locked':'tag-lesson'}">${locked?'Locked':'Lesson'}</span>
+      <div class="topic-num ${complete?'done':''}">${complete?'&#10003;':i+1}</div>
+      <div class="topic-det"><h4>${t.title}</h4><p>${t.sub+(score!=null?' — Best: '+score+'%':'')}</p></div>
+      <span class="topic-tag tag-lesson">Lesson</span>
     </div>`;
     list.appendChild(c);
-    // Practice card
+    // Practice card (always unlocked)
     if (t.practice) {
-      const unlocked = complete;
       const pc = document.createElement('div');
-      pc.className = 'topic-card' + (unlocked?'':' locked');
-      pc.onclick = () => unlocked ? openTopic(i,'practice') : alert('Complete the lesson first!');
+      pc.className = 'topic-card';
+      pc.onclick = () => openTopic(i,'practice');
       pc.innerHTML = `<div class="topic-inner">
-        <div class="topic-num" style="background:${unlocked?'var(--gold-bg)':'var(--bg2)'};color:${unlocked?'var(--gold)':'var(--text2)'};">${unlocked?'?':'&#128274;'}</div>
-        <div class="topic-det"><h4>Practice: ${t.title}</h4><p>${unlocked?t.practice.length+' questions':'Complete lesson first'}</p></div>
-        <span class="topic-tag ${unlocked?'tag-practice':'tag-locked'}">${unlocked?'Practice':'Locked'}</span>
+        <div class="topic-num" style="background:var(--gold-bg);color:var(--gold);">?</div>
+        <div class="topic-det"><h4>Practice: ${t.title}</h4><p>${t.practice.length} questions</p></div>
+        <span class="topic-tag tag-practice">Practice</span>
       </div>`;
       list.appendChild(pc);
     }
@@ -1539,17 +1537,15 @@ function submitPractice(){
 // SPEED ROUND
 // ================================================================
 function startSpeedRound() {
-  // Collect all MCQ questions from completed topics
-  const s = getStore();
-  const done = (s.maths||{}).lessons||[];
+  // Pull MCQs from ALL topics — students can speed-test anything
   speedQuestions = [];
-  DATA.maths.topics.forEach((t,i)=>{
-    if(done.includes(i) && t.practice){
+  DATA.maths.topics.forEach((t)=>{
+    if(t.practice){
       t.practice.forEach(q=>{ if(q.type==='mcq') speedQuestions.push({...q, topic:t.title}); });
     }
   });
   if(speedQuestions.length < 3){
-    alert('Complete at least 1 lesson first to unlock Speed Round!');
+    alert('Not enough questions available yet.');
     return;
   }
   // Shuffle and pick 10 (or less)
@@ -1615,17 +1611,15 @@ function endSpeedRound(){
 // PANIC MODE
 // ================================================================
 function startPanicMode(){
-  // Grab hardest/most-missed questions across all topics
-  const s=getStore(); const done=(s.maths||{}).lessons||[];
-  if(done.length===0){ alert('Complete at least 1 lesson first!'); return; }
-  // Use all practice questions from completed topics
+  // Pull from ALL topics — exam crammers need every topic on tap
   subject='maths'; practiceTopicIdx=-1; practiceAnswers={};
   let allQ=[];
-  DATA.maths.topics.forEach((t,i)=>{
-    if(done.includes(i)&&t.practice){
+  DATA.maths.topics.forEach((t)=>{
+    if(t.practice){
       t.practice.forEach(q=>allQ.push({...q,topicTitle:t.title}));
     }
   });
+  if(allQ.length===0){ alert('No questions available yet.'); return; }
   allQ=allQ.sort(()=>Math.random()-0.5).slice(0,15);
   document.getElementById('practiceTitle').textContent='EXAM TOMORROW — Blitz Mode';
   const tm=allQ.reduce((s,q)=>s+q.marks,0);
