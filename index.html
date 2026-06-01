@@ -873,13 +873,21 @@ const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4LqyvphHN2cj
 async function validateCodeOnline(code, fp) {
   // POST keeps activation code out of URL query strings (which get logged by browsers, proxies, and Google's request logs).
   // Content-Type is text/plain to avoid CORS preflight against Apps Script; server uses JSON.parse(e.postData.contents).
-  const res = await fetch(SHEET_SCRIPT_URL, {
-    method: 'POST',
-    redirect: 'follow',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action: 'validate', code: code, fp: fp })
-  });
-  return await res.json();
+  // 15s timeout so a hanging network request can't leave the Activate button stuck forever.
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+  try {
+    const res = await fetch(SHEET_SCRIPT_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'validate', code: code, fp: fp }),
+      signal: controller.signal
+    });
+    return await res.json();
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function checkActivation() {
@@ -960,7 +968,9 @@ async function activateApp() {
 
 let _unlockToken = null;
 function unlockApp(code, token) {
-  if (token !== _unlockToken) return;
+  // token must be the live Symbol set right before a legitimate call; never null/undefined.
+  // This blocks a console call like unlockApp('x', null) from opening the gate.
+  if (!token || token !== _unlockToken) return;
   document.getElementById('gateOverlay').classList.add('hidden');
 }
 

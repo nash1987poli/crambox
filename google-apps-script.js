@@ -79,14 +79,8 @@ function handleValidate(sheet, code, fp) {
 }
 
 function doGet(e) {
-  var action = (e.parameter.action || '');
-  if (action === 'validate') {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Codes');
-    if (!sheet) return jsonResponse({ valid: false, error: 'Sheet not found' });
-    var code = (e.parameter.code || '').toUpperCase().trim();
-    var fp = e.parameter.fp || '';
-    return handleValidate(sheet, code, fp);
-  }
+  // Validation is POST-only (JSON body) so activation codes never appear in URLs,
+  // browser history, or Google's request logs. GET is a harmless health check.
   return jsonResponse({ status: 'ok', message: 'CramBox Activation API' });
 }
 
