@@ -2072,7 +2072,10 @@ function renderSpeedQ(){
     if(sec<=0){clearInterval(speedTimer);answerSpeed(-1);}
   },1000);
 }
+let speedLastAnswered=-1;
 function answerSpeed(chosen){
+  if(speedLastAnswered===speedIdx) return;   // guard: ignore double-fire (click + timeout) on same question
+  speedLastAnswered=speedIdx;
   clearInterval(speedTimer);
   const q=speedQuestions[speedIdx];
   const ok=chosen===q.ans;
@@ -2208,15 +2211,18 @@ function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a;}
 // forward independently. Discards and retries if answers don't match.
 function verifiedGenerate(generator, verifier, maxRetries) {
   maxRetries = maxRetries || 20;
+  let last;
   for (let i = 0; i < maxRetries; i++) {
     const q = generator();
+    last = q;
     const forwardAnswer = verifier(q);
     // Compare with tolerance for floating point
     if (Math.abs(forwardAnswer - q.answer) < 0.0001) return q;
     console.warn('Verification failed, retrying:', q.equation, 'got', forwardAnswer, 'expected', q.answer);
   }
-  // Fallback: return last generated (should rarely happen)
-  return generator();
+  // Fallback: return the LAST generated question (params consistent), not a fresh unverified one
+  console.warn('verifiedGenerate: no verified question after', maxRetries, 'attempts — returning last generated.');
+  return last;
 }
 
 const DRILL_TOPICS = [
@@ -2372,12 +2378,12 @@ const DRILL_TOPICS = [
       if (isArea) {
         const answer = (22/7) * r * r;
         const eq = `Circle: radius ${r} cm (use pi = 22/7)`;
-        const steps = `Area = pi x r x r\n= 22/7 x ${r} x ${r}\n= ${(22/7)*r} x ${r}\n= ${answer} cm^2`;
+        const steps = `Area = pi x r x r\n= 22/7 x ${r} x ${r}\n= ${Math.round(answer*100)/100} cm^2`;
         return { equation: eq, instruction: 'Find the area (cm^2)', answer: Math.round(answer*100)/100, steps, variable: 'cm^2', _r: r, _isArea: true };
       } else {
         const answer = 2 * (22/7) * r;
         const eq = `Circle: radius ${r} cm (use pi = 22/7)`;
-        const steps = `Circumference = 2 x pi x r\n= 2 x 22/7 x ${r}\n= ${2*22/7} x ${r}\n= ${answer} cm`;
+        const steps = `Circumference = 2 x pi x r\n= 2 x 22/7 x ${r}\n= ${Math.round(answer*100)/100} cm`;
         return { equation: eq, instruction: 'Find the circumference (cm)', answer: Math.round(answer*100)/100, steps, variable: 'cm', _r: r, _isArea: false };
       }
     },
