@@ -1002,8 +1002,8 @@ function getStore() { try { return JSON.parse(localStorage.getItem('crambox') ||
 function setStore(d) { localStorage.setItem('crambox', JSON.stringify(d)); }
 
 function getRank(xp) {
-  if (xp >= 2000) return { name: 'ZIMSEC Ready', color: 'var(--green)', next: null, min: 2000, max: Infinity };
-  if (xp >= 1000) return { name: 'Diamond', color: 'var(--blue)', next: 'ZIMSEC Ready', min: 1000, max: 2000 };
+  if (xp >= 2000) return { name: 'Exam Ready', color: 'var(--green)', next: null, min: 2000, max: Infinity };
+  if (xp >= 1000) return { name: 'Diamond', color: 'var(--blue)', next: 'Exam Ready', min: 1000, max: 2000 };
   if (xp >= 600) return { name: 'Gold', color: 'var(--gold)', next: 'Diamond', min: 600, max: 1000 };
   if (xp >= 300) return { name: 'Silver', color: '#aaa', next: 'Gold', min: 300, max: 600 };
   if (xp >= 100) return { name: 'Bronze', color: '#cd7f32', next: 'Silver', min: 100, max: 300 };
@@ -1175,12 +1175,12 @@ const DATA = {
       {
         title:'Solving Linear Equations', sub:'Algebra — Paper 1',
         steps: [
-          { w:'<span class="comment">-- ZIMSEC O-Level Mathematics --</span>\n<span class="comment">-- Topic: Solving Linear Equations --</span>\n\n<span class="label">Problem:</span>\n<span class="highlight">Solve for x:</span>  <span class="number">3x + 7 = 22</span>', n:"Let's solve a linear equation. We need to find the value of x in the equation 3x plus 7 equals 22." },
+          { w:'<span class="comment">-- CramBox O-Level Mathematics --</span>\n<span class="comment">-- Topic: Solving Linear Equations --</span>\n\n<span class="label">Problem:</span>\n<span class="highlight">Solve for x:</span>  <span class="number">3x + 7 = 22</span>', n:"Let's solve a linear equation. We need to find the value of x in the equation 3x plus 7 equals 22." },
           { w:'<span class="comment">-- Step 1: Isolate the variable term --</span>\n\n  <span class="number">3x + 7 = 22</span>\n\n<span class="keyword">Subtract 7 from both sides:</span>\n\n  <span class="number">3x + 7</span> <span class="operator">- 7</span> = <span class="number">22</span> <span class="operator">- 7</span>', n:"Step 1. We need to get x by itself. First, subtract 7 from both sides of the equation." },
           { w:'<span class="comment">-- Step 1 Result --</span>\n\n  3x + 7 - 7 = 22 - 7\n\n  <span class="result">3x = 15</span>\n\n<span class="comment">-- The +7 and -7 cancel out --</span>', n:"The positive 7 and negative 7 cancel out, giving us 3x equals 15." },
           { w:'<span class="comment">-- Step 2: Solve for x --</span>\n\n  <span class="number">3x = 15</span>\n\n<span class="keyword">Divide both sides by 3:</span>\n\n  <span class="number">3x</span> <span class="operator">/ 3</span> = <span class="number">15</span> <span class="operator">/ 3</span>', n:"Step 2. Divide both sides by 3. 15 divided by 3 gives us our answer." },
           { w:'<span class="comment">-- Solution --</span>\n\n  <span class="result">x = 5</span>\n\n<span class="keyword">Check:</span> 3(<span class="number">5</span>) + 7 = 15 + 7 = <span class="result">22</span>  <span class="result">Correct!</span>', n:"x equals 5. Check: 3 times 5 is 15, plus 7 equals 22. Correct!" },
-          { w:'<span class="comment">-- Key Rules --</span>\n\n<span class="keyword">1.</span> <span class="highlight">Move terms</span> using opposite operations\n<span class="keyword">2.</span> <span class="highlight">Undo coefficients</span> by dividing\n<span class="keyword">3.</span> <span class="highlight">Always check</span> your answer\n\n<span class="important">ZIMSEC TIP: Show your working!\nMarks are for method, not just the answer.</span>', n:"Remember: move terms with opposite operations, undo coefficients by dividing, and always check. Show your working in ZIMSEC — marks are for method, not just the answer." }
+          { w:'<span class="comment">-- Key Rules --</span>\n\n<span class="keyword">1.</span> <span class="highlight">Move terms</span> using opposite operations\n<span class="keyword">2.</span> <span class="highlight">Undo coefficients</span> by dividing\n<span class="keyword">3.</span> <span class="highlight">Always check</span> your answer\n\n<span class="important">CramBox TIP: Show your working!\nMarks are for method, not just the answer.</span>', n:"Remember: move terms with opposite operations, undo coefficients by dividing, and always check. Show your working in the exam — marks are for method, not just the answer." }
         ],
         practice: [
           { q:'Solve for x:  5x - 3 = 17', type:'mcq', opts:['x = 2','x = 4','x = 3','x = 5'], ans:1, marks:3, exp:'5x - 3 = 17\n5x = 20\nx = 4' },
@@ -1239,13 +1239,493 @@ const DATA = {
           { w:'<span class="keyword">Mean</span>   = Sum / Count\n<span class="keyword">Median</span> = Middle value (in order)\n<span class="keyword">Mode</span>   = Most frequent value', n:"Mean: sum divided by count. Median: middle value when arranged in order. Mode: most frequent value." },
           { w:'<span class="label">Data: 4, 7, 2, 7, 5, 9, 7, 3, 8</span>\n\n<span class="keyword">Step 1: Arrange</span>\n  <span class="highlight">2, 3, 4, 5, 7, 7, 7, 8, 9</span>', n:"Always arrange data in ascending order first. Our data becomes 2, 3, 4, 5, 7, 7, 7, 8, 9." },
           { w:'<span class="keyword">Mean:</span>  (2+3+4+5+7+7+7+8+9)/9 = 52/9\n  <span class="result">Mean = 5.78</span>\n\n<span class="keyword">Median:</span> 5th value = <span class="result">7</span>\n\n<span class="keyword">Mode:</span> 7 appears 3 times = <span class="result">7</span>', n:"Mean: 52 divided by 9 is 5 point 78. Median: 5th value is 7. Mode: 7 appears 3 times." },
-          { w:'<span class="label">EVEN number of values: 3, 5, 8, 12</span>\n\n  Middle: 5 and 8\n  Median = (5+8)/2 = <span class="result">6.5</span>\n\n<span class="important">ZIMSEC TRICK: Even count?\nMedian = average of two middle values!</span>', n:"With an even number of values, the median is the average of the two middle values. This is a common ZIMSEC trick!" }
+          { w:'<span class="label">EVEN number of values: 3, 5, 8, 12</span>\n\n  Middle: 5 and 8\n  Median = (5+8)/2 = <span class="result">6.5</span>\n\n<span class="important">CramBox TRICK: Even count?\nMedian = average of two middle values!</span>', n:"With an even number of values, the median is the average of the two middle values. This is a common exam trick!" }
         ],
         practice: [
           { q:'Mean of: 6, 4, 8, 10, 2', type:'input', ans:'6', marks:2, exp:'Sum=30, 30/5=6' },
           { q:'Median of: 3, 7, 1, 9, 5', type:'mcq', opts:['3','5','7','1'], ans:1, marks:2, exp:'Order: 1,3,5,7,9. Middle=5' },
           { q:'Mode of: 2, 4, 4, 6, 4, 8, 6', type:'input', ans:'4', marks:1, exp:'4 appears 3 times' },
           { q:'Median of: 10, 20, 30, 40', type:'mcq', opts:['20','25','30','24'], ans:1, marks:3, exp:'(20+30)/2 = 25' }
+        ]
+      },
+      {
+        title:'Factorising Quadratics', sub:'Algebra — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Factorising Quadratics --</span>\n\n<span class="label">Factorise:</span>  <span class="number">x&#178; + 7x + 12</span>\n\n<span class="keyword">Find two numbers that:</span>\n  <span class="highlight">MULTIPLY</span> to <span class="number">+12</span>\n  <span class="highlight">ADD</span> to <span class="number">+7</span>', n:"To factorise a quadratic, find two numbers that multiply to give the last term, 12, and add to give the middle number, 7." },
+          { w:'<span class="comment">-- The two numbers --</span>\n\n  <span class="number">+3</span> &#215; <span class="number">+4</span> = <span class="result">+12</span>  <span class="result">(multiply)</span>\n  <span class="number">+3</span> + <span class="number">+4</span> = <span class="result">+7</span>   <span class="result">(add)</span>\n\n<span class="result">x&#178; + 7x + 12 = (x + 3)(x + 4)</span>', n:"3 times 4 is 12, and 3 plus 4 is 7. So the factors are x plus 3, in brackets, times x plus 4." },
+          { w:'<span class="comment">-- Difference of Two Squares --</span>\n\n  <span class="number">a&#178; - b&#178; = (a - b)(a + b)</span>\n\n<span class="label">Example:</span>\n  <span class="number">x&#178; - 16</span> = <span class="result">(x - 4)(x + 4)</span>\n\n<span class="important">Spot it: TWO squared terms\nwith a MINUS between them.</span>', n:"When you see a squared term minus another squared term, use difference of two squares. x squared minus 16 is x minus 4, times x plus 4." },
+          { w:'<span class="comment">-- Always take out a common factor FIRST --</span>\n\n  <span class="number">27 - 3x&#178;</span>\n  = <span class="number">3(9 - x&#178;)</span>\n  = <span class="result">3(3 - x)(3 + x)</span>\n\n<span class="important">CramBox TIP: \"Factorise completely\"\nmeans take out the common factor too!</span>', n:"When a question says factorise completely, always take out any common factor first. 27 minus 3 x squared becomes 3, times 9 minus x squared, which is 3 times 3 minus x, times 3 plus x." }
+        ],
+        practice: [
+          { q:'Factorise:  y&#178; + 10y - 24', type:'mcq', opts:['(y+12)(y-2)','(y+6)(y-4)','(y-12)(y+2)','(y+8)(y-3)'], ans:0, marks:2, exp:'+12 x -2 = -24\n+12 + -2 = +10\n(y+12)(y-2)' },
+          { q:'Factorise:  x&#178; + 5x + 6', type:'mcq', opts:['(x+1)(x+6)','(x+2)(x+3)','(x+5)(x+1)','(x-2)(x-3)'], ans:1, marks:2, exp:'2 x 3 = 6,  2 + 3 = 5\n(x+2)(x+3)' },
+          { q:'Factorise:  x&#178; - 49', type:'mcq', opts:['(x-7)(x-7)','(x+7)(x+7)','(x-7)(x+7)','(x-49)(x+1)'], ans:2, marks:2, exp:'Difference of squares\n(x-7)(x+7)' },
+          { q:'Solve x&#178; - 5x + 6 = 0.\nGive the SMALLER value of x.', type:'input', ans:'2', marks:3, exp:'(x-2)(x-3)=0\nx = 2 or x = 3\nSmaller = 2' }
+        ]
+      },
+      {
+        title:'Indices (Index Laws)', sub:'Number — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- The Index Laws --</span>\n\n<span class="keyword">Multiply:</span>  a&#7504; &#215; a&#8319; = <span class="highlight">a&#7504;&#8314;&#8319;</span>  <span class="comment">(ADD powers)</span>\n<span class="keyword">Divide:</span>    a&#7504; &#247; a&#8319; = <span class="highlight">a&#7504;&#8315;&#8319;</span>  <span class="comment">(SUBTRACT)</span>\n<span class="keyword">Power:</span>     (a&#7504;)&#8319; = <span class="highlight">a&#7504;&#8319;</span>      <span class="comment">(MULTIPLY)</span>', n:"The three main index laws. When multiplying, add the powers. When dividing, subtract the powers. For a power of a power, multiply the powers." },
+          { w:'<span class="comment">-- Worked examples --</span>\n\n  <span class="number">x&#8309; &#215; x&#179;</span> = x to the (5+3) = <span class="result">x&#8312;</span>\n  <span class="number">x&#8311; &#247; x&#178;</span> = x to the (7-2) = <span class="result">x&#8309;</span>\n  <span class="number">(x&#178;)&#8308;</span> = x to the (2&#215;4) = <span class="result">x&#8312;</span>', n:"x to the 5 times x to the 3 is x to the 8. x to the 7 divided by x squared is x to the 5. x squared, all to the power 4, is x to the 8." },
+          { w:'<span class="comment">-- Special powers --</span>\n\n<span class="keyword">Zero power:</span>   <span class="number">a&#8304; = 1</span>   <span class="comment">(anything to power 0 is 1)</span>\n<span class="keyword">Negative:</span>    <span class="number">a&#8315;&#8319; = 1/a&#8319;</span>\n\n<span class="label">Example:</span>  2&#8315;&#179; = 1/2&#179; = <span class="result">1/8</span>', n:"Any number to the power zero equals 1. A negative power means one over that number. 2 to the power negative 3 is one over 2 cubed, which is one eighth." },
+          { w:'<span class="comment">-- Solving index equations --</span>\n\n<span class="label">Solve:</span>  <span class="number">9&#7504;&#8315;&#185; = 27</span>\n\n<span class="keyword">Same base (3):</span>\n  9 = 3&#178;,  27 = 3&#179;\n  3&#178;&#7506;&#7504;&#8315;&#185;&#8318; = 3&#179;\n  2(m - 1) = 3\n  2m - 2 = 3\n  <span class="result">m = 2.5</span>', n:"To solve index equations, write both sides with the same base. 9 is 3 squared and 27 is 3 cubed. So 2 times m minus 1 equals 3, giving m equals 2 point 5." }
+        ],
+        practice: [
+          { q:'Simplify:  2&#179; &#215; 2&#178;', type:'mcq', opts:['2&#8309; = 32','2&#8310; = 64','4&#8309;','2&#8311;'], ans:0, marks:2, exp:'Add powers: 3+2=5\n2&#8309; = 32' },
+          { q:'Simplify:  x&#8310; &#247; x&#178;', type:'mcq', opts:['x&#179;','x&#8308;','x&#8312;','x&#178;'], ans:1, marks:2, exp:'Subtract powers: 6-2=4\nx&#8308;' },
+          { q:'Evaluate:  7&#8304;', type:'input', ans:'1', marks:1, exp:'Anything to power 0 = 1' },
+          { q:'Evaluate 2&#8315;&#179; as a fraction.', type:'mcq', opts:['-8','1/8','1/6','-6'], ans:1, marks:2, exp:'2&#8315;&#179; = 1/2&#179; = 1/8' }
+        ]
+      },
+      {
+        title:'Matrices', sub:'Algebra — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Multiplying Matrices --</span>\n\n<span class="label">Row &#215; Column:</span> multiply pairs, then ADD\n\n  [<span class="number">8  -4</span>] [<span class="number">1</span>]\n  [<span class="number">-5  3</span>] [<span class="number">3</span>]\n\n  Top:    (8&#215;1) + (-4&#215;3) = 8 - 12 = <span class="result">-4</span>\n  Bottom: (-5&#215;1) + (3&#215;3) = -5 + 9 = <span class="result">4</span>', n:"To multiply matrices, take each row times the column: multiply the pairs and add. 8 times 1 plus negative 4 times 3 is negative 4. Negative 5 times 1 plus 3 times 3 is 4." },
+          { w:'<span class="comment">-- The Determinant --</span>\n\n  M = [<span class="number">a  b</span>]\n      [<span class="number">c  d</span>]\n\n  <span class="keyword">det M = ad - bc</span>\n\n<span class="label">For M = [8 -4; -5 3]:</span>\n  det = (8&#215;3) - (-4&#215;-5)\n  det = 24 - 20 = <span class="result">4</span>', n:"The determinant of a 2 by 2 matrix is a d minus b c. For this matrix: 8 times 3 is 24, minus negative 4 times negative 5 which is 20. 24 minus 20 is 4." },
+          { w:'<span class="comment">-- The Inverse --</span>\n\n  M&#8315;&#185; = <span class="highlight">1/det</span> &#215; [<span class="number"> d  -b</span>]\n                    [<span class="number">-c   a</span>]\n\n<span class="keyword">Swap a &amp; d, negate b &amp; c, divide by det</span>\n\n  M&#8315;&#185; = 1/4 [3  4]\n            [5  8]', n:"To find the inverse: swap the two diagonal numbers, change the sign of the other two, then divide every number by the determinant. Here we divide by 4." },
+          { w:'<span class="important">CramBox TIPS:\n\n1. det = 0 means NO inverse exists.\n2. Order matters: AB is NOT BA.\n3. Check: M &#215; M&#8315;&#185; = identity [1 0; 0 1]</span>', n:"Remember: if the determinant is zero, there is no inverse. The order of multiplication matters. And you can always check by multiplying a matrix by its inverse to get the identity matrix." }
+        ],
+        practice: [
+          { q:'Find the determinant of\n[2  3]\n[1  4]', type:'input', ans:'5', marks:2, exp:'(2&#215;4) - (3&#215;1)\n= 8 - 3 = 5' },
+          { q:'Find the determinant of\n[1  2]\n[3  4]', type:'mcq', opts:['10','-2','2','7'], ans:1, marks:2, exp:'(1&#215;4)-(2&#215;3)\n= 4 - 6 = -2' },
+          { q:'Multiply:\n[2  1] [1]\n[0  3] [2]\nTop value?', type:'mcq', opts:['2','4','6','3'], ans:1, marks:2, exp:'(2&#215;1)+(1&#215;2)\n= 2 + 2 = 4' },
+          { q:'A matrix has det = 0.\nDoes its inverse exist?\nType yes or no.', type:'input', ans:'no', marks:1, exp:'det = 0 means NO inverse' }
+        ]
+      },
+      {
+        title:'Sets and Venn Diagrams', sub:'Number — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Set Notation --</span>\n\n<span class="keyword">n(A)</span>     = number of elements in A\n<span class="keyword">A &#8746; B</span>    = union (in A OR B)\n<span class="keyword">A &#8745; B</span>    = intersection (in A AND B)\n<span class="keyword">A&#39;</span>      = complement (NOT in A)', n:"Key set notation. n of A means the number of elements in A. A union B means in either set. A intersection B means in both sets. A prime means everything not in A." },
+          { w:'<span class="comment">-- The Union Formula --</span>\n\n  <span class="highlight">n(A &#8746; B) = n(A) + n(B) - n(A &#8745; B)</span>\n\n<span class="comment">-- We subtract the overlap so it\nis not counted twice --</span>', n:"The most important set formula. The number in A union B equals the number in A, plus the number in B, minus the number in both. We subtract the overlap because it was counted twice." },
+          { w:'<svg viewBox="0 0 260 150" style="width:100%;max-width:320px;height:auto;margin:6px auto 12px;display:block;"><circle cx="100" cy="82" r="55" fill="var(--gold-bg)" stroke="var(--gold)" stroke-width="2"/><circle cx="160" cy="82" r="55" fill="none" stroke="var(--accent)" stroke-width="2"/><text x="52" y="34" fill="var(--gold)" font-family="monospace" font-size="15">P</text><text x="208" y="34" fill="var(--accent)" font-family="monospace" font-size="15">Q</text><text x="72" y="88" fill="var(--text)" font-family="monospace" font-size="16" text-anchor="middle">2</text><text x="130" y="88" fill="var(--text)" font-family="monospace" font-size="16" text-anchor="middle">2</text><text x="188" y="88" fill="var(--text)" font-family="monospace" font-size="16" text-anchor="middle">4</text></svg><span class="label">n(P)=4, n(Q)=6, n(P &#8745; Q)=2</span>\n\n  n(P &#8746; Q) = 4 + 6 - 2\n  <span class="result">n(P &#8746; Q) = 8</span>\n\n<span class="comment">P only = 2, both = 2, Q only = 4</span>', n:"If P has 4 elements, Q has 6, and 2 are in both: P union Q is 4 plus 6 minus 2, which equals 8. Notice the overlap of 2 is only counted once." },
+          { w:'<span class="comment">-- Factors as a set --</span>\n\n<span class="label">Factors of 42:</span>\n  {<span class="number">1, 2, 3, 6, 7, 14, 21, 42</span>}\n  = <span class="result">8 elements</span>\n\n<span class="important">TIP: List factors in PAIRS:\n1&#215;42, 2&#215;21, 3&#215;14, 6&#215;7</span>', n:"To find factors of a number, list them in pairs. For 42: 1 and 42, 2 and 21, 3 and 14, 6 and 7. That gives 8 factors in total." }
+        ],
+        practice: [
+          { q:'How many factors does 42 have?', type:'mcq', opts:['6','7','8','10'], ans:2, marks:2, exp:'1,2,3,6,7,14,21,42\n= 8 factors' },
+          { q:'n(A)=12, n(B)=15, n(A&#8745;B)=5.\nFind n(A&#8746;B).', type:'input', ans:'22', marks:3, exp:'12 + 15 - 5 = 22' },
+          { q:'n(Universal)=30, n(A&#8746;B)=22.\nFind n(A&#8746;B)&#39;.', type:'mcq', opts:['8','12','22','52'], ans:0, marks:2, exp:'30 - 22 = 8' },
+          { q:'A&#8745;B means in...', type:'mcq', opts:['A or B','BOTH A and B','neither','only A'], ans:1, marks:1, exp:'Intersection = in BOTH sets' }
+        ]
+      },
+      {
+        title:'Trigonometry (Right-Angled)', sub:'Geometry — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- SOH CAH TOA --</span>\n\n<span class="keyword">SOH:</span>  sin &#952; = <span class="highlight">Opposite / Hypotenuse</span>\n<span class="keyword">CAH:</span>  cos &#952; = <span class="highlight">Adjacent / Hypotenuse</span>\n<span class="keyword">TOA:</span>  tan &#952; = <span class="highlight">Opposite / Adjacent</span>\n\n<span class="comment">Hypotenuse = longest side (opposite right angle)</span>', n:"The three trig ratios. SOH: sine equals opposite over hypotenuse. CAH: cosine equals adjacent over hypotenuse. TOA: tangent equals opposite over adjacent. The hypotenuse is the longest side, opposite the right angle." },
+          { w:'<svg viewBox="0 0 260 165" style="width:100%;max-width:300px;height:auto;margin:6px auto 12px;display:block;"><polygon points="70,135 230,135 70,45" fill="var(--gold-bg)" stroke="var(--gold)" stroke-width="2"/><path d="M70,118 L87,118 L87,135" fill="none" stroke="var(--gold)" stroke-width="1.5"/><path d="M212,135 A22,22 0 0 0 220,116" fill="none" stroke="var(--accent)" stroke-width="1.5"/><text x="150" y="155" fill="var(--text)" font-family="monospace" font-size="12" text-anchor="middle">Adjacent = 4</text><text x="62" y="93" fill="var(--text)" font-family="monospace" font-size="12" text-anchor="end">Opp = 3</text><text x="158" y="82" fill="var(--text)" font-family="monospace" font-size="12">Hyp = 5</text><text x="203" y="128" fill="var(--accent)" font-family="monospace" font-size="14">&#952;</text></svg><span class="comment">-- Pythagoras finds a missing side --</span>\n\n  <span class="highlight">a&#178; + b&#178; = c&#178;</span>   (c = hypotenuse)\n\n<span class="label">Opposite = 3, Adjacent = 4:</span>\n  hyp = &#8730;(3&#178; + 4&#178;) = &#8730;(9+16)\n  hyp = &#8730;25 = <span class="result">5</span>', n:"To find a missing side in a right triangle, use Pythagoras: a squared plus b squared equals c squared. If the two short sides are 3 and 4, the hypotenuse is the square root of 25, which is 5." },
+          { w:'<span class="comment">-- Finding an angle --</span>\n\n<span class="label">Opposite = 3, Adjacent = 4:</span>\n\n  tan &#952; = 3/4 = 0.75\n  &#952; = tan&#8315;&#185;(0.75)\n  <span class="result">&#952; = 36.9&#176;</span>', n:"To find an angle, pick the ratio you have. With opposite 3 and adjacent 4, use tangent. Tan theta is 0 point 75, so theta is inverse tan of 0 point 75, which is 36 point 9 degrees." },
+          { w:'<span class="comment">-- Finding a side using an angle --</span>\n\n<span class="label">Hypotenuse = 10, angle = 30&#176;, find Opposite:</span>\n\n  sin 30&#176; = opp / 10\n  opp = 10 &#215; sin 30&#176;\n  opp = 10 &#215; 0.5 = <span class="result">5</span>\n\n<span class="important">Common values: sin30=0.5,\ncos60=0.5, tan45=1</span>', n:"To find a side using a known angle, rearrange the ratio. Opposite equals 10 times sine 30, and sine 30 is 0 point 5, so the opposite side is 5." }
+        ],
+        practice: [
+          { q:'Right triangle: short sides 6 and 8.\nFind the hypotenuse.', type:'input', ans:'10', marks:3, exp:'&#8730;(6&#178;+8&#178;)=&#8730;100 = 10' },
+          { q:'What is sin 30&#176;?', type:'mcq', opts:['0','0.5','0.866','1'], ans:1, marks:2, exp:'sin 30&#176; = 0.5' },
+          { q:'Hyp=10, angle=30&#176;.\nFind the opposite side.', type:'mcq', opts:['3','5','8.66','10'], ans:1, marks:3, exp:'10 &#215; sin30 = 10 &#215; 0.5 = 5' },
+          { q:'What is tan 45&#176;?', type:'input', ans:'1', marks:1, exp:'tan 45&#176; = 1' }
+        ]
+      },
+      {
+        title:'Volume and Surface Area', sub:'Mensuration — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Key 3D Formulae --</span>\n\n<span class="keyword">Cylinder:</span>  V = <span class="highlight">&#960;r&#178;h</span>\n<span class="keyword">Cone:</span>      V = <span class="highlight">&#8531;&#960;r&#178;h</span>    CSA = <span class="highlight">&#960;rl</span>\n<span class="keyword">Sphere:</span>    V = <span class="highlight">&#8308;&#8260;&#8323;&#960;r&#179;</span>   SA = <span class="highlight">4&#960;r&#178;</span>\n\n<span class="comment">l = slant height, h = perpendicular height</span>', n:"The key 3D formulae. Cylinder volume is pi r squared h. Cone volume is one third pi r squared h, and its curved surface is pi r l. Sphere volume is four thirds pi r cubed, and its surface area is 4 pi r squared." },
+          { w:'<span class="comment">-- Cone: find perpendicular height --</span>\n\n<span class="label">radius = 8, slant height = 10:</span>\n\n  h = &#8730;(l&#178; - r&#178;) = &#8730;(10&#178; - 8&#178;)\n  h = &#8730;(100 - 64) = &#8730;36\n  <span class="result">h = 6 cm</span>', n:"For a cone, the slant height, radius and perpendicular height form a right triangle. Height is the square root of slant squared minus radius squared. Root of 100 minus 64 is root 36, which is 6." },
+          { w:'<span class="comment">-- Cone volume (&#960; = 22/7) --</span>\n\n  V = &#8531; &#215; 22/7 &#215; 8&#178; &#215; 6\n  V = &#8531; &#215; 22/7 &#215; 64 &#215; 6\n  <span class="result">V &#8776; 402 cm&#179;</span>', n:"Now the volume. One third times 22 over 7 times 64 times 6 gives approximately 402 cubic centimetres." },
+          { w:'<span class="important">CramBox TIPS:\n\n1. Use &#960; = 22/7 when radius is a\n   multiple of 7.\n2. Watch UNITS: cm&#178; for area,\n   cm&#179; for volume.\n3. Slant (l) for surface, height (h)\n   for volume &#8212; do not mix them up.</span>', n:"Remember: use pi as 22 over 7 when the radius is a multiple of 7. Area is in square units, volume in cubic units. And use slant height for surface area, perpendicular height for volume." }
+        ],
+        practice: [
+          { q:'Cone: radius 8, slant height 10.\nFind perpendicular height.', type:'input', ans:'6', marks:2, exp:'&#8730;(10&#178;-8&#178;)=&#8730;36 = 6' },
+          { q:'Cylinder: r=7, h=10 (&#960;=22/7).\nFind the volume.', type:'mcq', opts:['1540','220','440','308'], ans:0, marks:3, exp:'22/7 &#215; 49 &#215; 10 = 1540 cm&#179;' },
+          { q:'Sphere surface area, r=7 (&#960;=22/7).', type:'mcq', opts:['154','308','616','1232'], ans:2, marks:3, exp:'4 &#215; 22/7 &#215; 49 = 616 cm&#178;' },
+          { q:'Which is used for VOLUME of a cone:\nslant (l) or height (h)? Type l or h.', type:'input', ans:'h', marks:1, exp:'Volume uses perpendicular height h' }
+        ]
+      },
+      {
+        title:'Variation', sub:'Algebra — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Direct vs Inverse Variation --</span>\n\n<span class="keyword">Direct:</span>   y &#8733; x   means  <span class="highlight">y = kx</span>\n  (as x goes up, y goes up)\n\n<span class="keyword">Inverse:</span>  y &#8733; 1/x  means  <span class="highlight">y = k/x</span>\n  (as x goes up, y goes DOWN)\n\n<span class="comment">k = the constant of variation</span>', n:"Two types of variation. Direct: y equals k x, so as x increases, y increases. Inverse: y equals k over x, so as x increases, y decreases. k is the constant we must find first." },
+          { w:'<span class="comment">-- Step 1: Always find k first --</span>\n\n<span class="label">Direct: y = 12 when x = 3</span>\n\n  y = kx\n  12 = k &#215; 3\n  <span class="result">k = 4</span>\n\n  So the formula is  <span class="highlight">y = 4x</span>', n:"The first step in any variation question is to find k. Substitute the values you are given. 12 equals k times 3, so k equals 4. The formula is y equals 4 x." },
+          { w:'<span class="comment">-- Step 2: Use the formula --</span>\n\n<span class="label">Find y when x = 5:</span>\n\n  y = 4 &#215; 5\n  <span class="result">y = 20</span>', n:"Now use the formula. When x is 5, y equals 4 times 5, which is 20." },
+          { w:'<span class="comment">-- Inverse variation example --</span>\n\n<span class="label">y = 6 when x = 2, find y when x = 4:</span>\n\n  y = k/x  &#8594;  6 = k/2  &#8594;  <span class="number">k = 12</span>\n  y = 12/4 = <span class="result">3</span>\n\n<span class="important">Same method: find k, then substitute.</span>', n:"For inverse variation, same method. y equals k over x. 6 equals k over 2, so k is 12. Then when x is 4, y is 12 over 4, which is 3." }
+        ],
+        practice: [
+          { q:'y &#8733; x and y = 10 when x = 2.\nFind the constant k.', type:'input', ans:'5', marks:2, exp:'10 = k &#215; 2,  k = 5' },
+          { q:'y = 3x. Find y when x = 7.', type:'mcq', opts:['10','21','3','37'], ans:1, marks:2, exp:'y = 3 &#215; 7 = 21' },
+          { q:'y &#8733; 1/x and y = 8 when x = 3.\nFind y when x = 4.', type:'mcq', opts:['6','10','11','2'], ans:0, marks:3, exp:'k = 8&#215;3 = 24\ny = 24/4 = 6' },
+          { q:'In direct variation y = kx,\nif x doubles, y is multiplied by?', type:'input', ans:'2', marks:1, exp:'y = kx, so y also doubles' }
+        ]
+      },
+      {
+        title:'Standard Form', sub:'Number — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- Standard Form --</span>\n\n  <span class="highlight">A &#215; 10&#8319;</span>   where  <span class="number">1 &#8804; A &lt; 10</span>\n\n<span class="comment">A is always ONE digit before the decimal point.</span>', n:"Standard form writes a number as A times 10 to the power n, where A is between 1 and 10. There is always exactly one non-zero digit before the decimal point." },
+          { w:'<span class="comment">-- Large numbers: positive power --</span>\n\n  <span class="number">45 000</span>\n  Move point <span class="keyword">4 places left</span>: 4.5\n  = <span class="result">4.5 &#215; 10&#8308;</span>', n:"For large numbers, move the decimal point left until one digit remains in front. 45 thousand becomes 4 point 5 times 10 to the 4, because we moved 4 places." },
+          { w:'<span class="comment">-- Small numbers: negative power --</span>\n\n  <span class="number">0.0032</span>\n  Move point <span class="keyword">3 places right</span>: 3.2\n  = <span class="result">3.2 &#215; 10&#8315;&#179;</span>', n:"For small numbers less than 1, move the decimal point right and use a negative power. 0 point 0 0 3 2 becomes 3 point 2 times 10 to the negative 3." },
+          { w:'<span class="comment">-- Multiplying in standard form --</span>\n\n  (2 &#215; 10&#179;) &#215; (3 &#215; 10&#8308;)\n  = (2&#215;3) &#215; 10&#8317;&#179;&#8314;&#8308;&#8318;\n  = <span class="result">6 &#215; 10&#8311;</span>\n\n<span class="important">Multiply the numbers, ADD the powers.</span>', n:"To multiply numbers in standard form, multiply the front numbers and add the powers. 2 times 3 is 6, and 3 plus 4 is 7, giving 6 times 10 to the 7." }
+        ],
+        practice: [
+          { q:'Write 36 000 in standard form.', type:'mcq', opts:['3.6 &#215; 10&#8308;','36 &#215; 10&#179;','3.6 &#215; 10&#179;','3.6 &#215; 10&#8309;'], ans:0, marks:2, exp:'Move point 4 places left\n3.6 &#215; 10&#8308;' },
+          { q:'Write 0.0045 in standard form.', type:'mcq', opts:['4.5 &#215; 10&#179;','4.5 &#215; 10&#8315;&#179;','45 &#215; 10&#8315;&#8308;','4.5 &#215; 10&#8315;&#8308;'], ans:1, marks:2, exp:'Move point 3 places right\n4.5 &#215; 10&#8315;&#179;' },
+          { q:'(2 &#215; 10&#8309;) &#215; (4 &#215; 10&#178;) = ?', type:'mcq', opts:['8 &#215; 10&#8311;','6 &#215; 10&#8311;','8 &#215; 10&#185;&#8304;','8 &#215; 10&#179;'], ans:0, marks:3, exp:'2&#215;4=8,  5+2=7\n8 &#215; 10&#8311;' },
+          { q:'Write 5.2 &#215; 10&#179; as an ordinary number.', type:'input', ans:'5200', marks:2, exp:'5.2 &#215; 1000 = 5200' }
+        ]
+      },
+      {
+        title:'Number Bases', sub:'Number — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- Place values in Base 2 (binary) --</span>\n\n  <span class="number"> 8    4    2    1</span>\n  <span class="keyword">2&#179;   2&#178;   2&#185;   2&#8304;</span>\n\n<span class="comment">Each place is DOUBLE the one to its right.</span>', n:"In base 2, the place values from right to left are 1, 2, 4, 8 — each one double the last. These are powers of 2." },
+          { w:'<span class="comment">-- Binary to Base 10 --</span>\n\n  <span class="number">1011&#8322;</span>\n  = (1&#215;8)+(0&#215;4)+(1&#215;2)+(1&#215;1)\n  = 8 + 0 + 2 + 1\n  = <span class="result">11&#8321;&#8320;</span>', n:"To convert binary to base 10, multiply each digit by its place value and add. 1 0 1 1 is 8 plus 0 plus 2 plus 1, which equals 11." },
+          { w:'<span class="comment">-- Base 10 to Binary --</span>\n\n  <span class="number">13</span> = 8 + 4 + 1\n      = (1&#215;8)+(1&#215;4)+(0&#215;2)+(1&#215;1)\n  = <span class="result">1101&#8322;</span>', n:"To convert to binary, break the number into powers of 2. 13 is 8 plus 4 plus 1, which gives 1 1 0 1 in binary." },
+          { w:'<span class="comment">-- Adding in Base 2 --</span>\n\n   <span class="number"> 1 0 1</span>\n  +<span class="number"> 0 1 1</span>\n  <span class="keyword">_______</span>\n   <span class="result">1 0 0 0</span>\n\n<span class="important">In base 2: 1 + 1 = 10 (carry the 1).</span>', n:"When adding in base 2, remember 1 plus 1 equals 1 0 — you write 0 and carry the 1. 101 plus 011 gives 1000." }
+        ],
+        practice: [
+          { q:'Convert 1101&#8322; to base 10.', type:'input', ans:'13', marks:2, exp:'8+4+0+1 = 13' },
+          { q:'Convert 6 (base 10) to binary.', type:'mcq', opts:['101','110','011','111'], ans:1, marks:2, exp:'6 = 4 + 2 = 110&#8322;' },
+          { q:'Convert 1010&#8322; to base 10.', type:'mcq', opts:['8','9','10','12'], ans:2, marks:2, exp:'8+0+2+0 = 10' },
+          { q:'In 1000&#8322;, what is the place value of the 1?', type:'input', ans:'8', marks:1, exp:'4th place = 2&#179; = 8' }
+        ]
+      },
+      {
+        title:'Ratio, Rate and Proportion', sub:'Number — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- Simplifying a ratio --</span>\n\n  <span class="number">12 : 18</span>\n  Divide both by HCF (6):\n  = <span class="result">2 : 3</span>\n\n<span class="comment">Like fractions, divide by the highest common factor.</span>', n:"To simplify a ratio, divide both parts by their highest common factor. 12 to 18, divided by 6, gives 2 to 3." },
+          { w:'<span class="comment">-- Sharing in a ratio --</span>\n\n<span class="label">Share $60 in the ratio 2 : 3</span>\n\n  Total parts = 2 + 3 = <span class="number">5</span>\n  One part = $60 &#247; 5 = <span class="number">$12</span>\n  Shares = <span class="result">$24  and  $36</span>', n:"To share an amount in a ratio, add the parts to get the total, find the value of one part, then multiply. 60 dollars shared 2 to 3 gives 24 and 36." },
+          { w:'<span class="comment">-- Rate --</span>\n\n<span class="label">A car travels 120 km in 2 hours.</span>\n\n  Speed = distance &#247; time\n  = 120 &#247; 2\n  = <span class="result">60 km/h</span>', n:"A rate compares two different quantities. Speed is distance divided by time. 120 kilometres in 2 hours is 60 kilometres per hour." },
+          { w:'<span class="comment">-- Direct proportion (unitary method) --</span>\n\n<span class="label">3 books cost $15. Find the cost of 7 books.</span>\n\n  1 book = $15 &#247; 3 = <span class="number">$5</span>\n  7 books = 7 &#215; $5 = <span class="result">$35</span>\n\n<span class="important">Find ONE first, then scale up.</span>', n:"In direct proportion, find the value of one item first, then multiply. 3 books for 15 dollars means one book is 5 dollars, so 7 books cost 35." }
+        ],
+        practice: [
+          { q:'Simplify the ratio 15 : 25.', type:'mcq', opts:['5 : 3','3 : 5','1 : 2','3 : 4'], ans:1, marks:2, exp:'Divide by 5\n3 : 5' },
+          { q:'Share $80 in the ratio 3 : 5.\nWhat is the LARGER share?', type:'mcq', opts:['$30','$40','$50','$48'], ans:2, marks:3, exp:'8 parts, $10 each\n5 &#215; 10 = $50' },
+          { q:'A car travels 150 km in 3 hours.\nFind the speed in km/h.', type:'input', ans:'50', marks:2, exp:'150 &#247; 3 = 50 km/h' },
+          { q:'4 pens cost $12. Find the cost of 7 pens.', type:'mcq', opts:['$18','$21','$24','$28'], ans:1, marks:3, exp:'1 pen = $3,  7 &#215; 3 = $21' }
+        ]
+      },
+      {
+        title:'Approximation and Accuracy', sub:'Number — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- Significant figures (s.f.) --</span>\n\n<span class="label">Round 3457 to 2 s.f.</span>\n\n  First two figures: <span class="number">3, 4</span>\n  Next digit is 5 &#8594; round up\n  = <span class="result">3500</span>', n:"Significant figures count from the first non-zero digit. To round 3457 to 2 significant figures, keep 3 and 4, look at the next digit 5, which rounds up, giving 3500." },
+          { w:'<span class="comment">-- Decimal places (d.p.) --</span>\n\n<span class="label">Round 3.14159 to 2 d.p.</span>\n\n  Keep 2 digits after point: 3.14\n  Next digit is 1 &#8594; round down\n  = <span class="result">3.14</span>', n:"Decimal places count digits after the point. 3 point 1 4 1 5 9 to 2 decimal places is 3 point 1 4, because the next digit, 1, rounds down." },
+          { w:'<span class="comment">-- Limits of accuracy --</span>\n\n<span class="label">A length is 12 cm to the nearest cm.</span>\n\n  Lower bound = <span class="number">11.5</span> cm\n  Upper bound = <span class="number">12.5</span> cm\n  = <span class="result">11.5 &#8804; x &lt; 12.5</span>', n:"A measurement of 12 centimetres to the nearest centimetre could actually be anywhere from 11 point 5 up to, but not including, 12 point 5." },
+          { w:'<span class="comment">-- Estimation --</span>\n\n<span class="label">Estimate 19.6 &#215; 4.1</span>\n\n  Round each to 1 s.f.:\n  &#8776; 20 &#215; 4\n  = <span class="result">80</span>\n\n<span class="important">Round to 1 s.f. for a quick check.</span>', n:"To estimate, round each number to one significant figure. 19 point 6 times 4 point 1 is roughly 20 times 4, which is 80." }
+        ],
+        practice: [
+          { q:'Round 4567 to 2 significant figures.', type:'mcq', opts:['4500','4600','4570','4000'], ans:1, marks:2, exp:'4,5 ... next digit 6 rounds up\n4600' },
+          { q:'Round 0.0584 to 2 significant figures.', type:'mcq', opts:['0.06','0.058','0.059','0.05'], ans:1, marks:2, exp:'First s.f. is 5\n0.058' },
+          { q:'Round 3.876 to 1 decimal place.', type:'input', ans:'3.9', marks:2, exp:'Next digit 7 rounds up\n3.9' },
+          { q:'Estimate 29.8 &#215; 5.1 (round to 1 s.f.).', type:'mcq', opts:['100','150','180','200'], ans:1, marks:2, exp:'30 &#215; 5 = 150' }
+        ]
+      },
+      {
+        title:'Financial Mathematics', sub:'Number — Paper 1 & 2',
+        steps: [
+          { w:'<span class="comment">-- Profit and Loss --</span>\n\n  <span class="highlight">Profit% = (Profit &#247; Cost Price) &#215; 100</span>\n\n<span class="label">Buy at $40, sell at $50:</span>\n  Profit = $10\n  Profit% = (10 &#247; 40) &#215; 100 = <span class="result">25%</span>', n:"Profit percent is the profit divided by the cost price, times 100. Buy at 40, sell at 50: the profit is 10, which is 25 percent of the cost." },
+          { w:'<span class="comment">-- Simple Interest --</span>\n\n  <span class="highlight">I = (P &#215; R &#215; T) &#247; 100</span>\n\n<span class="label">$500 at 8% for 2 years:</span>\n  I = (500 &#215; 8 &#215; 2) &#247; 100\n  = <span class="result">$80</span>', n:"Simple interest equals principal times rate times time, divided by 100. 500 dollars at 8 percent for 2 years earns 80 dollars interest." },
+          { w:'<span class="comment">-- Compound Interest --</span>\n\n  <span class="highlight">A = P(1 + R/100)&#8319;</span>\n\n<span class="label">$1000 at 10% for 2 years:</span>\n  A = 1000 &#215; (1.1)&#178;\n  = 1000 &#215; 1.21\n  = <span class="result">$1210</span>', n:"Compound interest is calculated on the growing total each year. 1000 dollars at 10 percent for 2 years becomes 1000 times 1 point 1 squared, which is 1210." },
+          { w:'<span class="comment">-- Reverse percentage --</span>\n\n<span class="label">A fridge sells for $540. Last year it was 8% less.</span>\n\n  Last year = $540 &#215; (100 - 8)%\n  = $540 &#215; 0.92\n  = <span class="result">$496.80</span>\n\n<span class="important">8% LESS means multiply by 0.92.</span>', n:"To find a price that was 8 percent less, multiply by 0 point 9 2. 540 dollars times 0 point 9 2 is 496 dollars and 80 cents." }
+        ],
+        practice: [
+          { q:'Buy at $80, sell at $100.\nFind the profit %.', type:'mcq', opts:['20%','25%','30%','15%'], ans:1, marks:3, exp:'Profit $20\n(20/80)&#215;100 = 25%' },
+          { q:'Simple interest on $600 at 5% for 3 years.', type:'input', ans:'90', marks:3, exp:'(600&#215;5&#215;3)/100 = $90' },
+          { q:'Compound: $2000 at 10% for 2 years.\nFind the amount.', type:'mcq', opts:['$2400','$2420','$2200','$2410'], ans:1, marks:4, exp:'2000 &#215; 1.1&#178; = 2000 &#215; 1.21\n= $2420' },
+          { q:'A price of $200 is reduced by 15%.\nFind the new price.', type:'mcq', opts:['$185','$170','$30','$180'], ans:1, marks:3, exp:'200 &#215; 0.85 = $170' }
+        ]
+      },
+      {
+        title:'Expanding and Simplifying', sub:'Algebra — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- Expanding a single bracket --</span>\n\n  Multiply EVERY term inside by the term outside.\n\n  <span class="number">3(2x + 4)</span>\n  = (3&#215;2x) + (3&#215;4)\n  = <span class="result">6x + 12</span>', n:"To expand a single bracket, multiply every term inside by the term outside. 3 times 2x is 6x, and 3 times 4 is 12, giving 6x plus 12." },
+          { w:'<span class="comment">-- Two brackets: FOIL --</span>\n\n  <span class="number">(x + 2)(x + 3)</span>\n\n  <span class="keyword">F</span>irst:  x&#215;x = x&#178;\n  <span class="keyword">O</span>uter:  x&#215;3 = 3x\n  <span class="keyword">I</span>nner:  2&#215;x = 2x\n  <span class="keyword">L</span>ast:   2&#215;3 = 6\n  = <span class="result">x&#178; + 5x + 6</span>', n:"For two brackets, use FOIL: First, Outer, Inner, Last. x times x is x squared, the middle terms 3x and 2x add to 5x, and 2 times 3 is 6." },
+          { w:'<span class="comment">-- Watch the signs --</span>\n\n  <span class="number">(x + 5)(x - 2)</span>\n  = x&#178; - 2x + 5x - 10\n  = <span class="result">x&#178; + 3x - 10</span>', n:"Be careful with signs. x minus 2x plus 5x gives plus 3x, and 5 times negative 2 is negative 10." },
+          { w:'<span class="comment">-- Collecting like terms --</span>\n\n  <span class="number">5x + 3 - 2x + 7</span>\n  = (5x - 2x) + (3 + 7)\n  = <span class="result">3x + 10</span>\n\n<span class="important">Only add/subtract terms with the SAME letter.</span>', n:"To simplify, collect like terms. 5x minus 2x is 3x, and 3 plus 7 is 10. You can only combine terms with the same letter." }
+        ],
+        practice: [
+          { q:'Expand:  4(3x - 2)', type:'mcq', opts:['12x - 2','12x - 8','7x - 8','12x + 8'], ans:1, marks:2, exp:'4&#215;3x=12x,  4&#215;-2=-8\n12x - 8' },
+          { q:'Expand:  (x + 4)(x + 5)', type:'mcq', opts:['x&#178; + 9x + 20','x&#178; + 20x + 9','x&#178; + 9x + 9','x&#178; + 20'], ans:0, marks:3, exp:'x&#178; + 5x + 4x + 20\n= x&#178; + 9x + 20' },
+          { q:'Simplify:  7a + 3 - 2a + 5', type:'mcq', opts:['5a + 8','9a + 8','5a + 2','5a&#178; + 8'], ans:0, marks:2, exp:'7a-2a=5a,  3+5=8\n5a + 8' },
+          { q:'Expand (x + 3)(x - 3).\nWhat is the constant term?', type:'input', ans:'-9', marks:2, exp:'x&#178; - 9\nConstant = -9' }
+        ]
+      },
+      {
+        title:'Algebraic Fractions', sub:'Algebra — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Adding algebraic fractions --</span>\n\n  Use a common denominator, just like numbers.\n\n  <span class="number">x/2 + x/3</span>\n  = 3x/6 + 2x/6\n  = <span class="result">5x/6</span>', n:"To add algebraic fractions, find a common denominator. x over 2 plus x over 3 becomes 3x over 6 plus 2x over 6, which is 5x over 6." },
+          { w:'<span class="comment">-- Common denominator with brackets --</span>\n\n  <span class="number">(2x-1)/4 - (3x-5)/12</span>\n\n  LCD = 12:\n  = 3(2x-1)/12 - (3x-5)/12', n:"When subtracting, first rewrite both fractions over the lowest common denominator. Here the common denominator is 12, so the first fraction becomes 3 times 2x minus 1, all over 12." },
+          { w:'<span class="comment">-- Expand the numerator carefully --</span>\n\n  = (6x - 3 - (3x - 5)) / 12\n  = (6x - 3 - 3x + 5) / 12\n  = <span class="result">(3x + 2) / 12</span>\n\n<span class="important">The MINUS flips both signs inside the bracket!</span>', n:"Expand the top. 3 times 2x minus 1 is 6x minus 3. Then subtracting 3x minus 5 flips both signs to minus 3x plus 5. This simplifies to 3x plus 2, over 12." },
+          { w:'<span class="comment">-- Simplifying by cancelling --</span>\n\n  <span class="number">6x / 8</span>\n  = <span class="result">3x / 4</span>\n\n<span class="comment">Divide top and bottom by the common factor (2).</span>', n:"To simplify a single algebraic fraction, divide the top and bottom by their common factor. 6x over 8 simplifies to 3x over 4." }
+        ],
+        practice: [
+          { q:'Simplify:  x/3 + x/4', type:'mcq', opts:['x/7','2x/7','7x/12','x&#178;/12'], ans:2, marks:3, exp:'4x/12 + 3x/12 = 7x/12' },
+          { q:'Simplify:  6x / 9', type:'mcq', opts:['2x/3','3x/2','x/3','2x'], ans:0, marks:2, exp:'Divide by 3\n2x/3' },
+          { q:'(2x-1)/4 - (3x-5)/12 as a single fraction.\nWhat is the numerator?', type:'mcq', opts:['3x + 2','3x - 2','9x - 6','x + 4'], ans:0, marks:3, exp:'(6x-3-3x+5)/12\n= (3x+2)/12' },
+          { q:'Simplify:  5x/2 + 3x/2', type:'input', ans:'4x', marks:2, exp:'(5x+3x)/2 = 8x/2 = 4x' }
+        ]
+      },
+      {
+        title:'Change of Subject', sub:'Algebra — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Change of Subject --</span>\n\n  Rearrange a formula to get a different letter alone.\n  Do the SAME thing to both sides (inverse operations).\n\n<span class="label">Make x the subject:  y = 3x + 2</span>', n:"Changing the subject means rearranging a formula so a chosen letter is alone on one side. We use inverse operations on both sides, just like solving an equation." },
+          { w:'<span class="comment">-- Step by step --</span>\n\n  y = 3x + 2\n  y - 2 = 3x          <span class="comment">(subtract 2)</span>\n  (y - 2)/3 = x       <span class="comment">(divide by 3)</span>\n  <span class="result">x = (y - 2)/3</span>', n:"Subtract 2 from both sides, then divide both sides by 3. So x equals y minus 2, all over 3." },
+          { w:'<span class="comment">-- Formulae with squares --</span>\n\n<span class="label">Make r the subject:  A = &#960;r&#178;</span>\n\n  A/&#960; = r&#178;        <span class="comment">(divide by &#960;)</span>\n  <span class="result">r = &#8730;(A/&#960;)</span>     <span class="comment">(square root)</span>', n:"To undo a square, take the square root. Divide both sides by pi, then square root. r equals the square root of A over pi." },
+          { w:'<span class="comment">-- When the letter appears twice --</span>\n\n<span class="label">Make x the subject:  y = (p - 2x)/x</span>\n\n  yx = p - 2x         <span class="comment">(&#215; x)</span>\n  yx + 2x = p\n  x(y + 2) = p        <span class="comment">(factorise x)</span>\n  <span class="result">x = p/(y + 2)</span>\n\n<span class="important">Collect all x-terms, then factorise out x.</span>', n:"When the subject appears more than once, gather all its terms on one side, factorise it out, then divide. Here x equals p over y plus 2." }
+        ],
+        practice: [
+          { q:'Make x the subject:  y = 3x + 2', type:'mcq', opts:['x = (y-2)/3','x = (y+2)/3','x = y/3 - 2','x = 3y - 2'], ans:0, marks:3, exp:'y-2 = 3x\nx = (y-2)/3' },
+          { q:'Make t the subject:  v = u + at', type:'mcq', opts:['t = v - u - a','t = (v-u)/a','t = (v+u)/a','t = a(v-u)'], ans:1, marks:3, exp:'v - u = at\nt = (v-u)/a' },
+          { q:'Make w the subject:  P = 2(l + w)', type:'mcq', opts:['w = P/2 - l','w = P - 2l','w = 2P - l','w = (P-l)/2'], ans:0, marks:3, exp:'P/2 = l + w\nw = P/2 - l' },
+          { q:'Make r the subject:  A = &#960;r&#178;.\nThe operation that undoes r&#178; is...', type:'input', ans:'square root', marks:1, exp:'Take the square root of both sides' }
+        ]
+      },
+      {
+        title:'Quadratic Formula', sub:'Algebra — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- The Quadratic Formula --</span>\n\n  For  <span class="number">ax&#178; + bx + c = 0</span>\n\n  <span class="highlight">x = [ -b &#177; &#8730;(b&#178; - 4ac) ] / 2a</span>\n\n<span class="comment">Use it when the quadratic will NOT factorise neatly.</span>', n:"The quadratic formula solves any quadratic of the form a x squared plus b x plus c equals 0. x equals negative b, plus or minus the square root of b squared minus 4 a c, all over 2 a." },
+          { w:'<span class="comment">-- Step 1: Identify a, b, c --</span>\n\n<span class="label">x&#178; + 3x - 4 = 0</span>\n\n  a = <span class="number">1</span>,  b = <span class="number">3</span>,  c = <span class="number">-4</span>\n\n<span class="important">Keep the signs! c is NEGATIVE 4 here.</span>', n:"First identify a, b and c, keeping their signs. In x squared plus 3x minus 4, a is 1, b is 3, and c is negative 4." },
+          { w:'<span class="comment">-- Step 2: The discriminant b&#178; - 4ac --</span>\n\n  b&#178; - 4ac = 3&#178; - 4(1)(-4)\n  = 9 + 16\n  = <span class="number">25</span>\n  &#8730;25 = <span class="result">5</span>', n:"Calculate the discriminant, b squared minus 4 a c. That is 9 minus 4 times 1 times negative 4, which is 9 plus 16, equals 25. The square root of 25 is 5." },
+          { w:'<span class="comment">-- Step 3: Two answers --</span>\n\n  x = (-3 &#177; 5) / 2\n\n  x = (-3 + 5)/2 = <span class="result">1</span>\n  x = (-3 - 5)/2 = <span class="result">-4</span>\n\n<span class="important">The &#177; sign always gives TWO solutions.</span>', n:"Now apply the formula. Negative 3 plus 5 over 2 is 1. Negative 3 minus 5 over 2 is negative 4. The plus-or-minus always gives two solutions." }
+        ],
+        practice: [
+          { q:'In 2x&#178; + 5x - 3 = 0, what is a?', type:'input', ans:'2', marks:1, exp:'a is the coefficient of x&#178; = 2' },
+          { q:'Find the discriminant b&#178;-4ac\nfor x&#178; - 5x + 6 = 0.', type:'mcq', opts:['1','49','-1','13'], ans:0, marks:3, exp:'25 - 4(1)(6) = 25-24 = 1' },
+          { q:'Solve x&#178; + 3x - 4 = 0.\nGive the POSITIVE solution.', type:'input', ans:'1', marks:3, exp:'(-3+5)/2 = 1' },
+          { q:'Solve x&#178; - 7x + 12 = 0.', type:'mcq', opts:['2 and 6','3 and 4','1 and 12','-3 and -4'], ans:1, marks:3, exp:'disc=1, roots 3 and 4' }
+        ]
+      },
+      {
+        title:'Inequalities and Linear Programming', sub:'Algebra — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Solving inequalities --</span>\n\n  Solve like an equation, keeping the &lt; or &gt; sign.\n\n  <span class="number">2x + 3 &gt; 7</span>\n  2x &gt; 4\n  <span class="result">x &gt; 2</span>', n:"Solve an inequality just like an equation, but keep the inequality sign. 2x plus 3 greater than 7 gives 2x greater than 4, so x is greater than 2." },
+          { w:'<svg viewBox="0 0 280 58" style="width:100%;max-width:320px;height:auto;margin:6px auto 10px;display:block;"><line x1="20" y1="34" x2="262" y2="34" stroke="var(--text2)" stroke-width="1.5"/><line x1="40" y1="30" x2="40" y2="38" stroke="var(--text2)"/><line x1="70" y1="30" x2="70" y2="38" stroke="var(--text2)"/><line x1="100" y1="30" x2="100" y2="38" stroke="var(--text2)"/><line x1="130" y1="30" x2="130" y2="38" stroke="var(--text2)"/><line x1="160" y1="30" x2="160" y2="38" stroke="var(--text2)"/><line x1="190" y1="30" x2="190" y2="38" stroke="var(--text2)"/><line x1="220" y1="30" x2="220" y2="38" stroke="var(--text2)"/><line x1="100" y1="34" x2="250" y2="34" stroke="var(--accent)" stroke-width="3"/><polygon points="250,28 262,34 250,40" fill="var(--accent)"/><circle cx="100" cy="34" r="6" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.5"/><text x="40" y="52" fill="var(--text2)" font-family="monospace" font-size="11" text-anchor="middle">0</text><text x="70" y="52" fill="var(--text2)" font-family="monospace" font-size="11" text-anchor="middle">1</text><text x="100" y="52" fill="var(--accent)" font-family="monospace" font-size="11" text-anchor="middle">2</text><text x="130" y="52" fill="var(--text2)" font-family="monospace" font-size="11" text-anchor="middle">3</text><text x="160" y="52" fill="var(--text2)" font-family="monospace" font-size="11" text-anchor="middle">4</text><text x="190" y="52" fill="var(--text2)" font-family="monospace" font-size="11" text-anchor="middle">5</text><text x="220" y="52" fill="var(--text2)" font-family="monospace" font-size="11" text-anchor="middle">6</text></svg><span class="comment">-- Showing x &gt; 2 on a number line --</span>\n\n<span class="keyword">Open circle</span> (&#9675;) = NOT included (&gt; or &lt;)\n<span class="keyword">Filled circle</span> (&#9679;) = included (&#8805; or &#8804;)', n:"On a number line, an open circle means the value is not included, used for greater-than or less-than. A filled circle means it is included, used for greater-or-equal or less-or-equal." },
+          { w:'<span class="comment">-- The golden rule --</span>\n\n  When you multiply or divide by a\n  <span class="important">NEGATIVE</span> number, FLIP the sign.\n\n  <span class="number">-3x &gt; 9</span>\n  x <span class="result">&lt;</span> -3      <span class="comment">(sign flipped!)</span>', n:"The golden rule: when you multiply or divide both sides by a negative number, you must flip the inequality sign. Negative 3x greater than 9 becomes x less than negative 3." },
+          { w:'<span class="comment">-- Linear Programming --</span>\n\n  Several inequalities define a <span class="highlight">region</span>.\n  The best answer (max or min) is found at a\n  <span class="highlight">CORNER (vertex)</span> of that region.\n\n<span class="important">Test each corner in the objective\n(e.g. maximise 3y + x) to find the best.</span>', n:"In linear programming, several inequalities create a feasible region. The maximum or minimum of a quantity, like 3y plus x, always occurs at a corner of that region, so test each vertex." }
+        ],
+        practice: [
+          { q:'Solve:  2x + 3 &gt; 7', type:'mcq', opts:['x &gt; 2','x &gt; 5','x &lt; 2','x &gt; 4'], ans:0, marks:2, exp:'2x &gt; 4\nx &gt; 2' },
+          { q:'Solve:  -3x &gt; 9', type:'mcq', opts:['x &gt; -3','x &lt; -3','x &gt; 3','x &lt; 3'], ans:1, marks:3, exp:'Divide by -3, FLIP sign\nx &lt; -3' },
+          { q:'Solve:  5x - 2 &#8804; 13', type:'mcq', opts:['x &#8804; 3','x &#8805; 3','x &#8804; 5','x &#8804; 2'], ans:0, marks:2, exp:'5x &#8804; 15\nx &#8804; 3' },
+          { q:'x + 4 &lt; 10. What is the LARGEST\ninteger value of x?', type:'input', ans:'5', marks:2, exp:'x &lt; 6, so largest integer = 5' }
+        ]
+      },
+      {
+        title:'Functions and Sequences', sub:'Algebra — Paper 1 & 2',
+        steps: [
+          { w:'<span class="comment">-- Function notation f(x) --</span>\n\n  f(x) is a rule. To find f(a),\n  <span class="highlight">replace every x with a</span>.\n\n<span class="label">f(x) = 2x + 3</span>\n  f(4) = 2(4) + 3 = <span class="result">11</span>', n:"A function f of x is a rule. To evaluate f of a number, replace every x with that number. For f of x equals 2x plus 3, f of 4 is 2 times 4 plus 3, which is 11." },
+          { w:'<span class="comment">-- Functions with squares --</span>\n\n<span class="label">f(x) = 10 + 3x - x&#178;</span>\n\n  f(2) = 10 + 3(2) - (2)&#178;\n  = 10 + 6 - 4\n  = <span class="result">12</span>', n:"For f of x equals 10 plus 3x minus x squared, f of 2 is 10 plus 6 minus 4, which equals 12. Always square the number before subtracting." },
+          { w:'<span class="comment">-- Sequences: the nth term --</span>\n\n<span class="label">Sequence: 3, 7, 11, 15, ...</span>\n\n  Common difference = <span class="number">+4</span>\n  nth term = 4n + (first term - 4)\n  = <span class="result">4n - 1</span>', n:"For a linear sequence, the nth term is the common difference times n, adjusted to fit. The sequence 3, 7, 11, 15 goes up by 4 each time, giving the rule 4n minus 1." },
+          { w:'<span class="comment">-- Using the nth term --</span>\n\n<span class="label">Find the 10th term of 4n - 1:</span>\n\n  4(10) - 1 = 40 - 1 = <span class="result">39</span>\n\n<span class="important">Substitute n = 10 into the rule.</span>', n:"To find any term, substitute its position into the rule. The 10th term of 4n minus 1 is 4 times 10 minus 1, which is 39." }
+        ],
+        practice: [
+          { q:'f(x) = 2x + 3.  Find f(4).', type:'input', ans:'11', marks:2, exp:'2(4)+3 = 11' },
+          { q:'f(x) = x&#178; - 1.  Find f(3).', type:'input', ans:'8', marks:2, exp:'3&#178; - 1 = 9 - 1 = 8' },
+          { q:'Find the nth term of 5, 8, 11, 14, ...', type:'mcq', opts:['n + 3','3n + 2','2n + 3','3n - 2'], ans:1, marks:3, exp:'Difference 3, first term 5\n3n + 2' },
+          { q:'The nth term is 2n. Find the 10th term.', type:'input', ans:'20', marks:2, exp:'2 &#215; 10 = 20' }
+        ]
+      },
+      {
+        title:'Angles and Polygons', sub:'Geometry — Paper 1 & 2',
+        steps: [
+          { w:'<span class="comment">-- Basic angle facts --</span>\n\n<span class="keyword">On a straight line:</span>  add to <span class="highlight">180&#176;</span>\n<span class="keyword">Around a point:</span>     add to <span class="highlight">360&#176;</span>\n<span class="keyword">In a triangle:</span>      add to <span class="highlight">180&#176;</span>\n<span class="keyword">In a quadrilateral:</span> add to <span class="highlight">360&#176;</span>', n:"The basic angle facts. Angles on a straight line add to 180. Angles around a point add to 360. The angles in a triangle add to 180, and in a quadrilateral they add to 360." },
+          { w:'<svg viewBox="0 0 280 120" style="width:100%;max-width:320px;height:auto;margin:6px auto 10px;display:block;"><line x1="20" y1="38" x2="260" y2="38" stroke="var(--gold)" stroke-width="2"/><line x1="20" y1="88" x2="260" y2="88" stroke="var(--gold)" stroke-width="2"/><line x1="80" y1="12" x2="180" y2="112" stroke="var(--accent)" stroke-width="2"/><text x="116" y="33" fill="var(--text)" font-family="monospace" font-size="14">a</text><text x="140" y="104" fill="var(--text)" font-family="monospace" font-size="14">b</text><text x="205" y="34" fill="var(--text2)" font-family="monospace" font-size="13">&#8250;&#8250;</text><text x="205" y="84" fill="var(--text2)" font-family="monospace" font-size="13">&#8250;&#8250;</text></svg><span class="comment">-- Parallel lines (the arrows >> show parallel) --</span>\n\n<span class="keyword">Corresponding (F):</span> equal\n<span class="keyword">Alternate (Z):</span>     equal  &#8594; <span class="result">a = b</span>\n<span class="keyword">Co-interior (C):</span>   add to 180&#176;', n:"When a line crosses two parallel lines, special angle pairs form. Corresponding angles, in an F-shape, are equal. Alternate angles, in a Z-shape, are equal, so a equals b. Co-interior angles, in a C-shape, add up to 180." },
+          { w:'<span class="comment">-- Interior angles of a polygon --</span>\n\n  <span class="highlight">Sum = (n - 2) &#215; 180&#176;</span>   (n = number of sides)\n\n<span class="label">Hexagon (n = 6):</span>\n  (6 - 2) &#215; 180 = <span class="result">720&#176;</span>', n:"The interior angles of a polygon add up to n minus 2, times 180, where n is the number of sides. For a hexagon, that is 4 times 180, which is 720 degrees." },
+          { w:'<span class="comment">-- Exterior angles --</span>\n\n  <span class="highlight">Exterior angles always add to 360&#176;</span>\n\n<span class="label">Regular polygon, each exterior angle:</span>\n  = 360&#176; &#247; n\n\n  Pentagon: 360 &#247; 5 = <span class="result">72&#176;</span>\n\n<span class="important">Nonagon example: 4 angles sum 460&#176;,\nremaining 5 equal = (1260-460)&#247;5 = 160&#176;.</span>', n:"The exterior angles of any polygon always add to 360. For a regular polygon, each exterior angle is 360 divided by the number of sides. A regular pentagon has exterior angles of 72 degrees." }
+        ],
+        practice: [
+          { q:'Two angles on a straight line.\nOne is 50&#176;. Find the other.', type:'input', ans:'130', marks:2, exp:'180 - 50 = 130&#176;' },
+          { q:'Find the sum of interior angles\nof a hexagon (6 sides).', type:'mcq', opts:['540&#176;','720&#176;','900&#176;','1080&#176;'], ans:1, marks:2, exp:'(6-2)&#215;180 = 720&#176;' },
+          { q:'Each exterior angle of a\nregular pentagon (5 sides)?', type:'mcq', opts:['60&#176;','72&#176;','90&#176;','108&#176;'], ans:1, marks:3, exp:'360 &#247; 5 = 72&#176;' },
+          { q:'A triangle has angles 60&#176; and 70&#176;.\nFind the third angle.', type:'input', ans:'50', marks:2, exp:'180 - 60 - 70 = 50&#176;' }
+        ]
+      },
+      {
+        title:'Bearings', sub:'Geometry — Paper 2',
+        steps: [
+          { w:'<svg viewBox="0 0 170 172" style="width:100%;max-width:220px;height:auto;margin:6px auto 10px;display:block;"><circle cx="85" cy="86" r="60" fill="none" stroke="var(--border)" stroke-width="1.5"/><line x1="85" y1="22" x2="85" y2="150" stroke="var(--text2)" stroke-width="1"/><line x1="22" y1="86" x2="148" y2="86" stroke="var(--text2)" stroke-width="1"/><line x1="85" y1="86" x2="137" y2="56" stroke="var(--accent)" stroke-width="2.5"/><polygon points="137,56 127,55 133,64" fill="var(--accent)"/><path d="M85,46 A40,40 0 0 1 117,63" fill="none" stroke="var(--gold)" stroke-width="1.5"/><text x="85" y="17" fill="var(--text)" font-family="monospace" font-size="13" text-anchor="middle">N</text><text x="160" y="90" fill="var(--text)" font-family="monospace" font-size="13" text-anchor="middle">E</text><text x="85" y="167" fill="var(--text)" font-family="monospace" font-size="13" text-anchor="middle">S</text><text x="9" y="90" fill="var(--text)" font-family="monospace" font-size="13" text-anchor="middle">W</text><text x="95" y="42" fill="var(--gold)" font-family="monospace" font-size="11">060&#176;</text></svg><span class="comment">-- What is a bearing? --</span>\n\nA bearing is an angle measured:\n  <span class="highlight">1. from NORTH</span>\n  <span class="highlight">2. CLOCKWISE</span>\n  <span class="highlight">3. written with 3 figures</span>  (e.g. 060&#176;)', n:"A bearing describes direction. It is always measured from north, turning clockwise, and written with three figures. So sixty degrees is written zero six zero." },
+          { w:'<span class="comment">-- The four main bearings --</span>\n\n  <span class="keyword">North</span> = 000&#176;  (or 360&#176;)\n  <span class="keyword">East</span>  = <span class="result">090&#176;</span>\n  <span class="keyword">South</span> = <span class="result">180&#176;</span>\n  <span class="keyword">West</span>  = <span class="result">270&#176;</span>', n:"The four main compass directions as bearings: North is zero zero zero, East is zero nine zero, South is one eight zero, and West is two seven zero." },
+          { w:'<span class="comment">-- Back bearings --</span>\n\nThe bearing of A from B is the REVERSE\nof the bearing of B from A.\n\n  <span class="highlight">If less than 180&#176;:  ADD 180&#176;</span>\n  <span class="highlight">If more than 180&#176;:  SUBTRACT 180&#176;</span>', n:"A back bearing is the reverse direction. If the original bearing is less than 180, add 180. If it is more than 180, subtract 180." },
+          { w:'<span class="comment">-- Worked example --</span>\n\n<span class="label">Bearing of B from A is 070&#176;.\nFind the bearing of A from B.</span>\n\n  070&#176; is less than 180&#176;, so ADD 180&#176;:\n  070 + 180 = <span class="result">250&#176;</span>', n:"If the bearing of B from A is zero seven zero, the back bearing of A from B is seventy plus 180, which is 250 degrees." }
+        ],
+        practice: [
+          { q:'What is the bearing of due East?', type:'mcq', opts:['000&#176;','090&#176;','180&#176;','270&#176;'], ans:1, marks:2, exp:'East = 090&#176;' },
+          { q:'The bearing of B from A is 070&#176;.\nFind the back bearing (A from B).', type:'mcq', opts:['110&#176;','250&#176;','290&#176;','160&#176;'], ans:1, marks:3, exp:'070 + 180 = 250&#176;' },
+          { q:'What is the bearing of due South?', type:'input', ans:'180', marks:2, exp:'South = 180&#176;' },
+          { q:'A ship sails on a bearing of 135&#176;.\nRoughly which direction is this?', type:'mcq', opts:['North-East','South-East','South-West','North-West'], ans:1, marks:2, exp:'135&#176; is between E(090) and S(180)\n= South-East' }
+        ]
+      },
+      {
+        title:'Circle Theorems', sub:'Geometry — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Angle at centre = 2 &#215; angle at circumference --</span>\n\nIf both stand on the SAME arc:\n\n  <span class="highlight">Angle at centre = 2 &#215; angle at circumference</span>\n\n<span class="label">Circumference angle 40&#176;:</span>\n  Centre angle = 2 &#215; 40 = <span class="result">80&#176;</span>', n:"The angle at the centre of a circle is twice the angle at the circumference, when both stand on the same arc. If the circumference angle is 40, the centre angle is 80." },
+          { w:'<svg viewBox="0 0 200 142" style="width:100%;max-width:280px;height:auto;margin:6px auto 10px;display:block;"><circle cx="100" cy="80" r="55" fill="var(--gold-bg)" stroke="var(--gold)" stroke-width="2"/><line x1="45" y1="80" x2="155" y2="80" stroke="var(--accent)" stroke-width="2"/><line x1="45" y1="80" x2="100" y2="25" stroke="var(--accent)" stroke-width="2"/><line x1="155" y1="80" x2="100" y2="25" stroke="var(--accent)" stroke-width="2"/><circle cx="100" cy="80" r="3" fill="var(--text)"/><text x="35" y="84" fill="var(--text)" font-family="monospace" font-size="12">A</text><text x="159" y="84" fill="var(--text)" font-family="monospace" font-size="12">B</text><text x="96" y="20" fill="var(--text)" font-family="monospace" font-size="12">C</text><text x="100" y="95" fill="var(--text2)" font-family="monospace" font-size="10" text-anchor="middle">O</text><text x="100" y="48" fill="var(--gold)" font-family="monospace" font-size="11" text-anchor="middle">90&#176;</text></svg><span class="comment">-- Angle in a semicircle = 90&#176; --</span>\n\nIf AB is a DIAMETER, then any angle\nat C on the circle is <span class="result">90&#176;</span>.\n\n<span class="comment">This is just the centre rule with a 180&#176; centre angle.</span>', n:"A special case: the angle in a semicircle is always 90 degrees. If A B is a diameter, then the angle at any point C on the circle is a right angle." },
+          { w:'<span class="comment">-- Angles in the same segment --</span>\n\nAngles standing on the SAME arc, from the\nsame side, are <span class="highlight">EQUAL</span>.', n:"Angles in the same segment are equal. If two angles at the circumference stand on the same arc, from the same side, they are the same size." },
+          { w:'<span class="comment">-- Cyclic quadrilateral --</span>\n\nAll 4 corners on the circle:\n  <span class="highlight">Opposite angles add to 180&#176;</span>\n\n<span class="label">One angle is 110&#176;:</span>\n  Opposite = 180 - 110 = <span class="result">70&#176;</span>\n\n<span class="important">Also: a tangent meets a radius at 90&#176;.</span>', n:"In a cyclic quadrilateral, where all four corners touch the circle, opposite angles add up to 180. If one angle is 110, the opposite angle is 70. Also remember a tangent meets the radius at 90 degrees." }
+        ],
+        practice: [
+          { q:'Angle at circumference = 40&#176;.\nFind the angle at the centre (same arc).', type:'mcq', opts:['20&#176;','40&#176;','80&#176;','120&#176;'], ans:2, marks:2, exp:'2 &#215; 40 = 80&#176;' },
+          { q:'What is the angle in a semicircle?', type:'input', ans:'90', marks:2, exp:'Angle in a semicircle = 90&#176;' },
+          { q:'A cyclic quadrilateral has one angle\nof 110&#176;. Find the opposite angle.', type:'mcq', opts:['70&#176;','110&#176;','90&#176;','250&#176;'], ans:0, marks:3, exp:'180 - 110 = 70&#176;' },
+          { q:'Angle at centre = 140&#176;. Find the\nangle at the circumference (same arc).', type:'mcq', opts:['280&#176;','70&#176;','40&#176;','140&#176;'], ans:1, marks:3, exp:'140 &#247; 2 = 70&#176;' }
+        ]
+      },
+      {
+        title:'Similarity and Congruence', sub:'Geometry — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Congruent vs Similar --</span>\n\n<span class="keyword">CONGRUENT:</span> same shape AND same size\n  (identical &#8212; one fits exactly on the other)\n\n<span class="keyword">SIMILAR:</span> same shape, DIFFERENT size\n  (one is an enlargement of the other)', n:"Two shapes are congruent if they are the same shape and the same size — identical. They are similar if they are the same shape but a different size, like a photo enlargement." },
+          { w:'<span class="comment">-- Conditions for congruent triangles --</span>\n\n  <span class="highlight">SSS</span> &#8212; three sides\n  <span class="highlight">SAS</span> &#8212; two sides + angle between\n  <span class="highlight">ASA</span> &#8212; two angles + a side\n  <span class="highlight">RHS</span> &#8212; right angle, hypotenuse, side', n:"There are four ways to prove triangles congruent: SSS, three sides; SAS, two sides and the angle between; ASA, two angles and a side; and RHS, a right angle, hypotenuse and one side." },
+          { w:'<span class="comment">-- Similar triangles: scale factor --</span>\n\nCorresponding sides are in the same ratio.\n\n<span class="label">Side 3 matches side 6:</span>\n  Scale factor = 6 &#247; 3 = <span class="number">2</span>\n  A matching side of 4 becomes:\n  4 &#215; 2 = <span class="result">8</span>', n:"In similar shapes, matching sides share the same scale factor. If a side of 3 matches a side of 6, the scale factor is 2, so a side of 4 becomes 8." },
+          { w:'<span class="comment">-- Area and Volume scale factors --</span>\n\n  Linear scale factor = <span class="number">k</span>\n  <span class="highlight">Area scale factor = k&#178;</span>\n  <span class="highlight">Volume scale factor = k&#179;</span>\n\n<span class="label">If lengths double (k=2):</span>\n  Area &#215;4,  Volume &#215;8\n\n<span class="important">A common exam trap &#8212; do not forget to square/cube!</span>', n:"When a shape is enlarged by scale factor k, its area scales by k squared and its volume by k cubed. If lengths double, area becomes four times bigger and volume eight times bigger." }
+        ],
+        practice: [
+          { q:'Two similar triangles have scale factor 3.\nA 5 cm side becomes how long?', type:'input', ans:'15', marks:2, exp:'5 &#215; 3 = 15 cm' },
+          { q:'Linear scale factor is 2.\nWhat is the AREA scale factor?', type:'mcq', opts:['2','4','6','8'], ans:1, marks:3, exp:'Area SF = k&#178; = 2&#178; = 4' },
+          { q:'Congruent shapes are...', type:'mcq', opts:['same shape, any size','same shape AND size','different shapes','always triangles'], ans:1, marks:1, exp:'Congruent = identical (same shape & size)' },
+          { q:'A triangle side 4 cm matches 6 cm in a\nsimilar triangle. A 6 cm side becomes?', type:'mcq', opts:['8 cm','9 cm','10 cm','12 cm'], ans:1, marks:3, exp:'SF = 6/4 = 1.5\n6 &#215; 1.5 = 9 cm' }
+        ]
+      },
+      {
+        title:'Constructions and Loci', sub:'Geometry — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Rules for constructions --</span>\n\nUse <span class="highlight">ruler and compasses ONLY</span>.\n<span class="highlight">Leave all your arcs showing</span> &#8212; they earn marks.\n\nA <span class="keyword">locus</span> is the path of all points that obey\na given rule.', n:"In construction questions, use only a ruler and compasses, and never rub out your arcs — they earn the marks. A locus is simply the set of all points that follow a particular rule." },
+          { w:'<svg viewBox="0 0 240 150" style="width:100%;max-width:300px;height:auto;margin:6px auto 10px;display:block;"><path d="M105,22 A70,70 0 0 1 105,128" fill="none" stroke="var(--gold)" stroke-width="1" opacity="0.7"/><path d="M135,22 A70,70 0 0 0 135,128" fill="none" stroke="var(--gold)" stroke-width="1" opacity="0.7"/><line x1="120" y1="14" x2="120" y2="136" stroke="var(--accent)" stroke-width="2"/><line x1="60" y1="75" x2="180" y2="75" stroke="var(--text2)" stroke-width="1" stroke-dasharray="4,3"/><circle cx="60" cy="75" r="4" fill="var(--gold)"/><circle cx="180" cy="75" r="4" fill="var(--gold)"/><text x="50" y="92" fill="var(--text)" font-family="monospace" font-size="12">A</text><text x="183" y="92" fill="var(--text)" font-family="monospace" font-size="12">B</text><text x="125" y="26" fill="var(--accent)" font-family="monospace" font-size="10">bisector</text></svg><span class="comment">-- Perpendicular bisector --</span>\n\nEqual arcs from A and from B cross above and\nbelow. Join the crossings.\n\nResult = <span class="result">all points equidistant from A and B</span>.', n:"To construct a perpendicular bisector, open your compasses wide and draw equal arcs from A and from B. They cross above and below the line. Join those crossings. Every point on that line is the same distance from A as from B." },
+          { w:'<span class="comment">-- Angle bisector --</span>\n\nEqual arcs from the corner, then from those\ntwo points, give a line that cuts the angle\nin half.\n\nResult = <span class="result">all points equidistant from the two lines</span>.', n:"To bisect an angle, draw an arc from the corner crossing both arms, then equal arcs from those two points. The line to the corner cuts the angle in half. Every point on it is equally far from both arms." },
+          { w:'<span class="comment">-- The four key loci --</span>\n\n  Fixed distance from a POINT  &#8594; <span class="highlight">a circle</span>\n  Fixed distance from a LINE   &#8594; <span class="highlight">parallel lines</span>\n  Equidistant from 2 POINTS    &#8594; <span class="highlight">perpendicular bisector</span>\n  Equidistant from 2 LINES     &#8594; <span class="highlight">angle bisector</span>', n:"The four key loci to memorise. A fixed distance from a point is a circle. A fixed distance from a line gives parallel lines. Equidistant from two points is the perpendicular bisector. Equidistant from two lines is the angle bisector." }
+        ],
+        practice: [
+          { q:'The locus of points equidistant from\ntwo points A and B is the...', type:'mcq', opts:['angle bisector','perpendicular bisector','a circle','parallel line'], ans:1, marks:2, exp:'Equidistant from 2 points = perpendicular bisector' },
+          { q:'The locus of points exactly 5 cm from\na fixed point O is a...', type:'mcq', opts:['straight line','circle','square','parallel line'], ans:1, marks:2, exp:'Fixed distance from a point = circle (radius 5cm)' },
+          { q:'An angle bisector gives points\nequidistant from two...', type:'mcq', opts:['points','lines','circles','arcs'], ans:1, marks:2, exp:'Angle bisector = equidistant from 2 lines' },
+          { q:'Constructions must use only a ruler and...\n(one word)', type:'input', ans:'compasses', marks:1, exp:'Ruler and compasses only' }
+        ]
+      },
+      {
+        title:'Sine and Cosine Rule', sub:'Trigonometry — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- For triangles that are NOT right-angled --</span>\n\n<span class="keyword">Sine Rule:</span>\n  <span class="highlight">a/sinA = b/sinB = c/sinC</span>\n\n<span class="keyword">Cosine Rule:</span>\n  <span class="highlight">a&#178; = b&#178; + c&#178; - 2bc&#183;cosA</span>', n:"For triangles without a right angle, we use two rules. The sine rule links sides to the sines of their opposite angles. The cosine rule, a squared equals b squared plus c squared minus 2 b c cos A, is for when you know two sides and the angle between them." },
+          { w:'<span class="comment">-- Which rule? --</span>\n\n<span class="keyword">Use SINE rule:</span> when you have a side and\n  its OPPOSITE angle as a pair.\n\n<span class="keyword">Use COSINE rule:</span> for two sides + the\n  angle between them (SAS), or all three sides.', n:"Choose the sine rule when you have a matching pair: a side and the angle opposite it. Choose the cosine rule when you have two sides and the angle between them, or all three sides." },
+          { w:'<span class="comment">-- Cosine rule example --</span>\n\n<span class="label">b = 5, c = 7, angle A = 60&#176;:</span>\n\n  a&#178; = 5&#178; + 7&#178; - 2(5)(7)cos60&#176;\n  a&#178; = 25 + 49 - 70(0.5)\n  a&#178; = 74 - 35 = 39\n  a = &#8730;39 = <span class="result">6.24</span>', n:"With b equals 5, c equals 7 and the angle between them 60 degrees: a squared is 25 plus 49 minus 70 times cos 60. That is 74 minus 35, which is 39. So a is the square root of 39, about 6 point 2 4." },
+          { w:'<span class="comment">-- Area of any triangle --</span>\n\n  <span class="highlight">Area = &#189; &#215; a &#215; b &#215; sinC</span>\n\n<span class="label">a = 6, b = 8, angle C = 30&#176;:</span>\n  Area = &#189; &#215; 6 &#215; 8 &#215; sin30&#176;\n  = 24 &#215; 0.5 = <span class="result">12 cm&#178;</span>\n\n<span class="important">Use two sides and the angle BETWEEN them.</span>', n:"The area of any triangle is a half times two sides times the sine of the angle between them. With sides 6 and 8 and an included angle of 30 degrees, the area is 24 times 0 point 5, which is 12 square centimetres." }
+        ],
+        practice: [
+          { q:'Find the area of a triangle with sides\n6 cm and 8 cm, included angle 30&#176;.', type:'input', ans:'12', marks:3, exp:'&#189; &#215; 6 &#215; 8 &#215; sin30 = 24 &#215; 0.5 = 12 cm&#178;' },
+          { q:'Cosine rule with b=3, c=4, A=90&#176;.\nFind a. (cos90&#176; = 0)', type:'mcq', opts:['5','7','3.5','25'], ans:0, marks:3, exp:'a&#178; = 9+16-0 = 25\na = 5 (Pythagoras!)' },
+          { q:'Which rule fits: two sides + the\nangle between them?', type:'mcq', opts:['Sine rule','Cosine rule','Pythagoras','Area rule'], ans:1, marks:2, exp:'Two sides + included angle = Cosine rule' },
+          { q:'Area = &#189;ab&#183;sinC with a=10, b=4, C=90&#176;.\n(sin90&#176; = 1)', type:'mcq', opts:['14','20','40','24'], ans:1, marks:2, exp:'&#189; &#215; 10 &#215; 4 &#215; 1 = 20' }
+        ]
+      },
+      {
+        title:'Probability', sub:'Statistics — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- Basic probability --</span>\n\n  <span class="highlight">P(event) = favourable outcomes / total outcomes</span>\n\n  Always between <span class="number">0</span> (impossible) and <span class="number">1</span> (certain).\n\n<span class="label">Rolling a 4 on a dice:</span>  P = <span class="result">1/6</span>', n:"Probability is the number of favourable outcomes over the total number of outcomes. It is always between 0, impossible, and 1, certain. The chance of rolling a 4 on a dice is one out of six." },
+          { w:'<span class="comment">-- Picking from a bag --</span>\n\n<span class="label">Bag: 3 red, 2 blue (5 balls total)</span>\n\n  P(red) = <span class="result">3/5</span>\n  P(blue) = <span class="result">2/5</span>', n:"For a bag of 3 red and 2 blue balls, there are 5 in total. The probability of red is 3 over 5, and blue is 2 over 5." },
+          { w:'<span class="comment">-- The complement: P(not A) --</span>\n\n  <span class="highlight">P(not A) = 1 - P(A)</span>\n\n<span class="label">If P(red) = 3/5:</span>\n  P(not red) = 1 - 3/5 = <span class="result">2/5</span>', n:"The probability that something does NOT happen is 1 minus the probability that it does. If P of red is 3 fifths, then P of not red is 2 fifths." },
+          { w:'<span class="comment">-- Combined events --</span>\n\n<span class="keyword">AND (both happen):</span> MULTIPLY\n<span class="keyword">OR (either happens):</span> ADD\n\n<span class="label">Two reds in a row (with replacement):</span>\n  3/5 &#215; 3/5 = <span class="result">9/25</span>\n\n<span class="important">\"AND\" &#8594; &#215;,  \"OR\" &#8594; +</span>', n:"For combined events: when both must happen, multiply the probabilities. When either can happen, add them. The chance of two reds in a row, replacing each time, is 3 fifths times 3 fifths, which is 9 over 25." }
+        ],
+        practice: [
+          { q:'Roll a fair dice. What is P(getting a 5)?', type:'mcq', opts:['1/5','1/6','5/6','1/2'], ans:1, marks:2, exp:'One 5 out of six faces = 1/6' },
+          { q:'Bag has 3 red and 7 blue balls.\nFind P(red).', type:'mcq', opts:['3/7','7/10','3/10','1/3'], ans:2, marks:2, exp:'3 red out of 10 total = 3/10' },
+          { q:'P(event) = 0.3. Find P(not event).', type:'input', ans:'0.7', marks:2, exp:'1 - 0.3 = 0.7' },
+          { q:'A coin is tossed twice.\nFind P(two heads).', type:'mcq', opts:['1/2','1/3','1/4','2/4'], ans:2, marks:3, exp:'&#189; &#215; &#189; = 1/4' }
+        ]
+      },
+      {
+        title:'Statistical Graphs', sub:'Statistics — Paper 1 & 2',
+        steps: [
+          { w:'<svg viewBox="0 0 220 150" style="width:100%;max-width:300px;height:auto;margin:6px auto 10px;display:block;"><line x1="35" y1="20" x2="35" y2="120" stroke="var(--text2)" stroke-width="1.5"/><line x1="35" y1="120" x2="205" y2="120" stroke="var(--text2)" stroke-width="1.5"/><rect x="50" y="70" width="28" height="50" fill="var(--gold-bg)" stroke="var(--gold)" stroke-width="1.5"/><rect x="90" y="40" width="28" height="80" fill="var(--gold-bg)" stroke="var(--gold)" stroke-width="1.5"/><rect x="130" y="85" width="28" height="35" fill="var(--gold-bg)" stroke="var(--gold)" stroke-width="1.5"/><rect x="170" y="60" width="28" height="60" fill="var(--gold-bg)" stroke="var(--gold)" stroke-width="1.5"/><text x="64" y="134" fill="var(--text2)" font-family="monospace" font-size="10" text-anchor="middle">A</text><text x="104" y="134" fill="var(--text2)" font-family="monospace" font-size="10" text-anchor="middle">B</text><text x="144" y="134" fill="var(--text2)" font-family="monospace" font-size="10" text-anchor="middle">C</text><text x="184" y="134" fill="var(--text2)" font-family="monospace" font-size="10" text-anchor="middle">D</text><text x="22" y="72" fill="var(--text2)" font-family="monospace" font-size="11" text-anchor="middle">f</text></svg><span class="comment">-- Bar chart --</span>\n\nThe HEIGHT of each bar = the frequency.\nBars have equal width and gaps between them.', n:"A bar chart shows categories. The height of each bar represents its frequency, or how often it occurs. The bars are equally wide with gaps between them." },
+          { w:'<span class="comment">-- Pie chart: angles --</span>\n\n  <span class="highlight">Sector angle = (frequency / total) &#215; 360&#176;</span>\n\n  The whole circle is always <span class="number">360&#176;</span>.', n:"In a pie chart, the whole circle is 360 degrees. Each category's slice angle is its frequency divided by the total, times 360." },
+          { w:'<span class="comment">-- Pie chart example --</span>\n\n<span class="label">5 of 20 students like Maths:</span>\n\n  Angle = (5 / 20) &#215; 360&#176;\n  = 0.25 &#215; 360&#176;\n  = <span class="result">90&#176;</span>', n:"If 5 out of 20 students like maths, that slice is 5 over 20 times 360, which is a quarter of 360, equal to 90 degrees." },
+          { w:'<span class="comment">-- Reading graphs back --</span>\n\nFrom a pie chart, a sector of 90&#176; means\nthat category is 90/360 = <span class="result">&#188; of the total</span>.\n\n<span class="important">Always check your pie angles add up to 360&#176;.</span>', n:"You can also read backwards: a 90 degree slice is 90 over 360, which is one quarter of the total. Always check that all your pie chart angles add up to 360." }
+        ],
+        practice: [
+          { q:'Pie chart: 8 of 40 students walk to school.\nFind the sector angle.', type:'mcq', opts:['45&#176;','72&#176;','90&#176;','120&#176;'], ans:1, marks:3, exp:'(8/40) &#215; 360 = 72&#176;' },
+          { q:'What do all the angles in a pie\nchart add up to?', type:'input', ans:'360', marks:1, exp:'A full circle = 360&#176;' },
+          { q:'A pie sector is 90&#176;. What fraction\nof the total is it?', type:'mcq', opts:['1/2','1/3','1/4','1/6'], ans:2, marks:2, exp:'90/360 = 1/4' },
+          { q:'In a class of 30, 10 pupils walk.\nFind the pie chart angle for walkers.', type:'mcq', opts:['100&#176;','120&#176;','90&#176;','150&#176;'], ans:1, marks:3, exp:'(10/30) &#215; 360 = 120&#176;' }
+        ]
+      },
+      {
+        title:'Cumulative Frequency', sub:'Statistics — Paper 2',
+        steps: [
+          { w:'<span class="comment">-- What is cumulative frequency? --</span>\n\nA <span class="highlight">running total</span> of the frequencies.\n\n<span class="label">Frequencies: 5, 12, 8</span>\n  Cumulative: 5, then 5+12=<span class="number">17</span>, then 17+8=<span class="result">25</span>', n:"Cumulative frequency is a running total. You keep adding each frequency to the ones before it. Frequencies of 5, 12 and 8 give cumulative totals of 5, 17, and 25." },
+          { w:'<svg viewBox="0 0 220 160" style="width:100%;max-width:300px;height:auto;margin:6px auto 10px;display:block;"><line x1="38" y1="20" x2="38" y2="130" stroke="var(--text2)" stroke-width="1.5"/><line x1="38" y1="130" x2="205" y2="130" stroke="var(--text2)" stroke-width="1.5"/><path d="M38,130 Q72,127 92,116 T132,68 Q152,44 176,33 T200,28" fill="none" stroke="var(--accent)" stroke-width="2.5"/><line x1="38" y1="60" x2="118" y2="60" stroke="var(--gold)" stroke-width="1" stroke-dasharray="4,3"/><line x1="118" y1="60" x2="118" y2="130" stroke="var(--gold)" stroke-width="1" stroke-dasharray="4,3"/><text x="26" y="64" fill="var(--gold)" font-family="monospace" font-size="9" text-anchor="middle">&#189;n</text><text x="118" y="144" fill="var(--gold)" font-family="monospace" font-size="9" text-anchor="middle">median</text><text x="20" y="20" fill="var(--text2)" font-family="monospace" font-size="9">CF</text></svg><span class="comment">-- The cumulative frequency curve (ogive) --</span>\n\nPlot cumulative frequency against the\n<span class="highlight">UPPER boundary</span> of each class. Join with a\nsmooth S-shaped curve.', n:"When you plot cumulative frequency against the upper boundary of each class and join the points smoothly, you get an S-shaped curve called an ogive." },
+          { w:'<span class="comment">-- Finding the median from the curve --</span>\n\n<span class="label">For n students, the median is at the n/2 value.</span>\n\n  80 students &#8594; median at the <span class="result">40th</span> value.\n\nGo across from n/2 on the CF axis to the curve,\nthen down to read the median.', n:"To find the median, go to n over 2 on the cumulative frequency axis. For 80 students that is the 40th value. Read across to the curve, then down to the horizontal axis." },
+          { w:'<span class="comment">-- Quartiles and spread --</span>\n\n  Lower quartile Q1 = at <span class="number">n/4</span>\n  Upper quartile Q3 = at <span class="number">3n/4</span>\n  <span class="highlight">Interquartile range = Q3 - Q1</span>\n\n<span class="important">The IQR measures the spread of the middle half.</span>', n:"The lower quartile is read at n over 4 and the upper quartile at three n over 4. The interquartile range is Q3 minus Q1, and it measures how spread out the middle half of the data is." }
+        ],
+        practice: [
+          { q:'Cumulative frequency is a running...', type:'mcq', opts:['average','total','difference','product'], ans:1, marks:1, exp:'Cumulative frequency = running TOTAL' },
+          { q:'Frequencies 5, 12, 8. What is the\ncumulative frequency after the 2nd class?', type:'input', ans:'17', marks:2, exp:'5 + 12 = 17' },
+          { q:'For 80 students, the median is read\nat which value?', type:'input', ans:'40', marks:2, exp:'n/2 = 80/2 = 40th value' },
+          { q:'The interquartile range = Q3 minus...?', type:'mcq', opts:['Q1','the median','the mean','n/2'], ans:0, marks:2, exp:'IQR = Q3 - Q1' }
+        ]
+      },
+      {
+        title:'Coordinate Geometry', sub:'Graphs — Paper 2',
+        steps: [
+          { w:'<svg viewBox="0 0 200 170" style="width:100%;max-width:250px;height:auto;margin:6px auto 10px;display:block;"><line x1="40" y1="15" x2="40" y2="145" stroke="var(--text2)" stroke-width="1.5"/><line x1="20" y1="135" x2="190" y2="135" stroke="var(--text2)" stroke-width="1.5"/><line x1="50" y1="125" x2="175" y2="35" stroke="var(--accent)" stroke-width="2.5"/><line x1="80" y1="103" x2="140" y2="103" stroke="var(--gold)" stroke-width="1" stroke-dasharray="3,3"/><line x1="140" y1="103" x2="140" y2="60" stroke="var(--gold)" stroke-width="1" stroke-dasharray="3,3"/><text x="108" y="116" fill="var(--gold)" font-family="monospace" font-size="9" text-anchor="middle">run</text><text x="145" y="86" fill="var(--gold)" font-family="monospace" font-size="9">rise</text><text x="180" y="148" fill="var(--text2)" font-family="monospace" font-size="11">x</text><text x="29" y="20" fill="var(--text2)" font-family="monospace" font-size="11">y</text></svg><span class="comment">-- Gradient (slope) --</span>\n\n  <span class="highlight">gradient = rise / run = (y&#8322;-y&#8321;) / (x&#8322;-x&#8321;)</span>\n\n<span class="label">From (1, 2) to (4, 8):</span>\n  = (8 - 2) / (4 - 1) = 6/3 = <span class="result">2</span>', n:"The gradient of a line is the rise divided by the run — how much it goes up for each step across. From the point 1,2 to 4,8, the gradient is 8 minus 2 over 4 minus 1, which is 6 over 3, equal to 2." },
+          { w:'<span class="comment">-- Midpoint --</span>\n\n  <span class="highlight">Midpoint = ( (x&#8321;+x&#8322;)/2 ,  (y&#8321;+y&#8322;)/2 )</span>\n\n<span class="label">Midpoint of (2, 4) and (6, 10):</span>\n  = ( (2+6)/2 , (4+10)/2 )\n  = <span class="result">(4, 7)</span>', n:"The midpoint of a line is the average of the two x-coordinates and the average of the two y-coordinates. The midpoint of 2,4 and 6,10 is 4,7." },
+          { w:'<span class="comment">-- Distance between two points --</span>\n\n  <span class="highlight">d = &#8730;[ (x&#8322;-x&#8321;)&#178; + (y&#8322;-y&#8321;)&#178; ]</span>\n\n<span class="label">From (0,0) to (3,4):</span>\n  = &#8730;(3&#178; + 4&#178;) = &#8730;25 = <span class="result">5</span>\n\n<span class="comment">This is just Pythagoras on the coordinate grid.</span>', n:"The distance between two points uses Pythagoras: the square root of the change in x squared plus the change in y squared. From the origin to 3,4 the distance is root 25, which is 5." },
+          { w:'<span class="comment">-- The equation y = mx + c --</span>\n\n  <span class="highlight">m</span> = gradient\n  <span class="highlight">c</span> = y-intercept (where it crosses the y-axis)\n\n<span class="label">y = 2x + 3</span>\n  gradient = <span class="result">2</span>,  crosses y-axis at <span class="result">3</span>\n\n<span class="important">Parallel lines have the SAME gradient (m).</span>', n:"A straight line has the equation y equals m x plus c. Here m is the gradient and c is the y-intercept, where the line crosses the y-axis. In y equals 2x plus 3, the gradient is 2 and it crosses the y-axis at 3. Parallel lines share the same gradient." }
+        ],
+        practice: [
+          { q:'Find the gradient of the line\nfrom (1, 2) to (4, 8).', type:'input', ans:'2', marks:3, exp:'(8-2)/(4-1) = 6/3 = 2' },
+          { q:'Find the midpoint of (2, 4) and (6, 8).', type:'mcq', opts:['(4, 6)','(8, 12)','(4, 4)','(3, 6)'], ans:0, marks:2, exp:'( (2+6)/2 , (4+8)/2 ) = (4, 6)' },
+          { q:'In y = 3x + 5, what is the gradient?', type:'input', ans:'3', marks:2, exp:'y = mx + c, so m = 3' },
+          { q:'In y = mx + c, what does c represent?', type:'mcq', opts:['the gradient','the y-intercept','the x-intercept','the midpoint'], ans:1, marks:2, exp:'c = y-intercept' }
+        ]
+      },
+      {
+        title:'Functional Graphs', sub:'Graphs — Paper 2',
+        steps: [
+          { w:'<svg viewBox="0 0 200 160" style="width:100%;max-width:250px;height:auto;margin:6px auto 10px;display:block;"><line x1="100" y1="12" x2="100" y2="140" stroke="var(--text2)" stroke-width="1.5"/><line x1="20" y1="120" x2="185" y2="120" stroke="var(--text2)" stroke-width="1.5"/><path d="M42,25 Q100,168 158,25" fill="none" stroke="var(--accent)" stroke-width="2.5"/><circle cx="62" cy="120" r="3" fill="var(--gold)"/><circle cx="138" cy="120" r="3" fill="var(--gold)"/><text x="62" y="135" fill="var(--gold)" font-family="monospace" font-size="9" text-anchor="middle">root</text><text x="138" y="135" fill="var(--gold)" font-family="monospace" font-size="9" text-anchor="middle">root</text><text x="178" y="116" fill="var(--text2)" font-family="monospace" font-size="11">x</text></svg><span class="comment">-- Quadratic graphs (parabolas) --</span>\n\n  <span class="number">y = ax&#178; + bx + c</span>  gives a <span class="highlight">parabola</span>.\n\n  a &gt; 0  &#8594;  U-shape (has a MINIMUM)\n  a &lt; 0  &#8594;  &#8745;-shape (has a MAXIMUM)', n:"A quadratic, y equals a x squared plus b x plus c, always draws a smooth curve called a parabola. If a is positive it opens upward like a U and has a minimum. If a is negative it opens downward and has a maximum." },
+          { w:'<span class="comment">-- Plot from a table of values --</span>\n\nWork out y for each x, plot the points,\nthen join with a <span class="highlight">SMOOTH curve</span> &#8212; never a ruler.\n\n<span class="important">A wobbly straight-line join loses marks.</span>', n:"To draw the graph, make a table of x and y values, plot each point carefully, then join them with a single smooth curve. Never use a ruler to connect the points of a curve." },
+          { w:'<span class="comment">-- Reading the graph --</span>\n\n<span class="keyword">Roots / solutions:</span> where the curve crosses\n  the <span class="highlight">x-axis</span> (y = 0).\n<span class="keyword">Turning point:</span> the lowest or highest point.\n<span class="keyword">Line of symmetry:</span> the vertical line through it.', n:"From the graph you can read the roots, where the curve crosses the x-axis — these are the solutions. The turning point is the lowest or highest point, and the curve is symmetrical about a vertical line through it." },
+          { w:'<span class="comment">-- Worked value --</span>\n\n<span class="label">y = &#189;x(5 - x). Find y when x = 3:</span>\n\n  y = &#189; &#215; 3 &#215; (5 - 3)\n  y = &#189; &#215; 3 &#215; 2\n  y = <span class="result">3</span>\n\n<span class="comment">Other graphs: y = k/x gives a hyperbola.</span>', n:"To complete a table, substitute each x value. For y equals a half x times 5 minus x, when x is 3 we get a half times 3 times 2, which is 3. Note a reciprocal function, y equals k over x, gives a different curve called a hyperbola." }
+        ],
+        practice: [
+          { q:'The graph of y = x&#178; is what shape?', type:'mcq', opts:['a straight line','a parabola','a circle','a hyperbola'], ans:1, marks:2, exp:'A quadratic gives a parabola' },
+          { q:'For y = ax&#178; + bx + c with a &gt; 0,\nthe curve has a...', type:'mcq', opts:['maximum','minimum','no turning point','straight line'], ans:1, marks:2, exp:'a &gt; 0 opens upward = minimum' },
+          { q:'The roots of a curve are where it\ncrosses the...', type:'mcq', opts:['y-axis','x-axis','origin','turning point'], ans:1, marks:2, exp:'Roots are where y = 0 (the x-axis)' },
+          { q:'y = &#189;x(5 - x). Find y when x = 3.', type:'input', ans:'3', marks:3, exp:'&#189; &#215; 3 &#215; 2 = 3' }
+        ]
+      },
+      {
+        title:'Travel Graphs', sub:'Graphs — Paper 2',
+        steps: [
+          { w:'<svg viewBox="0 0 200 160" style="width:100%;max-width:250px;height:auto;margin:6px auto 10px;display:block;"><line x1="38" y1="12" x2="38" y2="135" stroke="var(--text2)" stroke-width="1.5"/><line x1="38" y1="135" x2="190" y2="135" stroke="var(--text2)" stroke-width="1.5"/><polyline points="38,135 90,78 132,78 175,25" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="56" y="104" fill="var(--gold)" font-family="monospace" font-size="9">moving</text><text x="98" y="72" fill="var(--gold)" font-family="monospace" font-size="9">stopped</text><text x="20" y="20" fill="var(--text2)" font-family="monospace" font-size="10">d</text><text x="182" y="148" fill="var(--text2)" font-family="monospace" font-size="10">t</text></svg><span class="comment">-- Distance-Time graphs --</span>\n\n  <span class="highlight">Gradient = speed</span>  (steeper = faster)\n  <span class="highlight">Flat (horizontal) line = stationary</span> (at rest)', n:"On a distance-time graph, the gradient tells you the speed — the steeper the line, the faster the object. A flat, horizontal line means the object is stationary, not moving." },
+          { w:'<span class="comment">-- Speed from a distance-time graph --</span>\n\n  <span class="highlight">Speed = distance / time</span>\n\n<span class="label">100 m travelled in 20 s:</span>\n  = 100 / 20\n  = <span class="result">5 m/s</span>', n:"Speed is distance divided by time, which is the gradient of the line. 100 metres in 20 seconds gives a speed of 5 metres per second." },
+          { w:'<span class="comment">-- Speed-Time graphs --</span>\n\n  <span class="highlight">Gradient = acceleration</span>\n  <span class="highlight">Area under the graph = distance travelled</span>\n\n<span class="comment">A flat line here means CONSTANT speed (not stopped).</span>', n:"On a speed-time graph it is different. The gradient now gives the acceleration, and the area underneath the graph gives the total distance travelled. A flat line here means constant speed, not stopped." },
+          { w:'<span class="comment">-- Area under a speed-time graph --</span>\n\n<span class="label">Constant 5 m/s for 10 s:</span>\n  Distance = area of rectangle\n  = 5 &#215; 10 = <span class="result">50 m</span>\n\n<span class="important">d-t graph &#8594; gradient = SPEED.\nv-t graph &#8594; area = DISTANCE.</span>', n:"To find distance from a speed-time graph, calculate the area underneath. Travelling at a constant 5 metres per second for 10 seconds covers an area of 5 times 10, which is 50 metres. Remember: on a distance-time graph the gradient is speed; on a speed-time graph the area is distance." }
+        ],
+        practice: [
+          { q:'On a distance-time graph, the\ngradient represents the...', type:'mcq', opts:['distance','speed','acceleration','time'], ans:1, marks:2, exp:'Gradient of d-t graph = speed' },
+          { q:'A car travels 150 m in 30 s.\nFind the speed in m/s.', type:'input', ans:'5', marks:2, exp:'150 / 30 = 5 m/s' },
+          { q:'A flat (horizontal) line on a\ndistance-time graph means the object is...', type:'mcq', opts:['speeding up','stationary','slowing down','reversing'], ans:1, marks:2, exp:'Flat line on d-t graph = at rest' },
+          { q:'On a speed-time graph, the area\nunderneath represents the...', type:'mcq', opts:['speed','acceleration','distance','time'], ans:2, marks:3, exp:'Area under v-t graph = distance' }
+        ]
+      },
+      {
+        title:'Vectors', sub:'Vectors — Paper 2',
+        steps: [
+          { w:'<svg viewBox="0 0 170 150" style="width:100%;max-width:220px;height:auto;margin:6px auto 10px;display:block;"><line x1="30" y1="15" x2="30" y2="130" stroke="var(--text2)" stroke-width="1.2"/><line x1="20" y1="120" x2="155" y2="120" stroke="var(--text2)" stroke-width="1.2"/><line x1="30" y1="120" x2="120" y2="50" stroke="var(--accent)" stroke-width="2.5"/><polygon points="120,50 108,52 116,62" fill="var(--accent)"/><line x1="30" y1="120" x2="120" y2="120" stroke="var(--gold)" stroke-width="1" stroke-dasharray="3,3"/><line x1="120" y1="120" x2="120" y2="50" stroke="var(--gold)" stroke-width="1" stroke-dasharray="3,3"/><text x="75" y="133" fill="var(--gold)" font-family="monospace" font-size="9" text-anchor="middle">x (right)</text><text x="125" y="88" fill="var(--gold)" font-family="monospace" font-size="9">y (up)</text></svg><span class="comment">-- Column vectors --</span>\n\nA column vector  (x &nbsp;y)  means:\n  <span class="highlight">top number x</span> = move right (or left if &#8722;)\n  <span class="highlight">bottom number y</span> = move up (or down if &#8722;)', n:"A column vector has two numbers stacked. The top number tells you how far to move right, or left if negative. The bottom number tells you how far to move up, or down if negative." },
+          { w:'<span class="comment">-- Adding vectors --</span>\n\nAdd the tops, add the bottoms.\n\n  (2 &nbsp;3) + (1 &nbsp;4) = <span class="result">(3 &nbsp;7)</span>\n\n<span class="comment">Subtracting works the same way.</span>', n:"To add two vectors, add the top numbers together and the bottom numbers together. 2,3 plus 1,4 gives 3,7. Subtraction works the same way." },
+          { w:'<span class="comment">-- Magnitude (length) of a vector --</span>\n\n  <span class="highlight">|v| = &#8730;(x&#178; + y&#178;)</span>   (Pythagoras again)\n\n<span class="label">For the vector (3 &nbsp;4):</span>\n  = &#8730;(3&#178; + 4&#178;) = &#8730;25 = <span class="result">5</span>', n:"The magnitude, or length, of a vector is found with Pythagoras: the square root of x squared plus y squared. For the vector 3,4 the magnitude is the square root of 25, which is 5." },
+          { w:'<span class="comment">-- Working backwards --</span>\n\n<span class="label">Vector (8 &nbsp;u) has magnitude 17. Find u.</span>\n\n  8&#178; + u&#178; = 17&#178;\n  64 + u&#178; = 289\n  u&#178; = 225\n  u = <span class="result">&#177;15</span>\n\n<span class="important">A negative gives a vector of the SAME length\nbut OPPOSITE direction.</span>', n:"You can also work backwards. If the vector 8, u has magnitude 17, then 64 plus u squared equals 289. So u squared is 225, giving u equals plus or minus 15." }
+        ],
+        practice: [
+          { q:'Find the magnitude of the vector (3 &nbsp;4).', type:'input', ans:'5', marks:2, exp:'&#8730;(3&#178;+4&#178;) = &#8730;25 = 5' },
+          { q:'(2 &nbsp;1) + (3 &nbsp;4) = (? &nbsp;?).\nWhat is the TOP number?', type:'input', ans:'5', marks:2, exp:'2 + 3 = 5' },
+          { q:'Vector (8 &nbsp;u) has magnitude 17.\nFind the positive value of u.', type:'mcq', opts:['9','12','15','25'], ans:2, marks:3, exp:'64 + u&#178; = 289\nu&#178; = 225,  u = 15' },
+          { q:'Find the magnitude of the vector (6 &nbsp;8).', type:'mcq', opts:['10','14','48','100'], ans:0, marks:2, exp:'&#8730;(36+64) = &#8730;100 = 10' }
+        ]
+      },
+      {
+        title:'Transformations', sub:'Geometry — Paper 2',
+        steps: [
+          { w:'<svg viewBox="0 0 200 150" style="width:100%;max-width:280px;height:auto;margin:6px auto 10px;display:block;"><line x1="100" y1="12" x2="100" y2="138" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="5,4"/><polygon points="45,40 45,105 80,72" fill="var(--gold-bg)" stroke="var(--accent)" stroke-width="2"/><polygon points="155,40 155,105 120,72" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4,3"/><text x="52" y="128" fill="var(--text2)" font-family="monospace" font-size="10">object</text><text x="130" y="128" fill="var(--text2)" font-family="monospace" font-size="10">image</text><text x="104" y="24" fill="var(--gold)" font-family="monospace" font-size="9">mirror</text></svg><span class="comment">-- The four transformations --</span>\n\n  <span class="keyword">Reflection</span>  &#8212; flip across a mirror line\n  <span class="keyword">Rotation</span>    &#8212; turn about a centre\n  <span class="keyword">Translation</span> &#8212; slide by a vector\n  <span class="keyword">Enlargement</span> &#8212; resize from a centre', n:"There are four transformations. A reflection flips a shape across a mirror line. A rotation turns it about a centre. A translation slides it by a vector. An enlargement resizes it from a centre point." },
+          { w:'<span class="comment">-- Reflection rules --</span>\n\n  In the <span class="keyword">x-axis</span>:  (x, y) &#8594; <span class="result">(x, -y)</span>\n  In the <span class="keyword">y-axis</span>:  (x, y) &#8594; <span class="result">(-x, y)</span>\n  In the line <span class="keyword">y = x</span>:  (x, y) &#8594; <span class="result">(y, x)</span>', n:"Reflection rules to memorise. Reflecting in the x-axis changes y to negative y. Reflecting in the y-axis changes x to negative x. Reflecting in the line y equals x swaps the coordinates over." },
+          { w:'<span class="comment">-- Translation and Rotation --</span>\n\n<span class="keyword">Translation</span> by vector (3 &nbsp;2):\n  (x, y) &#8594; (x+3, y+2)\n\n<span class="keyword">Rotation 180&#176;</span> about the origin:\n  (x, y) &#8594; <span class="result">(-x, -y)</span>', n:"A translation by the vector 3,2 adds 3 to the x and 2 to the y. A rotation of 180 degrees about the origin changes both signs, sending x,y to negative x, negative y." },
+          { w:'<span class="comment">-- Enlargement --</span>\n\n  Multiply distances from the centre by the\n  <span class="highlight">scale factor (k)</span>.\n\n  k = 2  &#8594; twice as big\n  k = &#189; &#8594; half size\n  k negative &#8594; image is INVERTED\n\n<span class="important">To DESCRIBE a transformation fully, state its\nNAME + all details (centre / line / vector / k).</span>', n:"An enlargement multiplies all distances from the centre by the scale factor. A factor of 2 doubles the size, a half halves it, and a negative factor turns the image upside down. Remember: to describe a transformation fully, you must name it and give all its details." }
+        ],
+        practice: [
+          { q:'Reflect the point (3, 2) in the x-axis.', type:'mcq', opts:['(3, -2)','(-3, 2)','(-3, -2)','(2, 3)'], ans:0, marks:2, exp:'In x-axis: (x, y) &#8594; (x, -y) = (3, -2)' },
+          { q:'Translate (1, 1) by the vector (3 &nbsp;2).', type:'mcq', opts:['(4, 3)','(3, 2)','(2, 1)','(4, 2)'], ans:0, marks:2, exp:'(1+3, 1+2) = (4, 3)' },
+          { q:'Rotate (2, 5) by 180&#176; about the origin.', type:'mcq', opts:['(5, 2)','(-2, -5)','(-2, 5)','(2, -5)'], ans:1, marks:3, exp:'180&#176; about O: (x,y) &#8594; (-x,-y) = (-2,-5)' },
+          { q:'Reflect the point (4, 1) in the y-axis.', type:'mcq', opts:['(4, -1)','(-4, 1)','(-4, -1)','(1, 4)'], ans:1, marks:2, exp:'In y-axis: (x, y) &#8594; (-x, y) = (-4, 1)' }
         ]
       }
     ]
@@ -1503,6 +1983,17 @@ function selOpt(qi,oi){
   practiceAnswers[qi]=oi;
   document.querySelectorAll(`[data-q="${qi}"]`).forEach(b=>b.classList.toggle('selected',+b.dataset.o===oi));
 }
+// Robust answer matching — prevents a CORRECT answer being marked wrong.
+// Case-insensitive + space-insensitive, and value-aware for numbers so
+// "3.90" = "3.9", ".7" = "0.7", "090" = "90", "5" = "5.0".
+function answersMatch(input, correct){
+  const norm = s => String(s).trim().toLowerCase().replace(/\s+/g,'');
+  const a = norm(input), b = norm(correct);
+  if(a === b) return true;                         // words/text, case & space insensitive
+  const isNum = s => /^-?\d*\.?\d+$/.test(s);      // only treat as number if FULLY numeric
+  if(isNum(a) && isNum(b) && Math.abs(parseFloat(a) - parseFloat(b)) < 1e-9) return true;
+  return false;
+}
 function submitPractice(){
   const t=DATA[subject].topics[practiceTopicIdx]; let earned=0,total=0;
   t.practice.forEach((q,qi)=>{
@@ -1516,7 +2007,7 @@ function submitPractice(){
       });
     } else {
       const inp=document.getElementById('inp-'+qi); const v=inp.value.trim();
-      ok=v===q.ans; inp.disabled=true;
+      ok=answersMatch(v,q.ans); inp.disabled=true;
       inp.style.borderColor=ok?'var(--green)':'var(--red)';
       inp.style.background=ok?'var(--green-bg)':'var(--red-bg)';
       if(!ok)inp.value=v+' (answer: '+q.ans+')';
@@ -1656,7 +2147,7 @@ function submitPanic(){
       });
     } else {
       const inp=document.getElementById('inp-'+qi); const v=inp.value.trim();
-      ok=v===q.ans; inp.disabled=true;
+      ok=answersMatch(v,q.ans); inp.disabled=true;
       inp.style.borderColor=ok?'var(--green)':'var(--red)';
       inp.style.background=ok?'var(--green-bg)':'var(--red-bg)';
       if(!ok)inp.value=v+' (answer: '+q.ans+')';
@@ -2504,7 +2995,7 @@ function checkMilestone(num) {
     20: '20 questions! You are grinding!',
     30: '30 questions! Beast mode!',
     50: '50 questions! Absolute legend!',
-    100: '100 questions! ZIMSEC will be easy!'
+    100: '100 questions! Your exam will be easy!'
   };
   if (milestones[num]) {
     const el = document.getElementById('milestonePopup');
@@ -2899,7 +3390,7 @@ function saveShareImage() {
 function shareToWhatsAppFromModal() {
   const data = window._shareCtx || { scoreText:'0%', mode:'PRACTICE' };
   const text = 'I just scored ' + data.scoreText + ' on CramBox ' + data.mode +
-    '! ZIMSEC Maths on your phone, $3 once. Try it: zimsec-prep.vercel.app';
+    '! O-Level Maths on your phone, $3 once. Try it: zimsec-prep.vercel.app';
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
 

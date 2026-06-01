@@ -1,0 +1,17 @@
+# Source exam papers — not part of the app, keep off the public server
+MATHS PAPERS/
+files.zip
+
+# Internal business documents — should NOT be publicly accessible
+CramBox-Cambridge-Phase2.html
+CramBox-Campaign-Interactive.html
+CramBox-Launch-Report.html
+CramBox-NGO-Partnership-Proposal.html
+CramBox-Week1-Campaign.html
+
+# Backend script (runs on Google Apps Script, not served by the site)
+google-apps-script.js
+
+# Internal QA artifacts — not part of the app
+_verify.py
+CramBox-Answer-Key.html
