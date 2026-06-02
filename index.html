@@ -1978,12 +1978,12 @@ function startPractice(i) {
     let inp='';
     if(q.type==='mcq'){
       inp='<div class="opts">'+q.opts.map((o,oi)=>
-        `<button class="opt-btn" data-q="${qi}" data-o="${oi}" onclick="selOpt(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span><span>${escHTML(String(o))}</span></button>`
+        `<button class="opt-btn" data-q="${qi}" data-o="${oi}" onclick="selOpt(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span><span>${o}</span></button>`
       ).join('')+'</div>';
     } else {
       inp=`<input type="text" class="ans-input" id="inp-${qi}" placeholder="Your answer..." autocomplete="off">`;
     }
-    card.innerHTML=`<div class="q-num">Question ${qi+1}</div><div class="q-text">${escHTML(q.q)}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
+    card.innerHTML=`<div class="q-num">Question ${qi+1}</div><div class="q-text">${q.q}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
     area.appendChild(card);
   });
   area.innerHTML+='<button class="submit-btn" onclick="submitPractice()">Submit Answers</button>';
@@ -2026,7 +2026,7 @@ function submitPractice(){
     const exp=document.getElementById('exp-'+qi);
     exp.classList.add('show',ok?'correct-exp':'wrong-exp');
     exp.querySelector('h4').textContent=ok?'Correct!':'Incorrect';
-    exp.querySelector('pre').textContent=q.exp;
+    exp.querySelector('pre').innerHTML=q.exp;
   });
   saveScore(subject,practiceTopicIdx,earned,total);
   lastResultPct=Math.round(earned/total*100); lastResultType='practice';
@@ -2136,12 +2136,12 @@ function startPanicMode(){
     let inp='';
     if(q.type==='mcq'){
       inp='<div class="opts">'+q.opts.map((o,oi)=>
-        `<button class="opt-btn" data-q="${qi}" data-o="${oi}" onclick="selOpt(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span><span>${escHTML(String(o))}</span></button>`
+        `<button class="opt-btn" data-q="${qi}" data-o="${oi}" onclick="selOpt(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span><span>${o}</span></button>`
       ).join('')+'</div>';
     } else {
       inp=`<input type="text" class="ans-input" id="inp-${qi}" placeholder="Your answer..." autocomplete="off">`;
     }
-    card.innerHTML=`<div class="q-num">${escHTML(q.topicTitle)} — Q${qi+1}</div><div class="q-text">${escHTML(q.q)}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
+    card.innerHTML=`<div class="q-num">${escHTML(q.topicTitle)} — Q${qi+1}</div><div class="q-text">${q.q}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
     area.appendChild(card);
   });
   area.innerHTML+='<button class="submit-btn" onclick="submitPanic()">Submit All</button>';
@@ -2169,7 +2169,7 @@ function submitPanic(){
     const exp=document.getElementById('exp-'+qi);
     exp.classList.add('show',ok?'correct-exp':'wrong-exp');
     exp.querySelector('h4').textContent=ok?'Correct!':'Incorrect';
-    exp.querySelector('pre').textContent=q.exp;
+    exp.querySelector('pre').innerHTML=q.exp;
   });
   const s=getStore(); s.maths=s.maths||{}; s.maths.questions=(s.maths.questions||0)+total; setStore(s);
   const xp=earned*5; if(xp>0)addXP(xp,'Panic Mode'); recordStreak();
