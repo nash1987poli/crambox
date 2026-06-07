@@ -1769,6 +1769,18 @@ const SPAR_BANK = [
     q:'Translate the point (3, 2) by the vector (-5 &nbsp;-3). Give the image point.',
     answer:'(-2, -1)', exp:'(3+(-5), 2+(-3)) = (-2, -1)' }
 ];
+
+// Readiness % per topic, derived from best practice scores already in the store.
+// topicTitles: array of DATA.maths.topics[].title in index order. Unknown/untouched = 0 (probe early).
+function sparReadiness(store, topicTitles) {
+  const scores = (store && store.maths && store.maths.scores) || {};
+  const out = {};
+  topicTitles.forEach((title, idx) => {
+    const v = scores['t' + idx];
+    out[title] = (typeof v === 'number') ? v : 0;
+  });
+  return out;
+}
 // ===== SPAR MODULE END =====
 
 // ================================================================

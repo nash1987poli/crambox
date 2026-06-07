@@ -74,5 +74,14 @@ H.test('SPAR_BANK: every item is well-formed', () => {
   }
 });
 
+H.test('sparReadiness: known topics use stored %, unknown topics default low', () => {
+  const topics = ['Transformations','Probability','Vectors'];
+  const store = { maths: { scores: { t0: 58, t2: 90 } } };
+  const r = H.ctx.sparReadiness(store, topics);
+  H.assert(r['Transformations'] === 58, 'got ' + r['Transformations']);
+  H.assert(r['Vectors'] === 90, 'got ' + r['Vectors']);
+  H.assert(r['Probability'] === 0, 'unknown should be 0, got ' + r['Probability']);
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();
