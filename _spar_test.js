@@ -114,5 +114,17 @@ H.test('assembleBout: shrinks gracefully when bank too small', () => {
   H.assert(bout.length === 2, 'should shrink to available: ' + bout.length);
 });
 
+H.test('boutTimeBudget: marks * seconds-per-mark by intensity tier', () => {
+  H.assert(H.ctx.boutTimeBudget(10, 0) === 600, 'tier0 = 60s/mark');
+  H.assert(H.ctx.boutTimeBudget(10, 1) === 500, 'tier1 = 50s/mark');
+  H.assert(H.ctx.boutTimeBudget(10, 2) === 400, 'tier2 = 40s/mark');
+});
+H.test('clockState: green normal, amber <=90s, red <=30s', () => {
+  H.assert(H.ctx.clockState(120) === 'green');
+  H.assert(H.ctx.clockState(90) === 'amber');
+  H.assert(H.ctx.clockState(30) === 'red');
+  H.assert(H.ctx.clockState(5) === 'red');
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();

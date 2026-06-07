@@ -1829,6 +1829,25 @@ function assembleBout(readiness, bank, opts) {
   }
   return bout.slice(0, size);
 }
+
+// Seconds-per-mark by intensity tier (tightens as the student sharpens).
+const SPAR_SEC_PER_MARK = [60, 50, 40];
+function boutTimeBudget(totalMarks, tier) {
+  const spm = SPAR_SEC_PER_MARK[Math.min(tier || 0, SPAR_SEC_PER_MARK.length - 1)];
+  return totalMarks * spm;
+}
+// Visual urgency for the countdown.
+function clockState(secondsLeft) {
+  if (secondsLeft <= 30) return 'red';
+  if (secondsLeft <= 90) return 'amber';
+  return 'green';
+}
+// Intensity tier derived from average readiness across targeted topics.
+function sparIntensityTier(avgReadiness) {
+  if (avgReadiness >= 75) return 2;
+  if (avgReadiness >= 50) return 1;
+  return 0;
+}
 // ===== SPAR MODULE END =====
 
 // ================================================================
