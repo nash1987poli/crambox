@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CramBox Cambridge — Phase 2 Brief</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --green: #00e676;
+    --green-dark: #00c853;
+    --black: #0a0a0a;
+    --white: #f5f5f0;
+    --gray: #888;
+    --light: #1a1a1a;
+    --gold: #ffd740;
+    --blue: #448aff;
+    --red: #ff5252;
+    --purple: #b388ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    line-height: 1.6;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ===== COVER ===== */
+  .cover {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid #222;
+    padding-bottom: 56px;
+    margin-bottom: 48px;
+  }
+  .cover-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .cover-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(56px, 11vw, 104px);
+    font-weight: 900;
+    letter-spacing: -3px;
+    line-height: 0.9;
+    margin-bottom: 16px;
+  }
+  .cover-logo span { color: var(--green); }
+  .cover-logo .cambridge { color: var(--purple); font-size: 0.5em; display: block; letter-spacing: -1px; margin-top: 8px; }
+  .cover-concept {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(24px, 5vw, 44px);
+    font-weight: 800;
+    color: var(--purple);
+    margin-bottom: 24px;
+    line-height: 1.15;
+  }
+  .cover-sub {
+    font-size: 16px;
+    color: var(--gray);
+    max-width: 560px;
+    margin-bottom: 40px;
+  }
+  .cover-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #444;
+    letter-spacing: 1px;
+  }
+
+  /* ===== HEADERS ===== */
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    margin: 56px 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #222;
+  }
+  h1 .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--purple);
+    display: block;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    margin: 28px 0 12px;
+  }
+  h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 20px 0 8px;
+  }
+
+  p { color: #aaa; margin-bottom: 12px; font-size: 15px; }
+  strong { color: var(--white); }
+
+  /* ===== TLDR BOX ===== */
+  .tldr {
+    background: var(--purple);
+    color: var(--black);
+    padding: 28px 32px;
+    border-radius: 4px;
+    margin: 28px 0;
+  }
+  .tldr-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .tldr-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(20px, 3.5vw, 28px);
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  /* ===== COMPARISON TABLE ===== */
+  .compare {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr;
+    gap: 1px;
+    background: #1a1a1a;
+    margin: 24px 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .compare > div {
+    background: #111;
+    padding: 14px 18px;
+    font-size: 13px;
+  }
+  .compare .row-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+  }
+  .compare .zimsec-col {
+    color: var(--white);
+    border-top: 2px solid var(--green);
+  }
+  .compare .cambridge-col {
+    color: var(--white);
+    border-top: 2px solid var(--purple);
+  }
+  .compare .header {
+    background: #0a0a0a !important;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px !important;
+    font-weight: 800;
+    padding: 16px 18px !important;
+  }
+  .compare .header.zimsec-col { color: var(--green); }
+  .compare .header.cambridge-col { color: var(--purple); }
+
+  /* ===== TIMELINE ===== */
+  .timeline {
+    display: grid;
+    gap: 2px;
+    margin: 24px 0;
+  }
+  .phase {
+    background: #111;
+    border: 1px solid #222;
+    border-left: 3px solid var(--purple);
+    padding: 22px 26px;
+    border-radius: 4px;
+  }
+  .phase.green { border-left-color: var(--green); }
+  .phase.gold { border-left-color: var(--gold); }
+  .phase-when {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--purple);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .phase.green .phase-when { color: var(--green); }
+  .phase.gold .phase-when { color: var(--gold); }
+  .phase-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .phase p { color: #aaa; font-size: 14px; }
+  .phase ul {
+    list-style: none;
+    margin-top: 10px;
+  }
+  .phase ul li {
+    color: #aaa;
+    font-size: 13px;
+    padding: 4px 0;
+    padding-left: 18px;
+    position: relative;
+  }
+  .phase ul li::before {
+    content: '→';
+    color: var(--purple);
+    position: absolute;
+    left: 0;
+  }
+  .phase.green ul li::before { color: var(--green); }
+  .phase.gold ul li::before { color: var(--gold); }
+
+  /* ===== PRICING CARDS ===== */
+  .price-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin: 24px 0;
+  }
+  @media (max-width: 640px) { .price-cards { grid-template-columns: 1fr; } }
+
+  .price-card {
+    background: #111;
+    border: 1px solid #222;
+    padding: 28px 24px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  .price-card.zimsec { border-top: 3px solid var(--green); }
+  .price-card.cambridge { border-top: 3px solid var(--purple); }
+  .price-card .sku {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .price-card .title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+  .price-card .price {
+    font-family: 'Syne', sans-serif;
+    font-size: 56px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .price-card.zimsec .price { color: var(--green); }
+  .price-card.cambridge .price { color: var(--purple); }
+  .price-card .terms {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+  }
+  .price-card .audience {
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+  .price-card .features {
+    list-style: none;
+    text-align: left;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #222;
+  }
+  .price-card .features li {
+    color: #aaa;
+    font-size: 13px;
+    padding: 5px 0;
+    padding-left: 18px;
+    position: relative;
+  }
+  .price-card.zimsec .features li::before {
+    content: '✓';
+    color: var(--green);
+    position: absolute;
+    left: 0;
+  }
+  .price-card.cambridge .features li::before {
+    content: '✓';
+    color: var(--purple);
+    position: absolute;
+    left: 0;
+  }
+
+  /* ===== TAM TABLE ===== */
+  .tam {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2px;
+    margin: 24px 0;
+  }
+  .tam-cell {
+    background: #111;
+    border: 1px solid #222;
+    padding: 20px;
+    text-align: center;
+  }
+  .tam-cell .country {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--purple);
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+  .tam-cell .num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+  }
+  .tam-cell .lbl {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+
+  /* ===== RISK BLOCKS ===== */
+  .risk {
+    background: #110a0a;
+    border-left: 3px solid var(--red);
+    padding: 18px 22px;
+    border-radius: 4px;
+    margin: 10px 0;
+  }
+  .risk-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .risk h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .risk p { color: #aaa; font-size: 13px; margin-bottom: 0; }
+
+  /* ===== QUOTE ===== */
+  blockquote {
+    border-left: 3px solid var(--purple);
+    padding: 16px 24px;
+    margin: 24px 0;
+    background: #0d0d0d;
+  }
+  blockquote p {
+    font-family: 'Syne', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.4;
+  }
+
+  /* ===== ACTION LIST ===== */
+  .actions {
+    background: #0d0d0d;
+    border: 1px solid #1e1e1e;
+    border-radius: 4px;
+    padding: 24px 28px;
+    margin: 20px 0;
+  }
+  .actions h3 { margin-top: 0; }
+  .actions ol {
+    margin-left: 20px;
+    margin-top: 14px;
+  }
+  .actions ol li {
+    color: #aaa;
+    font-size: 14px;
+    padding: 6px 0;
+    line-height: 1.6;
+  }
+  .actions ol li::marker {
+    color: var(--purple);
+    font-family: 'DM Mono', monospace;
+    font-weight: 700;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid #1a1a1a;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #333;
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 24px 16px 60px; }
+    .compare { grid-template-columns: 1fr; }
+    .compare .row-label { background: #0a0a0a; font-size: 9px; padding: 8px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-tag">Phase 2 Strategic Brief · Confidential · Curious Inc</div>
+  <div class="cover-logo">Cram<span>Box</span>
+    <span class="cambridge">+ CAMBRIDGE</span>
+  </div>
+  <div class="cover-concept">Same engine. Different syllabus.<br>Higher margin. Bigger market.</div>
+  <div class="cover-sub">A second SKU that extends CramBox into Cambridge IGCSE — the exam track used by Zimbabwean private schools and ~12 African countries. Same product shell, separate content track, $5–6 pricing. Launch target: August 2026.</div>
+  <div class="cover-meta">Prepared May 2026 · For Phase 2 planning · Decisions needed by July</div>
+</div>
+
+
+<!-- TLDR -->
+<div class="tldr">
+  <div class="tldr-label">TL;DR</div>
+  <div class="tldr-text">Don't dilute the ZIMSEC campaign. Ship a parallel Cambridge product as a second SKU once ZIMSEC has proven the loop. Same code, different content, $5–6, separate landing page. This is what makes the $6 question disappear.</div>
+</div>
+
+
+<!-- WHY -->
+<h1><span class="num">01 — WHY THIS, WHY NOW</span>The Cambridge Gap</h1>
+
+<p>The ZIMSEC campaign is built around a sharp positioning signal: <strong>"made for OUR exam."</strong> That signal is what makes parents click. If we add "and also Cambridge" to the headline, we kill it — the message becomes generic, the trust drops, the campaign weakens.</p>
+
+<p>But Cambridge IGCSE is a real market we'd be wrong to ignore long-term:</p>
+
+<ul style="margin-left: 22px; margin-bottom: 16px;">
+  <li style="color:#aaa; font-size:14px; padding:4px 0;"><strong>Used by ~15–20% of Zimbabwean O-Level students</strong> (private schools — Petra, Hellenic, Watershed, Eaglesvale, Heritage, Hillcrest, etc.).</li>
+  <li style="color:#aaa; font-size:14px; padding:4px 0;"><strong>Same families pay $80–150 per Cambridge exam paper</strong> — $5–6 for prep is rounding error.</li>
+  <li style="color:#aaa; font-size:14px; padding:4px 0;"><strong>Used across at least 12 African countries</strong> — same product, 10× the addressable market.</li>
+  <li style="color:#aaa; font-size:14px; padding:4px 0;"><strong>October/November AND May/June sessions</strong> — twice the launch windows per year.</li>
+</ul>
+
+
+<!-- TAM -->
+<h1><span class="num">02 — THE MARKET</span>Cambridge IGCSE Math Students Across Africa (Est.)</h1>
+
+<p>Directional numbers — based on Cambridge International annual statistics and country-level entry counts. Not forecasts.</p>
+
+<div class="tam">
+  <div class="tam-cell">
+    <div class="country">ZIMBABWE</div>
+    <div class="num">~25K</div>
+    <div class="lbl">private school IGCSE</div>
+  </div>
+  <div class="tam-cell">
+    <div class="country">SOUTH AFRICA</div>
+    <div class="num">~40K</div>
+    <div class="lbl">private + Cambridge</div>
+  </div>
+  <div class="tam-cell">
+    <div class="country">KENYA</div>
+    <div class="num">~30K</div>
+    <div class="lbl">Cambridge schools</div>
+  </div>
+  <div class="tam-cell">
+    <div class="country">NIGERIA</div>
+    <div class="num">~50K</div>
+    <div class="lbl">Cambridge cohort</div>
+  </div>
+  <div class="tam-cell">
+    <div class="country">BOTSWANA / NAMIBIA / ZAMBIA</div>
+    <div class="num">~30K</div>
+    <div class="lbl">combined</div>
+  </div>
+  <div class="tam-cell">
+    <div class="country">REST OF AFRICA</div>
+    <div class="num">~25K</div>
+    <div class="lbl">Mauritius, Tanzania, Ghana, etc.</div>
+  </div>
+</div>
+
+<p style="font-size:13px; color:#666;"><strong>Conservative addressable market: ~200K students/year across Africa.</strong> Even at 0.5% capture and $5/code, that's $5,000 in run-rate revenue from Cambridge alone — without touching ZIMSEC.</p>
+
+
+<!-- ZIMSEC VS CAMBRIDGE -->
+<h1><span class="num">03 — THE DIFFERENCE</span>ZIMSEC 4004 vs Cambridge IGCSE 0580</h1>
+
+<div class="compare">
+  <div class="row-label">Dimension</div>
+  <div class="header zimsec-col">ZIMSEC</div>
+  <div class="header cambridge-col">CAMBRIDGE</div>
+
+  <div class="row-label">Syllabus code</div>
+  <div class="zimsec-col">Mathematics 4004</div>
+  <div class="cambridge-col">Mathematics 0580 (Core + Extended)</div>
+
+  <div class="row-label">Papers</div>
+  <div class="zimsec-col">Paper 1 (non-calc) + Paper 2 (calc)</div>
+  <div class="cambridge-col">4 papers in Extended (P1, P2, P3, P4)</div>
+
+  <div class="row-label">Exam sessions</div>
+  <div class="zimsec-col">October only</div>
+  <div class="cambridge-col">May/June + October/November</div>
+
+  <div class="row-label">Topic weight</div>
+  <div class="zimsec-col">Computation-heavy, algebra-dominant, ZIM context (EcoCash word problems)</div>
+  <div class="cambridge-col">More stats/probability, more graph theory, less repetitive calculation, international context</div>
+
+  <div class="row-label">Calculator policy</div>
+  <div class="zimsec-col">Non-graphing scientific only</div>
+  <div class="cambridge-col">Non-graphing scientific only (same)</div>
+
+  <div class="row-label">Avg student profile</div>
+  <div class="zimsec-col">Govt/community/private school, mixed income</div>
+  <div class="cambridge-col">Private/international school, upper-middle to high income</div>
+
+  <div class="row-label">Exam fee (per paper)</div>
+  <div class="zimsec-col">~$15</div>
+  <div class="cambridge-col">$80–150</div>
+
+  <div class="row-label">Price tolerance (prep)</div>
+  <div class="zimsec-col">$3 sweet spot</div>
+  <div class="cambridge-col">$5–8 comfortable</div>
+</div>
+
+<blockquote>
+  <p>"The fact that Cambridge students pay 5–10× more for the exam itself is the entire pricing argument. $6 looks expensive against $3. $6 looks free against $100."</p>
+</blockquote>
+
+
+<!-- PRODUCT ARCHITECTURE -->
+<h1><span class="num">04 — PRODUCT ARCHITECTURE</span>Same Shell, Two SKUs</h1>
+
+<p>The technical play is to keep <strong>one codebase, two deployments, two content tracks</strong>. The shell (UI, drill engine, countdown, share card, activation, gamification) is shared. Only the question bank, syllabus copy, and visual accent colour change per SKU.</p>
+
+<div class="price-cards">
+  <div class="price-card zimsec">
+    <div class="sku">SKU 01</div>
+    <div class="title">CramBox ZIMSEC</div>
+    <div class="price">$3</div>
+    <div class="terms">ONCE · ECOCASH</div>
+    <div class="audience">For Zimbabwean students sitting ZIMSEC 4004 Maths in October.</div>
+    <ul class="features">
+      <li>zimsec-prep.vercel.app</li>
+      <li>4004 syllabus content</li>
+      <li>October countdown</li>
+      <li>Green brand accent</li>
+      <li>Code prefix: CB-</li>
+    </ul>
+  </div>
+  <div class="price-card cambridge">
+    <div class="sku">SKU 02</div>
+    <div class="title">CramBox Cambridge</div>
+    <div class="price">$6</div>
+    <div class="terms">ONCE · MULTIPLE METHODS</div>
+    <div class="audience">For IGCSE 0580 students across Africa sitting May/June or Oct/Nov.</div>
+    <ul class="features">
+      <li>cambridge-prep.vercel.app</li>
+      <li>0580 Extended syllabus</li>
+      <li>Dual countdown (next session)</li>
+      <li>Purple brand accent</li>
+      <li>Code prefix: CBX-</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Why separate URLs (not /cambridge subdomain)</h2>
+<p>Parents trust specificity. <strong>cambridge-prep.vercel.app</strong> says "built for Cambridge" the same way <strong>zimsec-prep.vercel.app</strong> says "built for ZIMSEC." A unified URL forces the user to navigate to their syllabus — that's a friction point that costs conversions. Two URLs = two clean positioning surfaces.</p>
+
+<h2>Code architecture (technical)</h2>
+<p>Switch the content track via a build-time env var or URL parameter. The DATA object in index.html becomes <code style="background:#111; padding:2px 6px; border-radius:3px; font-size:13px; color:var(--purple);">DATA.zimsec</code> and <code style="background:#111; padding:2px 6px; border-radius:3px; font-size:13px; color:var(--purple);">DATA.cambridge</code> — same shape, different questions. The accent CSS variable swaps based on which build is loaded. EXAM_DATES becomes a SKU-specific config.</p>
+
+
+<!-- PRICING LOGIC -->
+<h1><span class="num">05 — WHY $6 WORKS FOR CAMBRIDGE</span>Anchoring Reframed</h1>
+
+<p>The pricing simulator (in <em>CramBox-Campaign-Interactive.html</em>) showed $6 is too high for ZIMSEC because it crashes the viral coefficient. For Cambridge, three things flip:</p>
+
+<ol style="margin-left: 22px; margin-bottom: 16px;">
+  <li style="color:#aaa; font-size:14px; padding:6px 0;"><strong>Different anchor.</strong> ZIMSEC anchors against $30 tutors. Cambridge anchors against $100 exam fees. $6 vanishes.</li>
+  <li style="color:#aaa; font-size:14px; padding:6px 0;"><strong>Different income bracket.</strong> Cambridge parents are paying ~$300/term in school fees. $6 isn't an impulse decision — it's a no-decision.</li>
+  <li style="color:#aaa; font-size:14px; padding:6px 0;"><strong>Different distribution mechanic.</strong> Cambridge students share less on Status (privacy norms differ) but parents talk in tighter networks (church, business associations, school WhatsApp groups). Word travels through fewer, higher-leverage nodes.</li>
+</ol>
+
+<p>Tested in the simulator: at $6 against a $100 anchor, conversion stays in the 22–28% range (vs ~12% at $6 against the $30 anchor). The number drops but doesn't collapse.</p>
+
+
+<!-- TIMELINE -->
+<h1><span class="num">06 — PHASING</span>From Now to August Launch</h1>
+
+<div class="timeline">
+
+  <div class="phase green">
+    <div class="phase-when">PHASE 1 · NOW → JUNE 30</div>
+    <div class="phase-title">Validate ZIMSEC Loop</div>
+    <p>Don't touch Cambridge. Prove the viral mechanic on ZIMSEC first. If the score-share loop doesn't work for ZIMSEC at $3, it won't magically work for Cambridge at $6.</p>
+    <ul>
+      <li>Hit 100 ZIMSEC activations</li>
+      <li>Measure share-card post rate (target: ≥30%)</li>
+      <li>Confirm word-of-mouth is real (>20% of buyers say "friend recommended")</li>
+    </ul>
+  </div>
+
+  <div class="phase gold">
+    <div class="phase-when">PHASE 2 · JULY 1 → JULY 31</div>
+    <div class="phase-title">Build Cambridge Content</div>
+    <p>Branch the codebase. Author 0580 Extended syllabus content. The shell is done — only DATA.cambridge + EXAM_DATES.cambridge + accent colour change.</p>
+    <ul>
+      <li>Author ~12 topic modules covering 0580 Extended</li>
+      <li>Deploy to cambridge-prep.vercel.app (separate Vercel project)</li>
+      <li>Generate first 50 Cambridge activation codes (prefix: CBX-)</li>
+      <li>Soft-test with 5 pilot Cambridge students at $0 (gather feedback)</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="phase-when">PHASE 3 · AUGUST 1 → AUGUST 7</div>
+    <div class="phase-title">Cambridge Launch Week</div>
+    <p>Reuse the ZIMSEC 7-day campaign template, with two key reframes: anchor against exam fees (not tutors), and lead with the private-school WhatsApp networks instead of mass distribution.</p>
+    <ul>
+      <li>Target audience: parents in 5–10 private school WA groups</li>
+      <li>Lead asset: split-frame "$100 paper vs $6 prep" graphic</li>
+      <li>Push the October/November session countdown (4 months out)</li>
+      <li>Goal: 50 codes sold in Week 1 = $300 revenue floor</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="phase-when">PHASE 4 · SEPT → OCT</div>
+    <div class="phase-title">Regional Push</div>
+    <p>If Phase 3 converts, expand outreach to Cambridge schools in SA, Botswana, Kenya, Nigeria. Same product. Same URL. Same price. Local payment rails added (PayFast, Flutterwave, M-Pesa).</p>
+    <ul>
+      <li>Onboard 1 referral partner per country (a teacher, tutor, or parent influencer)</li>
+      <li>Translate payment instructions per market (not the product)</li>
+      <li>Stretch goal: 500 Cambridge codes sold by end October session</li>
+    </ul>
+  </div>
+
+</div>
+
+
+<!-- RISKS -->
+<h1><span class="num">07 — RISKS & UNKNOWNS</span>Pre-Launch Open Questions</h1>
+
+<div class="risk">
+  <div class="risk-label">RISK 01</div>
+  <h4>Cambridge content is harder to author</h4>
+  <p>0580 Extended covers more advanced topics (matrices, vectors, function transformations, deeper trig). Authoring time per topic could be 2× ZIMSEC. Mitigation: launch with Core 0580 first (simpler), add Extended in v2.</p>
+</div>
+
+<div class="risk">
+  <div class="risk-label">RISK 02</div>
+  <h4>Cambridge students share less publicly</h4>
+  <p>Private school culture is more reserved. The Share My Score loop that powers ZIMSEC virality may underperform here. Mitigation: add a "send to parent" share option that targets the actual decision-maker.</p>
+</div>
+
+<div class="risk">
+  <div class="risk-label">RISK 03</div>
+  <h4>Payment friction in regional markets</h4>
+  <p>EcoCash works in Zim only. SA needs PayFast/PayShap, Kenya needs M-Pesa, Nigeria needs Flutterwave/Paystack. Each integration is a separate vetting and KYC process. Mitigation: launch Cambridge with Stripe (cards) globally first, add local rails as country volume justifies.</p>
+</div>
+
+<div class="risk">
+  <div class="risk-label">RISK 04</div>
+  <h4>Cannibalisation</h4>
+  <p>Some Cambridge students may have bought ZIMSEC by mistake. They'd get angry — refund / migrate? Mitigation: on the ZIMSEC landing page, add a clear "Are you sitting Cambridge IGCSE? → cambridge-prep.vercel.app" link at the bottom.</p>
+</div>
+
+
+<!-- DECISIONS NEEDED -->
+<h1><span class="num">08 — DECISIONS YOU NEED TO MAKE</span>Before July 1</h1>
+
+<div class="actions">
+  <h3>Greenlight checklist</h3>
+  <ol>
+    <li><strong>Confirm SKU naming.</strong> "CramBox Cambridge" vs "CramBox+" vs "CramBox Pro." Recommend: <em>CramBox Cambridge</em> — explicit, no ambiguity, mirrors the URL.</li>
+    <li><strong>Confirm $6 pricing.</strong> Or test $5 vs $6 in soft launch. Recommend: $6 — clean number, $100 anchor makes it trivial.</li>
+    <li><strong>Confirm separate URL strategy</strong> (vs subdomain or path). Recommend: <em>cambridge-prep.vercel.app</em> — clean trust signal.</li>
+    <li><strong>Decide on payment rails.</strong> Stripe-first for global reach, EcoCash retained for Zim Cambridge students.</li>
+    <li><strong>Source the syllabus content.</strong> 0580 past papers are publicly available — but who writes the questions & explanations? You alone, or hire a Cambridge-experienced tutor for 2 weeks?</li>
+    <li><strong>Commit to August 1 launch date</strong> — or push to September for more authoring time.</li>
+  </ol>
+</div>
+
+
+<!-- ONE MORE THING -->
+<h1><span class="num">09 — THE BIGGER PICTURE</span>Why This Matters Beyond Cambridge</h1>
+
+<p>Phase 2 isn't really about Cambridge. It's about proving the <strong>"same engine, different content"</strong> playbook works. Once the codebase serves two SKUs cleanly, the third (English Language 1122), fourth (Combined Science 5006), fifth (A-Level Maths), tenth (Cambridge AS-Level) come almost for free.</p>
+
+<p>The first $3 ZIMSEC code proves the loop. The first $6 Cambridge code proves the model. After that, CramBox isn't an app — it's a platform.</p>
+
+<blockquote>
+  <p>"ZIMSEC pays the bills. Cambridge unlocks the margin. The next 8 SKUs build the business."</p>
+</blockquote>
+
+
+<div class="footer">
+  CramBox Cambridge · Phase 2 Strategic Brief · Curious Inc · May 2026 · Confidential
+</div>
+
+</body>
+</html>

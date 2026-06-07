@@ -29,6 +29,8 @@ def to_expr(s):
     s = re.sub(r'(cm3|cm2|cm|m/s|°|\$|%|,)','',s)
     if '=' in s: s = s.split('=')[-1]
     s = s.replace(')(',')*(').strip()
+    if re.fullmatch(r'-?\d+(\.\d+)?', s):
+        return sp.Rational(str(float(s))) if '.' in s else sp.Integer(int(s))
     s = re.sub(r'(\d)([a-zA-Z\(])', r'\1*\2', s)   # implicit mult: 12x -> 12*x, 3( -> 3*(
     return sp.sympify(s, locals={'x':x,'y':y,'a':a,'b':b,'n':n})
 
@@ -36,7 +38,9 @@ def ints(s):
     return [int(z) for z in re.findall(r'-?\d+', html.unescape(str(s)))]
 
 def norm(s):
-    return re.sub(r'\s','', html.unescape(str(s)).lower())
+    s = html.unescape(str(s)).lower()
+    s = s.replace('≤','<=').replace('≥','>=').replace('−','-').replace('°','')
+    return re.sub(r'\s','', s)
 
 def compare(expected, stored):
     # tuple -> coordinate; list -> set of roots; str -> word/relation; else numeric/symbolic
@@ -128,3 +132,71 @@ print()
 print(f'---- {len(D_)} DEFINITIONAL (check on the printed answer key) ----')
 for it in D_:
     print(f"  Q{it['g']} [{it['topic']}]  ans='{html.unescape(it['ans'])}'")
+
+AUDIT = r'''
+const fs=require('fs'), vm=require('vm');
+const h=fs.readFileSync('index.html','utf8');
+
+function extractBalanced(startText, prefixLen) {
+  const s=h.indexOf(startText);
+  if (s < 0) throw new Error('Missing marker: '+startText);
+  const bb=h.slice(s+prefixLen);
+  let d=0,e=-1;
+  for(let i=0;i<bb.length;i++){
+    const c=bb[i];
+    if(c==='{')d++;
+    else if(c==='}'){d--;if(d===0){e=i;break;}}
+  }
+  if (e < 0) throw new Error('Could not balance: '+startText);
+  return bb.slice(0,e+1);
+}
+
+const DATA=eval('('+extractBalanced('const DATA = {','const DATA = '.length)+')');
+let topics=0, lessonSteps=0, missingNarration=0, svgSteps=0, svgMissingNarration=0;
+let practiceQuestions=0, badMcqIndexes=0, badInputAnswers=0;
+DATA.maths.topics.forEach(t=>{
+  topics++;
+  (t.steps||[]).forEach(st=>{
+    lessonSteps++;
+    const hasNarr=!!(st.n && String(st.n).trim());
+    if(!hasNarr) missingNarration++;
+    if(String(st.w||'').includes('<svg')) {
+      svgSteps++;
+      if(!hasNarr) svgMissingNarration++;
+    }
+  });
+  (t.practice||[]).forEach(q=>{
+    practiceQuestions++;
+    if(q.type==='mcq' && (!Array.isArray(q.opts) || q.ans<0 || q.ans>=q.opts.length)) badMcqIndexes++;
+    if(q.type==='input' && (q.ans===undefined || String(q.ans).trim()==='')) badInputAnswers++;
+  });
+});
+
+const dsStart=h.indexOf('function randInt');
+const dsEnd=h.indexOf('// DRILL SOUND EFFECTS', dsStart);
+if (dsStart < 0 || dsEnd < 0) throw new Error('Could not locate drill code');
+const ctx={console,Math};
+vm.createContext(ctx);
+vm.runInContext(h.slice(dsStart,dsEnd)+'\nglobalThis.__DRILL_TOPICS=DRILL_TOPICS;',ctx);
+let drillSamples=0, drillFailures=0;
+ctx.__DRILL_TOPICS.forEach(t=>{
+  for(let i=0;i<500;i++){
+    const q=t.generate(); drillSamples++;
+    if(!Number.isFinite(q.answer)) drillFailures++;
+    if(typeof t._verify==='function' && Math.abs(t._verify(q)-q.answer)>0.0001) drillFailures++;
+  }
+});
+process.stdout.write(JSON.stringify({
+  topics, lessonSteps, missingNarration, svgSteps, svgMissingNarration,
+  practiceQuestions, badMcqIndexes, badInputAnswers,
+  drillTopics:ctx.__DRILL_TOPICS.length, drillSamples, drillFailures
+}));
+'''
+audit = json.loads(subprocess.run(['node','-e',AUDIT],capture_output=True,text=True,encoding='utf-8',check=True).stdout)
+print()
+print('---- APP RUNTIME AUDIT ----')
+print(f"Topics              : {audit['topics']}")
+print(f"Lesson steps         : {audit['lessonSteps']}  (missing narration: {audit['missingNarration']})")
+print(f"Diagram/SVG steps    : {audit['svgSteps']}  (missing narration: {audit['svgMissingNarration']})")
+print(f"Practice questions   : {audit['practiceQuestions']}  (bad MCQ indexes: {audit['badMcqIndexes']}, blank input answers: {audit['badInputAnswers']})")
+print(f"Drill generator check: {audit['drillTopics']} topics, {audit['drillSamples']} samples, failures: {audit['drillFailures']}")

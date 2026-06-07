@@ -15,3 +15,6 @@ google-apps-script.js
 # Internal QA artifacts — not part of the app
 _verify.py
 CramBox-Answer-Key.html
+
+# WhatsApp distribution copy (identical to index.html; shared as a file, not hosted)
+CramBox-Mathematics-4004.html
