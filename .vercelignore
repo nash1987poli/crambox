@@ -16,5 +16,9 @@ google-apps-script.js
 _verify.py
 CramBox-Answer-Key.html
 
+# Internal planning docs — not part of the app
+CramBox-Build-Map.html
+docs/
+
 # WhatsApp distribution copy (identical to index.html; shared as a file, not hosted)
 CramBox-Mathematics-4004.html

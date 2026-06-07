@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CramBox — Build Map & Product Flow</title>
+<style>
+  :root{
+    --bg:#0c0e13; --bg2:#141821; --bg3:#1c212d; --border:#262c3a;
+    --text:#eef1f6; --text2:#9aa3b2;
+    --gold:#f5c451; --gold-bg:rgba(245,196,81,.12);
+    --green:#46d27e; --green-bg:rgba(70,210,126,.12);
+    --blue:#5aa6ff; --blue-bg:rgba(90,166,255,.12);
+    --red:#ff6b6b; --red-bg:rgba(255,107,107,.12);
+    --purple:#b98bff; --purple-bg:rgba(185,139,255,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 18px 80px}
+  a{color:var(--blue)}
+
+  /* Hero */
+  header{padding:46px 0 30px;text-align:center;border-bottom:1px solid var(--border);background:radial-gradient(900px 320px at 50% -40%,rgba(245,196,81,.10),transparent)}
+  .logo{font-size:13px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;font-weight:700}
+  h1{font-size:34px;margin:10px 0 6px;letter-spacing:-.5px}
+  .tagline{color:var(--text2);font-size:15px;max-width:640px;margin:0 auto}
+  .stamp{display:inline-block;margin-top:16px;font-size:12px;color:var(--text2);border:1px solid var(--border);border-radius:20px;padding:5px 14px}
+  .stamp b{color:var(--gold)}
+
+  /* Tabs */
+  nav{position:sticky;top:0;z-index:20;background:rgba(12,14,19,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;gap:4px;overflow-x:auto;padding:8px 12px;justify-content:center}
+  nav button{background:none;border:none;color:var(--text2);font-size:14px;font-weight:600;padding:9px 14px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:.15s}
+  nav button:hover{color:var(--text)}
+  nav button.active{background:var(--gold-bg);color:var(--gold)}
+
+  section{display:none;padding-top:30px}
+  section.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h2{font-size:23px;margin:6px 0 4px;letter-spacing:-.3px}
+  .sub{color:var(--text2);font-size:14px;margin-bottom:22px}
+  h3{font-size:16px;margin:26px 0 10px;color:var(--text)}
+
+  /* Badges */
+  .badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.4px;padding:3px 9px;border-radius:20px;text-transform:uppercase;vertical-align:middle}
+  .b-live{background:var(--green-bg);color:var(--green)}
+  .b-spec{background:var(--blue-bg);color:var(--blue)}
+  .b-plan{background:var(--gold-bg);color:var(--gold)}
+  .b-future{background:var(--purple-bg);color:var(--purple)}
+  .b-now{background:var(--red-bg);color:var(--red)}
+
+  /* Flow diagram */
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:12px 0}
+  .node{flex:1;min-width:150px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px}
+  .node .n-ic{font-size:20px}
+  .node h4{font-size:14px;margin:6px 0 3px}
+  .node p{font-size:12px;color:var(--text2)}
+  .arrow{display:flex;align-items:center;color:var(--text2);font-size:20px;padding:0 2px}
+  @media(max-width:720px){.arrow{transform:rotate(90deg);justify-content:center;width:100%}.node{min-width:100%}}
+
+  /* Cards */
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px}
+  .card.click{cursor:pointer;transition:.15s}
+  .card.click:hover{border-color:var(--gold);transform:translateY(-1px)}
+  .card-head{display:flex;align-items:center;gap:12px}
+  .card-ic{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--bg3);flex-shrink:0}
+  .card-head h3{margin:0;font-size:17px}
+  .card-head .meta{color:var(--text2);font-size:12px;margin-top:2px}
+  .card-body{font-size:14px;color:var(--text2);margin-top:6px}
+  .card-detail{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+  .card.open .card-detail{display:block}
+  .card-detail ul{margin:8px 0 8px 18px}
+  .card-detail li{font-size:13.5px;color:var(--text2);margin:5px 0}
+  .card-detail li b{color:var(--text)}
+  .chev{margin-left:auto;color:var(--text2);transition:.2s;font-size:13px}
+  .card.open .chev{transform:rotate(180deg)}
+
+  /* ERRC grid */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  .quad{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .quad h4{font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .quad.elim h4{color:var(--red)} .quad.reduce h4{color:var(--gold)}
+  .quad.raise h4{color:var(--green)} .quad.create h4{color:var(--blue)}
+  .quad li{font-size:13px;color:var(--text2);margin:5px 0 5px 16px}
+
+  /* Roadmap table */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+  th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--border)}
+  th{color:var(--text2);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  td b{color:var(--text)}
+  tr:last-child td{border-bottom:none}
+
+  /* Pay path */
+  .pay{display:flex;gap:10px;flex-wrap:wrap}
+  .pay .p{flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px}
+  .pay .p.rec{border-color:var(--green)}
+  .pay .p h4{font-size:14px;margin-bottom:4px}
+  .pay .p p{font-size:12px;color:var(--text2)}
+  .pill{font-size:11px;color:var(--text2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;display:inline-block;margin-top:8px}
+
+  .callout{background:var(--gold-bg);border:1px solid var(--gold);border-radius:12px;padding:14px 16px;font-size:14px;margin:18px 0}
+  .callout b{color:var(--gold)}
+  footer{margin-top:50px;padding-top:20px;border-top:1px solid var(--border);color:var(--text2);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo">CramBox</div>
+    <h1>Build Map &amp; Product Flow</h1>
+    <p class="tagline">The offline ZIMSEC cram weapon — how it works today, what we added this week, and what's designed next.</p>
+    <div class="stamp">Updated <b>6 June 2026</b> · O-Level Mathematics 4004</div>
+  </div>
+</header>
+
+<nav class="wrap" style="max-width:1040px">
+  <button class="active" data-t="overview">Overview</button>
+  <button data-t="flow">App Flow</button>
+  <button data-t="new">What's New</button>
+  <button data-t="strategy">Strategy</button>
+  <button data-t="roadmap">Roadmap</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- ===================== OVERVIEW ===================== -->
+  <section class="active" id="overview">
+    <h2>What CramBox is</h2>
+    <p class="sub">A single, self-contained study app for ZIMSEC O-Level Maths — built to win where everyone else can't.</p>
+
+    <div class="callout">
+      <b>The one-line positioning:</b> "Study all month for the price of one data bundle — and never spend data again." CramBox is the high-intensity <b>cram weapon</b> for the weeks before the exam, not another year-long course.
+    </div>
+
+    <h3>The three edges (why it wins)</h3>
+    <div class="flow">
+      <div class="node"><div class="n-ic">📴</div><h4>Works offline</h4><p>One file, downloaded once. Zero data after that — unbeatable in Zimbabwe.</p></div>
+      <div class="node"><div class="n-ic">💸</div><h4>Micro-priced</h4><p>EcoCash impulse-buy territory. Cheaper than one hour of a tutor.</p></div>
+      <div class="node"><div class="n-ic">🎮</div><h4>Actually fun</h4><p>Streaks, XP, combos, confetti — cramming that doesn't feel like punishment.</p></div>
+    </div>
+
+    <h3>What's inside today</h3>
+    <div class="flow">
+      <div class="node"><div class="n-ic">🎧</div><h4>Lessons</h4><p>Voice-narrated theory you can follow while doing chores or in a group.</p></div>
+      <div class="node"><div class="n-ic">📝</div><h4>Practice</h4><p>147 questions with full worked solutions, exam-style marking.</p></div>
+      <div class="node"><div class="n-ic">⚡</div><h4>Drills</h4><p>31 topics of endless auto-generated rapid-fire practice.</p></div>
+      <div class="node"><div class="n-ic">🏆</div><h4>Progress</h4><p>XP ranks (Beginner → Exam Ready), streaks, exam countdown.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== APP FLOW ===================== -->
+  <section id="flow">
+    <h2>How a student moves through it</h2>
+    <p class="sub">The current journey, plus where the two new modes plug in.</p>
+
+    <h3>Core journey</h3>
+    <div class="flow">
+      <div class="node"><div class="n-ic">🔑</div><h4>Activate</h4><p>One-time EcoCash code, locked to the device.</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="n-ic">🏠</div><h4>Home</h4><p>Streak, XP, exam countdown.</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="n-ic">📚</div><h4>Pick a mode</h4><p>Lessons · Practice · Drills.</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="n-ic">📊</div><h4>Results</h4><p>Score, worked solutions, XP gained.</p></div>
+    </div>
+
+    <h3>The modes (tap to expand)</h3>
+
+    <div class="card click" onclick="this.classList.toggle('open')">
+      <div class="card-head"><div class="card-ic">🎧</div><div><h3>Lessons</h3><div class="meta">Theory · voice-narrated</div></div><span class="badge b-live">Live</span><span class="chev">▾</span></div>
+      <div class="card-detail"><ul>
+        <li>Step-by-step concept cards with <b>audio narration</b> — learn hands-free or out loud in a group.</li>
+        <li>Covers every topic in the Maths 4004 syllabus.</li>
+      </ul></div>
+    </div>
+
+    <div class="card click" onclick="this.classList.toggle('open')">
+      <div class="card-head"><div class="card-ic">📝</div><div><h3>Practice</h3><div class="meta">147 questions · exam-style</div></div><span class="badge b-live">Live</span><span class="chev">▾</span></div>
+      <div class="card-detail"><ul>
+        <li>Work a full topic set, then <b>Submit</b> — answers + worked solutions appear under every question.</li>
+        <li>Mix of multiple-choice and typed answers, all with mark allocations.</li>
+        <li><b>New this week:</b> a helper note so no one thinks answers are "missing" before submitting.</li>
+      </ul></div>
+    </div>
+
+    <div class="card click" onclick="this.classList.toggle('open')">
+      <div class="card-head"><div class="card-ic">⚡</div><div><h3>Drills</h3><div class="meta">31 topics · endless</div></div><span class="badge b-live">Live</span><span class="chev">▾</span></div>
+      <div class="card-detail"><ul>
+        <li>Rapid-fire, auto-generated questions — instant feedback after each.</li>
+        <li>Streaks, combos, XP and confetti drive momentum.</li>
+        <li><b>Fixed this week:</b> the Transformations drill now asks for the full image point and accepts <code>(x,y)</code> / <code>x,y</code> / <code>x y</code>.</li>
+      </ul></div>
+    </div>
+
+    <div class="card click" onclick="this.classList.toggle('open')">
+      <div class="card-head"><div class="card-ic">⚔️</div><div><h3>Spar with the Invigilator</h3><div class="meta">Adaptive AI · solo</div></div><span class="badge b-plan">Planned</span><span class="chev">▾</span></div>
+      <div class="card-detail"><ul>
+        <li>An AI examiner that <b>hunts your weak topics</b> and tests them under exam pressure.</li>
+        <li>Marks-based bout timer (~1 min/mark) that <b>tightens as you sharpen</b>.</li>
+        <li>Verdict screen: grade, worked solutions, readiness bars climb.</li>
+        <li>Questions are <b>AI-written but baked in</b> — fully offline.</li>
+      </ul></div>
+    </div>
+
+    <div class="card click" onclick="this.classList.toggle('open')">
+      <div class="card-head"><div class="card-ic">👥</div><div><h3>Team Spar</h3><div class="meta">Group study · 2–5 players</div></div><span class="badge b-plan">Planned</span><span class="chev">▾</span></div>
+      <div class="card-detail"><ul>
+        <li>One phone, a study circle of 2–5 names, <b>relay-style</b> turns.</li>
+        <li><b>Collaborative:</b> the worked solution shows after every question so the group learns together.</li>
+        <li>Ends on a <b>leaderboard</b> with an MVP and a team grade.</li>
+        <li>100% offline — reuses the Invigilator's question bank.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ===================== WHAT'S NEW ===================== -->
+  <section id="new">
+    <h2>What we did this session</h2>
+    <p class="sub">Two fixes shipped live, two features fully designed and ready to build.</p>
+
+    <h3>Shipped &amp; live <span class="badge b-live">Live</span></h3>
+    <div class="card">
+      <div class="card-head"><div class="card-ic">🔧</div><div><h3>Transformation drill fix</h3><div class="meta">Deployed to production</div></div></div>
+      <div class="card-body">The drill used to alternate between asking for the new x or y coordinate, so correct work could read as "wrong." It now asks for the <b>whole image point</b> and accepts any sensible format. Verified across 5,000 random samples — 0 errors.</div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-ic">💡</div><div><h3>Practice answer-reveal note</h3><div class="meta">Deployed to production</div></div></div>
+      <div class="card-body">All 147 questions already had answers — students just hadn't tapped Submit. A clear helper line now explains that solutions appear at the end. Confusion gone.</div>
+    </div>
+
+    <h3>Designed &amp; ready to build <span class="badge b-spec">Spec</span> <span class="badge b-plan">Plan</span></h3>
+    <div class="card">
+      <div class="card-head"><div class="card-ic">⚔️</div><div><h3>Spar with the Invigilator</h3><div class="meta">Spec + 11-task build plan written</div></div></div>
+      <div class="card-body">Adaptive solo sparring that targets weaknesses under exam pressure, powered by a baked-in offline AI question bank.</div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-ic">👥</div><div><h3>Team Spar</h3><div class="meta">Spec + 9-task build plan written</div></div></div>
+      <div class="card-body">Offline group study — the way Zimbabwean students actually revise. Relay turns on one phone, learn together, finish on a leaderboard.</div>
+    </div>
+
+    <div class="callout">📁 All specs &amp; plans are saved in the repo under <b>docs/superpowers/</b> and committed to git — ready to hand to a build session whenever you give the word.</div>
+  </section>
+
+  <!-- ===================== STRATEGY ===================== -->
+  <section id="strategy">
+    <h2>The strategy behind it</h2>
+    <p class="sub">Blue Ocean thinking, the AI approach, and the payment path.</p>
+
+    <h3>Blue Ocean — the Four Actions grid</h3>
+    <div class="grid2">
+      <div class="quad elim"><h4>Eliminate</h4><ul><li>Dependence on a tutor being present</li><li>Heavy data usage</li><li>The 200-page book nobody finishes</li></ul></div>
+      <div class="quad raise"><h4>Raise</h4><ul><li>Engagement &amp; fun</li><li>Instant feedback quality</li><li>A visible exam-readiness signal</li></ul></div>
+      <div class="quad reduce"><h4>Reduce</h4><ul><li>Price → micro-EcoCash</li><li>Time-to-value (practise in seconds)</li><li>Scope → only high-frequency topics</li></ul></div>
+      <div class="quad create"><h4>Create</h4><ul><li>Works with <b>zero data</b></li><li>AI sparring partner</li><li>Diaspora gifting (relatives abroad pay)</li></ul></div>
+    </div>
+
+    <h3>The AI approach: baked in, not live</h3>
+    <div class="flow">
+      <div class="node"><div class="n-ic">🤖</div><h4>1. AI writes</h4><p>Claude generates exam-style questions + worked solutions, up front.</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="n-ic">📦</div><h4>2. Baked in</h4><p>They ship inside the HTML file. No API key, no server.</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="n-ic">📴</div><h4>3. Runs offline</h4><p>Zero data, zero per-student cost, safe on shared copies.</p></div>
+    </div>
+    <div class="callout">Live AI would break offline + cheap (the whole edge) and expose your API bill to every shared file. So the core stays baked-in. <b>Live "Challenge Mode" is parked as a future paid upsell only.</b></div>
+
+    <h3>Payment path (EcoCash)</h3>
+    <div class="pay">
+      <div class="p rec"><h4>A · Tidy Manual <span class="badge b-now">Start here</span></h4><p>Pay EcoCash → send screenshot on WhatsApp → you reply with a code. Launch this week, zero build.</p><span class="pill">No fees · no setup</span></div>
+      <div class="p"><h4>B · Self-Service Form</h4><p>Pay, then a form auto-emails a code; you spot-check later.</p><span class="pill">Semi-automated</span></div>
+      <div class="p"><h4>C · Full Auto (Paynow)</h4><p>Paynow confirms payment → code auto-delivered. Accepts cards too — unlocks diaspora parents.</p><span class="pill">Hands-off · small fee</span></div>
+    </div>
+    <div class="callout"><b>The strategic link:</b> if you chase diaspora parents (who pay by card), Path C isn't "later" — it's the key, because EcoCash-only locks out your highest-value buyers abroad.</div>
+  </section>
+
+  <!-- ===================== ROADMAP ===================== -->
+  <section id="roadmap">
+    <h2>Roadmap &amp; status</h2>
+    <p class="sub">Everything on the table right now, and where it stands.</p>
+
+    <table>
+      <tr><th>Item</th><th>Type</th><th>Status</th></tr>
+      <tr><td><b>Transformation drill fix</b><br><span style="color:var(--text2);font-size:12px">Full image-point answers</span></td><td>Fix</td><td><span class="badge b-live">Live</span></td></tr>
+      <tr><td><b>Practice answer-reveal note</b></td><td>Fix</td><td><span class="badge b-live">Live</span></td></tr>
+      <tr><td><b>Spar with the Invigilator</b><br><span style="color:var(--text2);font-size:12px">Adaptive offline AI sparring</span></td><td>Feature</td><td><span class="badge b-spec">Spec</span> <span class="badge b-plan">Plan</span></td></tr>
+      <tr><td><b>Team Spar</b><br><span style="color:var(--text2);font-size:12px">Offline group study</span></td><td>Feature</td><td><span class="badge b-spec">Spec</span> <span class="badge b-plan">Plan</span></td></tr>
+      <tr><td><b>AI question bank</b><br><span style="color:var(--text2);font-size:12px">Baked-in, build-time</span></td><td>Content</td><td><span class="badge b-plan">Planned</span></td></tr>
+      <tr><td><b>Payment — Path A (manual EcoCash)</b></td><td>Ops</td><td><span class="badge b-now">Launch</span></td></tr>
+      <tr><td><b>Payment — Path C (Paynow + cards)</b></td><td>Ops</td><td><span class="badge b-future">Future</span></td></tr>
+      <tr><td><b>WhatsApp challenge cards</b><br><span style="color:var(--text2);font-size:12px">Share-a-score virality</span></td><td>Growth</td><td><span class="badge b-future">Future</span></td></tr>
+      <tr><td><b>Squad / group pricing codes</b></td><td>Revenue</td><td><span class="badge b-future">Future</span></td></tr>
+      <tr><td><b>Live "Challenge Mode"</b><br><span style="color:var(--text2);font-size:12px">Premium online AI tier</span></td><td>Feature</td><td><span class="badge b-future">Future</span></td></tr>
+      <tr><td><b>Diaspora readiness report</b><br><span style="color:var(--text2);font-size:12px">Sell to the parent</span></td><td>Growth</td><td><span class="badge b-future">Future</span></td></tr>
+    </table>
+
+    <h3>Suggested build order</h3>
+    <div class="flow">
+      <div class="node"><div class="n-ic">①</div><h4>Launch &amp; sell</h4><p>Ship live as-is. Payment Path A. Prove people pay.</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="n-ic">②</div><h4>Build the bank</h4><p>Generate the AI question bank (one topic prototype first).</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="n-ic">③</div><h4>Invigilator</h4><p>Solo adaptive sparring on top of the bank.</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="n-ic">④</div><h4>Team Spar</h4><p>Group mode reuses the bank + engine.</p></div>
+    </div>
+
+    <div class="callout">Legend — <span class="badge b-live">Live</span> shipped · <span class="badge b-now">Launch</span> do now · <span class="badge b-spec">Spec</span> designed · <span class="badge b-plan">Plan</span> build steps written · <span class="badge b-future">Future</span> parked</div>
+  </section>
+
+  <footer>
+    CramBox · Curious Inc · internal build map. Self-contained &amp; offline — open this file anywhere.
+  </footer>
+</div>
+
+<script>
+  document.querySelectorAll('nav button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+      b.classList.add('active');
+      document.getElementById(b.dataset.t).classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>
