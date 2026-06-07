@@ -3,28 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0a0a0a">
+<meta name="theme-color" content="#0c1320">
 <title>CramBox - Pass Your O-Levels</title>
 <style>
   :root[data-theme="dark"] {
-    --bg: #0a0a0a; --bg2: #141414; --card: #1a1a1a; --card2: #222;
-    --text: #f0f0f0; --text2: #999; --border: #2a2a2a;
-    --green: #00e676; --green-bg: rgba(0,230,118,0.1); --green-dim: #1b5e20;
-    --gold: #ffd740; --gold-bg: rgba(255,215,64,0.1);
-    --red: #ff5252; --red-bg: rgba(255,82,82,0.1);
-    --blue: #448aff; --blue-bg: rgba(68,138,255,0.1);
-    --purple: #b388ff; --purple-bg: rgba(179,136,255,0.1);
-    --accent: #00e676;
+    --bg: #0c1320; --bg2: #111a2b; --card: #162033; --card2: #1d2840;
+    --text: #eef2f8; --text2: #8b95a9; --border: #273249;
+    --green: #10b981; --green-bg: rgba(16,185,129,0.13); --green-dim: #0b6e4e;
+    --gold: #ffce4d; --gold-bg: rgba(255,206,77,0.12);
+    --red: #ff6b6b; --red-bg: rgba(255,107,107,0.12);
+    --blue: #4d8dff; --blue-bg: rgba(77,141,255,0.12);
+    --purple: #b38bff; --purple-bg: rgba(179,139,255,0.12);
+    --accent: #10b981;
   }
   :root[data-theme="light"] {
-    --bg: #f5f5f5; --bg2: #eee; --card: #fff; --card2: #f9f9f9;
-    --text: #111; --text2: #666; --border: #ddd;
-    --green: #2e7d32; --green-bg: #e8f5e9; --green-dim: #c8e6c9;
-    --gold: #f9a825; --gold-bg: #fff8e1;
-    --red: #c62828; --red-bg: #ffebee;
-    --blue: #1565c0; --blue-bg: #e3f2fd;
-    --purple: #7c4dff; --purple-bg: #ede7f6;
-    --accent: #2e7d32;
+    --bg: #eef1f6; --bg2: #e3e8f0; --card: #ffffff; --card2: #f5f7fb;
+    --text: #0f1830; --text2: #5a6478; --border: #d4dae6;
+    --green: #0a8f5a; --green-bg: #e0f4ec; --green-dim: #b3e3d0;
+    --gold: #d99a00; --gold-bg: #fff5dc;
+    --red: #d64545; --red-bg: #fdeaea;
+    --blue: #2f6fe0; --blue-bg: #e6efff;
+    --purple: #7c4dff; --purple-bg: #efe9ff;
+    --accent: #0a8f5a;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
@@ -152,6 +152,44 @@
   .tag-lesson { background:var(--blue-bg); color:var(--blue); }
   .tag-practice { background:var(--gold-bg); color:var(--gold); }
   .tag-locked { background:var(--bg2); color:var(--text2); }
+
+  /* Curriculum Tree (Scrimba-style) */
+  .curriculum-section {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    margin-bottom:8px; overflow:hidden;
+  }
+  .cs-head { display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; transition:background 0.15s; }
+  .cs-head:hover { background:var(--card2); }
+  .cs-chevron { color:var(--text2); font-size:11px; transition:transform 0.2s; flex-shrink:0; width:12px; }
+  .curriculum-section.open .cs-chevron { transform:rotate(90deg); }
+  .cs-num {
+    width:30px; height:30px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; font-weight:700; font-size:12px; background:var(--bg2);
+    color:var(--text2); flex-shrink:0;
+  }
+  .cs-num.done { background:var(--green); color:#04241a; }
+  .cs-info { flex:1; min-width:0; }
+  .cs-info h4 { font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .cs-info p { font-size:11px; color:var(--text2); }
+  .cs-best { font-size:11px; font-weight:700; color:var(--gold); flex-shrink:0; }
+  .cs-body { display:none; border-top:1px solid var(--border); }
+  .curriculum-section.open .cs-body { display:block; }
+  .cs-row {
+    display:flex; align-items:center; gap:12px; padding:12px 16px 12px 22px;
+    cursor:pointer; border-bottom:1px solid var(--border); transition:background 0.15s;
+  }
+  .cs-row:last-child { border-bottom:none; }
+  .cs-row:hover { background:var(--card2); }
+  .cs-play {
+    width:28px; height:28px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; font-size:11px; flex-shrink:0;
+  }
+  .cs-play.lesson { background:var(--green-bg); color:var(--green); }
+  .cs-play.practice { background:var(--gold-bg); color:var(--gold); }
+  .cs-row-info { flex:1; min-width:0; }
+  .cs-row-info h5 { font-size:13px; font-weight:600; }
+  .cs-row-info span { font-size:11px; color:var(--text2); }
+  .cs-meta-tag { font-size:10px; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; flex-shrink:0; }
 
   /* XP Popup */
   .xp-popup {
@@ -547,6 +585,20 @@
   .gate-device code {
     background:var(--bg2); padding:2px 6px; border-radius:4px; font-size:10px;
   }
+  .gate-disclaimer {
+    margin-top:18px; padding-top:14px; border-top:1px solid var(--border);
+    font-size:10px; color:var(--text2); line-height:1.5;
+  }
+
+  /* App footer (disclaimer) */
+  .app-footer {
+    margin-top:28px; padding:18px 4px 8px; border-top:1px solid var(--border);
+    text-align:center;
+  }
+  .app-footer-brand { font-size:16px; font-weight:800; letter-spacing:-0.5px; color:var(--text2); margin-bottom:8px; }
+  .app-footer-brand span { color:var(--accent); }
+  .app-footer p { font-size:11px; color:var(--text2); line-height:1.6; max-width:340px; margin:0 auto; }
+  .app-footer-copy { margin-top:10px; opacity:0.7; }
 
   /* ===== EXAM COUNTDOWN BANNER (Feature 2) ===== */
   .exam-countdown {
@@ -622,6 +674,7 @@
     <button class="gate-btn" id="gateBtn" onclick="activateApp()">Activate</button>
     <div class="gate-error" id="gateError"></div>
     <div class="gate-device">Device ID: <code id="gateDeviceId">...</code></div>
+    <div class="gate-disclaimer">CramBox is an independent study tool. It is not affiliated with, endorsed by, or connected to ZIMSEC. Prepared in line with the O-Level Mathematics 4004 syllabus.</div>
   </div>
 </div>
 
@@ -729,6 +782,12 @@
     </div>
     <span class="subj-pct" style="color:var(--text2)">Soon</span>
   </div>
+
+  <footer class="app-footer">
+    <div class="app-footer-brand">Cram<span>Box</span></div>
+    <p>CramBox is an independent study tool. It is not affiliated with, endorsed by, or connected to ZIMSEC. Prepared in line with the O-Level Mathematics 4004 syllabus.</p>
+    <p class="app-footer-copy">&copy; 2026 CramBox &middot; Curious Inc</p>
+  </footer>
 </div>
 </div>
 
@@ -2240,28 +2299,30 @@ function openSubject(key) {
   d.topics.forEach((t, i) => {
     const complete = done.includes(i);
     const score = scores['t'+i];
-    // Lesson card (always unlocked)
-    const c = document.createElement('div');
-    c.className = 'topic-card';
-    c.onclick = () => openTopic(i,'lesson');
-    c.innerHTML = `<div class="topic-inner">
-      <div class="topic-num ${complete?'done':''}">${complete?'&#10003;':i+1}</div>
-      <div class="topic-det"><h4>${t.title}</h4><p>${t.sub+(score!=null?' — Best: '+score+'%':'')}</p></div>
-      <span class="topic-tag tag-lesson">Lesson</span>
-    </div>`;
-    list.appendChild(c);
-    // Practice card (always unlocked)
-    if (t.practice) {
-      const pc = document.createElement('div');
-      pc.className = 'topic-card';
-      pc.onclick = () => openTopic(i,'practice');
-      pc.innerHTML = `<div class="topic-inner">
-        <div class="topic-num" style="background:var(--gold-bg);color:var(--gold);">?</div>
-        <div class="topic-det"><h4>Practice: ${t.title}</h4><p>${t.practice.length} questions</p></div>
-        <span class="topic-tag tag-practice">Practice</span>
+    const steps = (t.steps || []).length;
+    const pq = t.practice ? t.practice.length : 0;
+    const sec = document.createElement('div');
+    sec.className = 'curriculum-section' + (i === 0 ? ' open' : '');
+
+    let body = `<div class="cs-row" onclick="openTopic(${i},'lesson')">
+        <div class="cs-play lesson">&#9654;</div>
+        <div class="cs-row-info"><h5>Lesson</h5><span>${steps} steps</span></div>
+        <span class="cs-meta-tag">Learn</span>
       </div>`;
-      list.appendChild(pc);
+    if (t.practice) {
+      body += `<div class="cs-row" onclick="openTopic(${i},'practice')">
+        <div class="cs-play practice">?</div>
+        <div class="cs-row-info"><h5>Practice quiz</h5><span>${pq} questions${score!=null?' &middot; best '+score+'%':''}</span></div>
+        <span class="cs-meta-tag">Quiz</span>
+      </div>`;
     }
+    sec.innerHTML = `<div class="cs-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="cs-chevron">&#9654;</span>
+        <div class="cs-num ${complete?'done':''}">${complete?'&#10003;':i+1}</div>
+        <div class="cs-info"><h4>${t.title}</h4><p>${t.sub}</p></div>
+        ${score!=null?'<span class="cs-best">'+score+'%</span>':''}
+      </div><div class="cs-body">${body}</div>`;
+    list.appendChild(sec);
   });
   history.push(screen); showScreen('subjectScreen');
 }
@@ -2741,7 +2802,7 @@ function viewSolutions(){ goBack(); }
 // WHATSAPP SHARE
 // ================================================================
 function shareWhatsApp(){
-  const msg=`I just scored ${lastResultPct}% on ${lastResultTopic} in CramBox! 🔥\n\nCramBox — pass your O-Levels from your phone. No data needed.\n\nGet it: https://zimsec-prep.vercel.app`;
+  const msg=`I just scored ${lastResultPct}% on ${lastResultTopic} in CramBox! 🔥\n\nCramBox — pass your O-Levels from your phone. No data needed.\n\nGet it: https://crambox-prep.vercel.app`;
   const url='https://wa.me/?text='+encodeURIComponent(msg);
   window.open(url,'_blank');
 }
@@ -3924,7 +3985,7 @@ function renderShareCard(canvas) {
 
   ctx.fillStyle = '#888888';
   ctx.font = '600 34px ' + fontFamily;
-  ctx.fillText('Get yours → zimsec-prep.vercel.app', W/2, 1780);
+  ctx.fillText('Get yours → crambox-prep.vercel.app', W/2, 1780);
   ctx.fillStyle = '#00e676';
   ctx.font = '800 40px ' + fontFamily;
   ctx.fillText('$3 once. Pass O-Levels.', W/2, 1840);
@@ -3952,7 +4013,7 @@ function saveShareImage() {
 function shareToWhatsAppFromModal() {
   const data = window._shareCtx || { scoreText:'0%', mode:'PRACTICE' };
   const text = 'I just scored ' + data.scoreText + ' on CramBox ' + data.mode +
-    '! O-Level Maths on your phone, $3 once. Try it: zimsec-prep.vercel.app';
+    '! O-Level Maths on your phone, $3 once. Try it: crambox-prep.vercel.app';
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
 

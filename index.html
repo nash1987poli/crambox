@@ -2802,7 +2802,7 @@ function viewSolutions(){ goBack(); }
 // WHATSAPP SHARE
 // ================================================================
 function shareWhatsApp(){
-  const msg=`I just scored ${lastResultPct}% on ${lastResultTopic} in CramBox! 🔥\n\nCramBox — pass your O-Levels from your phone. No data needed.\n\nGet it: https://zimsec-prep.vercel.app`;
+  const msg=`I just scored ${lastResultPct}% on ${lastResultTopic} in CramBox! 🔥\n\nCramBox — pass your O-Levels from your phone. No data needed.\n\nGet it: https://crambox-prep.vercel.app`;
   const url='https://wa.me/?text='+encodeURIComponent(msg);
   window.open(url,'_blank');
 }
@@ -3985,7 +3985,7 @@ function renderShareCard(canvas) {
 
   ctx.fillStyle = '#888888';
   ctx.font = '600 34px ' + fontFamily;
-  ctx.fillText('Get yours → zimsec-prep.vercel.app', W/2, 1780);
+  ctx.fillText('Get yours → crambox-prep.vercel.app', W/2, 1780);
   ctx.fillStyle = '#00e676';
   ctx.font = '800 40px ' + fontFamily;
   ctx.fillText('$3 once. Pass O-Levels.', W/2, 1840);
@@ -4013,7 +4013,7 @@ function saveShareImage() {
 function shareToWhatsAppFromModal() {
   const data = window._shareCtx || { scoreText:'0%', mode:'PRACTICE' };
   const text = 'I just scored ' + data.scoreText + ' on CramBox ' + data.mode +
-    '! O-Level Maths on your phone, $3 once. Try it: zimsec-prep.vercel.app';
+    '! O-Level Maths on your phone, $3 once. Try it: crambox-prep.vercel.app';
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
 
