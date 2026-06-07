@@ -1838,7 +1838,137 @@ const SPAR_BANK = [
     answer:'(0, -4)', exp:'In the x-axis: (x, y) &#8594; (x, -y) = (0, -4)' },
   { topic:'Transformations', difficulty:'medium', marks:3, isCoord:true, coordPair:[-2,-1],
     q:'Translate the point (3, 2) by the vector (-5 &nbsp;-3). Give the image point.',
-    answer:'(-2, -1)', exp:'(3+(-5), 2+(-3)) = (-2, -1)' }
+    answer:'(-2, -1)', exp:'(3+(-5), 2+(-3)) = (-2, -1)' },
+
+  // --- Solving Linear Equations ---
+  { topic:'Solving Linear Equations', difficulty:'easy', marks:2, answer:'5',
+    q:'Solve for x:  3x + 7 = 22', exp:'3x = 22 - 7 = 15, so x = 15/3 = 5' },
+  { topic:'Solving Linear Equations', difficulty:'easy', marks:2, answer:'7',
+    q:'Solve for x:  5x = 35', exp:'x = 35 / 5 = 7' },
+  { topic:'Solving Linear Equations', difficulty:'medium', marks:3, answer:'6',
+    q:'Solve for x:  4x - 3 = 2x + 9', exp:'4x - 2x = 9 + 3, so 2x = 12, x = 6' },
+  { topic:'Solving Linear Equations', difficulty:'exam', marks:3, answer:'5',
+    q:'Solve for x:  2(x + 3) = 16', exp:'x + 3 = 8, so x = 5' },
+
+  // --- Fractions and Percentages ---
+  { topic:'Fractions and Percentages', difficulty:'easy', marks:2, answer:'20',
+    q:'Find 25% of 80.', exp:'25% = 1/4, and 1/4 of 80 = 20' },
+  { topic:'Fractions and Percentages', difficulty:'easy', marks:2, answer:'15',
+    q:'Find 1/4 of 60.', exp:'60 / 4 = 15' },
+  { topic:'Fractions and Percentages', difficulty:'medium', marks:3, answer:'55',
+    q:'Increase 50 by 10%.', exp:'10% of 50 = 5, so 50 + 5 = 55' },
+  { topic:'Fractions and Percentages', difficulty:'exam', marks:3, answer:'30',
+    q:'Find 15% of 200.', exp:'15/100 &#215; 200 = 30' },
+
+  // --- Area and Perimeter ---
+  { topic:'Area and Perimeter', difficulty:'easy', marks:2, answer:'40',
+    q:'Find the area of a rectangle 8 cm by 5 cm. Give the value in cm&#178;.', exp:'Area = length &#215; width = 8 &#215; 5 = 40' },
+  { topic:'Area and Perimeter', difficulty:'easy', marks:2, answer:'24',
+    q:'Find the perimeter of a square of side 6 cm.', exp:'Perimeter = 4 &#215; 6 = 24' },
+  { topic:'Area and Perimeter', difficulty:'medium', marks:3, answer:'30',
+    q:'Find the area of a triangle with base 10 cm and height 6 cm. Give the value in cm&#178;.', exp:'Area = &#189; &#215; base &#215; height = &#189; &#215; 10 &#215; 6 = 30' },
+  { topic:'Area and Perimeter', difficulty:'exam', marks:3, answer:'32',
+    q:'A rectangle has length 12 cm and width 4 cm. Find its perimeter.', exp:'Perimeter = 2(l + w) = 2(12 + 4) = 32' },
+
+  // --- Indices (Index Laws) ---
+  { topic:'Indices (Index Laws)', difficulty:'easy', marks:2, answer:'32',
+    q:'Evaluate:  2&#179; &#215; 2&#178;', exp:'Add the powers: 2^(3+2) = 2^5 = 32' },
+  { topic:'Indices (Index Laws)', difficulty:'easy', marks:2, answer:'1',
+    q:'Evaluate:  5&#8304;', exp:'Any non-zero number to the power 0 equals 1' },
+  { topic:'Indices (Index Laws)', difficulty:'medium', marks:3, answer:'9',
+    q:'Evaluate:  3&#8308; &#247; 3&#178;', exp:'Subtract the powers: 3^(4-2) = 3^2 = 9' },
+  { topic:'Indices (Index Laws)', difficulty:'exam', marks:3, answer:'64',
+    q:'Evaluate:  (2&#179;)&#178;', exp:'Multiply the powers: 2^(3&#215;2) = 2^6 = 64' },
+
+  // --- Standard Form ---
+  { topic:'Standard Form', difficulty:'easy', marks:2, answer:'36000',
+    q:'Write 3.6 &#215; 10&#8308; as an ordinary number.', exp:'Move the point 4 places right: 36000' },
+  { topic:'Standard Form', difficulty:'easy', marks:2, answer:'8000',
+    q:'Write 8 &#215; 10&#179; as an ordinary number.', exp:'8 followed by 3 zeros: 8000' },
+  { topic:'Standard Form', difficulty:'medium', marks:3, answer:'450',
+    q:'Write 4.5 &#215; 10&#178; as an ordinary number.', exp:'Move the point 2 places right: 450' },
+  { topic:'Standard Form', difficulty:'exam', marks:3, answer:'50000000',
+    q:'Write 5 &#215; 10&#8311; as an ordinary number.', exp:'5 followed by 7 zeros: 50000000' },
+
+  // --- Mean, Median and Mode ---
+  { topic:'Mean, Median and Mode', difficulty:'easy', marks:2, answer:'4',
+    q:'Find the mean of 2, 4, 6.', exp:'(2 + 4 + 6) / 3 = 12 / 3 = 4' },
+  { topic:'Mean, Median and Mode', difficulty:'easy', marks:2, answer:'5',
+    q:'Find the median of 3, 7, 5.', exp:'Order them: 3, 5, 7. The middle value is 5' },
+  { topic:'Mean, Median and Mode', difficulty:'medium', marks:3, answer:'4',
+    q:'Find the mode of 2, 4, 4, 6.', exp:'The most frequent value is 4' },
+  { topic:'Mean, Median and Mode', difficulty:'exam', marks:3, answer:'25',
+    q:'Find the mean of 10, 20, 30, 40.', exp:'(10+20+30+40)/4 = 100/4 = 25' },
+
+  // --- Trigonometry (Right-Angled) ---
+  { topic:'Trigonometry (Right-Angled)', difficulty:'easy', marks:2, answer:'5',
+    q:'A right-angled triangle has the two shorter sides 3 cm and 4 cm. Find the hypotenuse.', exp:'h = &#8730;(3&#178; + 4&#178;) = &#8730;25 = 5' },
+  { topic:'Trigonometry (Right-Angled)', difficulty:'easy', marks:2, answer:'10',
+    q:'The shorter sides of a right-angled triangle are 6 cm and 8 cm. Find the hypotenuse.', exp:'h = &#8730;(6&#178; + 8&#178;) = &#8730;100 = 10' },
+  { topic:'Trigonometry (Right-Angled)', difficulty:'medium', marks:3, answer:'13',
+    q:'A right-angled triangle has legs 5 cm and 12 cm. Find the hypotenuse.', exp:'h = &#8730;(5&#178; + 12&#178;) = &#8730;169 = 13' },
+  { topic:'Trigonometry (Right-Angled)', difficulty:'exam', marks:3, answer:'17',
+    q:'A right-angled triangle has legs 8 cm and 15 cm. Find the hypotenuse.', exp:'h = &#8730;(8&#178; + 15&#178;) = &#8730;289 = 17' },
+
+  // --- Financial Mathematics ---
+  { topic:'Financial Mathematics', difficulty:'easy', marks:2, answer:'10',
+    q:'Find the simple interest on $100 at 10% per year for 1 year.', exp:'I = PRT/100 = 100&#215;10&#215;1/100 = 10' },
+  { topic:'Financial Mathematics', difficulty:'medium', marks:3, answer:'50',
+    q:'Find the simple interest on $500 at 5% per year for 2 years.', exp:'I = PRT/100 = 500&#215;5&#215;2/100 = 50' },
+  { topic:'Financial Mathematics', difficulty:'medium', marks:3, answer:'160',
+    q:'A shirt costs $200. A 20% discount is given. How much do you pay?', exp:'Discount = 20% of 200 = 40, so you pay 200 - 40 = 160' },
+  { topic:'Financial Mathematics', difficulty:'exam', marks:3, answer:'240',
+    q:'Find the simple interest on $1000 at 8% per year for 3 years.', exp:'I = PRT/100 = 1000&#215;8&#215;3/100 = 240' },
+
+  // --- Ratio, Rate and Proportion ---
+  { topic:'Ratio, Rate and Proportion', difficulty:'easy', marks:2, answer:'50',
+    q:'$80 is shared in the ratio 3 : 5. Find the larger share.', exp:'Total parts = 8, each part = 80/8 = 10. Larger = 5 &#215; 10 = 50' },
+  { topic:'Ratio, Rate and Proportion', difficulty:'easy', marks:2, answer:'3:2',
+    q:'Simplify the ratio 12 : 8.', exp:'Divide both by 4: 12:8 = 3:2' },
+  { topic:'Ratio, Rate and Proportion', difficulty:'medium', marks:3, answer:'32',
+    q:'5 books cost $20. At the same rate, find the cost of 8 books.', exp:'One book = 20/5 = $4, so 8 books = 8 &#215; 4 = 32' },
+  { topic:'Ratio, Rate and Proportion', difficulty:'exam', marks:3, answer:'24',
+    q:'Divide 60 in the ratio 2 : 3. Find the smaller part.', exp:'Total parts = 5, each = 60/5 = 12. Smaller = 2 &#215; 12 = 24' },
+
+  // --- Probability ---
+  { topic:'Probability', difficulty:'easy', marks:2, answer:'1/6',
+    q:'A fair die is rolled. Find the probability of getting a 6. Give your answer as a fraction.', exp:'One favourable outcome out of 6: P = 1/6' },
+  { topic:'Probability', difficulty:'easy', marks:2, answer:'1/2',
+    q:'A fair coin is tossed. Find the probability of getting a head. Give your answer as a fraction.', exp:'One head out of two outcomes: P = 1/2' },
+  { topic:'Probability', difficulty:'medium', marks:3, answer:'3/10',
+    q:'A bag has 3 red and 7 blue balls. One is drawn at random. Find P(red) as a fraction.', exp:'3 red out of 10 total: P = 3/10' },
+  { topic:'Probability', difficulty:'exam', marks:3, answer:'7/10',
+    q:'A bag has 3 red and 7 blue balls. One is drawn at random. Find P(not red) as a fraction.', exp:'P(not red) = 1 - 3/10 = 7/10' },
+
+  // --- Variation ---
+  { topic:'Variation', difficulty:'easy', marks:2, answer:'5',
+    q:'y varies directly as x, and y = 10 when x = 2. Find the constant k.', exp:'k = y/x = 10/2 = 5' },
+  { topic:'Variation', difficulty:'medium', marks:3, answer:'20',
+    q:'y varies directly as x, and y = 12 when x = 3. Find y when x = 5.', exp:'k = 12/3 = 4, so y = 4 &#215; 5 = 20' },
+  { topic:'Variation', difficulty:'medium', marks:3, answer:'21',
+    q:'y = kx with k = 3. Find y when x = 7.', exp:'y = 3 &#215; 7 = 21' },
+  { topic:'Variation', difficulty:'exam', marks:3, answer:'6',
+    q:'y varies inversely as x, and y = 8 when x = 3. Find y when x = 4.', exp:'k = y&#215;x = 8&#215;3 = 24, so y = 24/4 = 6' },
+
+  // --- Number Bases ---
+  { topic:'Number Bases', difficulty:'easy', marks:2, answer:'10',
+    q:'Convert the binary number 1010 to base 10.', exp:'8 + 0 + 2 + 0 = 10' },
+  { topic:'Number Bases', difficulty:'easy', marks:2, answer:'13',
+    q:'Convert the binary number 1101 to base 10.', exp:'8 + 4 + 0 + 1 = 13' },
+  { topic:'Number Bases', difficulty:'medium', marks:3, answer:'110',
+    q:'Convert the base 10 number 6 to binary.', exp:'6 = 4 + 2 = 110 in binary' },
+  { topic:'Number Bases', difficulty:'exam', marks:3, answer:'15',
+    q:'Convert the binary number 1111 to base 10.', exp:'8 + 4 + 2 + 1 = 15' },
+
+  // --- Sets and Venn Diagrams ---
+  { topic:'Sets and Venn Diagrams', difficulty:'easy', marks:2, answer:'4',
+    q:'A = {1, 2, 3} and B = {3, 4}. How many elements are in A &#8746; B?', exp:'A &#8746; B = {1, 2, 3, 4}, which has 4 elements' },
+  { topic:'Sets and Venn Diagrams', difficulty:'easy', marks:2, answer:'1',
+    q:'A = {1, 2, 3} and B = {3, 4}. How many elements are in A &#8745; B?', exp:'A &#8745; B = {3}, which has 1 element' },
+  { topic:'Sets and Venn Diagrams', difficulty:'medium', marks:3, answer:'22',
+    q:'12 students like tea, 15 like coffee, and 5 like both. How many like tea or coffee?', exp:'12 + 15 - 5 = 22' },
+  { topic:'Sets and Venn Diagrams', difficulty:'exam', marks:3, answer:'8',
+    q:'In a class of 30, 22 study Maths. How many do not study Maths?', exp:'30 - 22 = 8' }
 ];
 
 // Readiness % per topic, derived from best practice scores already in the store.

@@ -142,5 +142,13 @@ H.test('matchSparAnswer: non-coordinate delegates to answersMatch', () => {
   H.assert(H.ctx.matchSparAnswer(q, '13') === false);
 });
 
+H.test('SPAR_BANK: covers enough topics with a difficulty spread', () => {
+  const byTopic = {};
+  BANK.forEach(q => { (byTopic[q.topic] = byTopic[q.topic] || []).push(q.difficulty); });
+  const covered = Object.keys(byTopic);
+  H.assert(covered.length >= 12, 'too few topics covered: ' + covered.length);
+  covered.forEach(t => H.assert(byTopic[t].length >= 4, t + ' has < 4 questions'));
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();
