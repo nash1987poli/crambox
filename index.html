@@ -503,6 +503,16 @@
   .spar-review-item .sr-exp { color:var(--text2); white-space:pre-wrap; }
   .spar-review-item.sr-wrong { border-color:var(--red); }
 
+  /* Team Spar */
+  .team-name-row { display:flex; gap:8px; margin-bottom:8px; }
+  .team-name-row input { flex:1; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text); }
+  .team-name-row button { background:var(--red-bg); color:var(--red); border:none; border-radius:8px; padding:0 12px; cursor:pointer; }
+  .team-lb-row { display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--bg2); border:1px solid var(--border); border-radius:8px; margin-bottom:8px; }
+  .team-lb-row.mvp { border-color:var(--gold); background:var(--gold-bg); }
+  .team-lb-rank { color:var(--text2); width:24px; }
+  .team-lb-name { flex:1; color:var(--text); font-weight:600; }
+  .team-lb-marks { color:var(--accent); }
+
   /* Rank Card */
   .rank-card {
     background:var(--card); border:1px solid var(--border); border-radius:14px;
@@ -942,6 +952,69 @@
   </div>
   <div id="sparReview" style="margin-top:14px"></div>
   <button class="drill-check" style="width:100%;margin-top:14px" onclick="startSpar()">Spar again</button>
+  <button class="submit-btn" onclick="goHome()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">Done</button>
+</div>
+</div>
+
+<!-- ==================== TEAM: SETUP ==================== -->
+<div class="screen" id="teamSetupScreen">
+<div class="container">
+  <div class="drill-q-card">
+    <div class="q-num">Team Spar</div>
+    <p style="font-size:13px;color:var(--text2);margin:6px 0 12px">Study together &mdash; one phone, the whole crew. Add 2&ndash;5 names.</p>
+    <div id="teamNameRows"></div>
+    <button class="submit-btn" id="teamAddBtn" onclick="teamAddRow()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">+ Add player</button>
+    <button class="drill-check" id="teamStartBtn" style="width:100%;margin-top:12px" onclick="teamStart()">Start</button>
+    <p id="teamSetupHint" style="font-size:11px;color:var(--text2);margin-top:8px">Add at least 2 players. Studying alone? Use Spar with the Invigilator.</p>
+  </div>
+  <button class="submit-btn" onclick="goBack()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border)">Back</button>
+</div>
+</div>
+
+<!-- ==================== TEAM: PASS INTERSTITIAL ==================== -->
+<div class="screen" id="teamPassScreen">
+<div class="container">
+  <div class="drill-q-card" style="text-align:center">
+    <div class="q-num">Pass the phone</div>
+    <div style="font-size:26px;color:var(--accent);margin:18px 0">&#9654; <span id="teamPassName">NAME</span></div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:16px" id="teamPassProgress">Question 1 of 6</div>
+    <button class="drill-check" style="width:100%" onclick="teamShowQ()">Ready</button>
+  </div>
+</div>
+</div>
+
+<!-- ==================== TEAM: QUESTION ==================== -->
+<div class="screen" id="teamSparScreen">
+<div class="container">
+  <div class="drill-counter">
+    <span id="teamCount">Q1 of 6</span>
+    <span class="drill-streak-badge drill-streak-cold" id="teamCurrent">NAME</span>
+    <span id="teamTeamScore">0 marks</span>
+  </div>
+  <div class="drill-q-card">
+    <div class="q-num"><span id="teamTopicLabel"></span> <span id="teamMarkTag" style="color:var(--text2)"></span></div>
+    <div class="drill-equation" id="teamQ" style="font-size:16px;line-height:1.5"></div>
+    <div class="drill-input-row">
+      <input type="text" class="drill-ans" id="teamAns" placeholder="?" autocomplete="off">
+      <button class="drill-check" id="teamCheckBtn" onclick="teamCheck()">Check</button>
+    </div>
+    <div class="drill-feedback" id="teamFeedback"></div>
+    <div class="drill-solution" id="teamSolution"></div>
+    <div id="teamTally" style="font-size:12px;color:var(--text2);margin-top:10px"></div>
+    <button class="drill-next" id="teamNextBtn" onclick="teamNext()" style="display:none">Next</button>
+  </div>
+</div>
+</div>
+
+<!-- ==================== TEAM: LEADERBOARD ==================== -->
+<div class="screen" id="teamLeaderboardScreen">
+<div class="container">
+  <div class="results-card">
+    <div class="results-msg" id="teamLbTitle">Team: 0/0 &mdash; Grade U</div>
+    <div class="results-det" id="teamLbRows" style="margin-top:12px;text-align:left"></div>
+  </div>
+  <button class="drill-check" style="width:100%;margin-top:14px" onclick="teamPlayAgain()">Spar again (same group)</button>
+  <button class="submit-btn" onclick="teamNewGroup()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">New group</button>
   <button class="submit-btn" onclick="goHome()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">Done</button>
 </div>
 </div>
