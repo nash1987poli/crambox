@@ -56,3 +56,23 @@ function run() {
 }
 
 module.exports = { test, run, ctx, extractAssignment, assert };
+
+// ================= TEST SUITE =================
+const H = module.exports;
+const DATA = H.extractAssignment('DATA');
+const BANK = H.extractAssignment('SPAR_BANK');
+const titles = new Set(DATA.maths.topics.map(t => t.title));
+
+H.test('SPAR_BANK: every item is well-formed', () => {
+  H.assert(Array.isArray(BANK) && BANK.length > 0, 'bank empty');
+  for (const q of BANK) {
+    H.assert(titles.has(q.topic), 'bad topic: ' + q.topic);
+    H.assert(['easy','medium','exam'].includes(q.difficulty), 'bad difficulty: ' + q.difficulty);
+    H.assert(Number.isInteger(q.marks) && q.marks > 0, 'bad marks on: ' + q.q);
+    H.assert(q.q && q.exp && (q.answer !== undefined && q.answer !== ''), 'missing q/answer/exp: ' + q.q);
+    if (q.isCoord) H.assert(Array.isArray(q.coordPair) && q.coordPair.length === 2, 'bad coordPair: ' + q.q);
+  }
+});
+
+// ---- INSERT NEW TESTS ABOVE THIS LINE ----
+H.run();
