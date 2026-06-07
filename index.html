@@ -884,9 +884,9 @@
     <canvas class="share-preview" id="shareCanvas" width="1080" height="1920"></canvas>
     <div class="share-modal-actions">
       <button class="save-img-btn" onclick="saveShareImage()">💾 Save Image</button>
-      <button class="send-wa-btn" onclick="shareToWhatsAppFromModal()">📲 Share via WhatsApp</button>
+      <button class="send-wa-btn" onclick="shareToWhatsAppFromModal()">📲 Challenge a friend</button>
     </div>
-    <div class="share-hint">Save the image, then attach it manually in your WhatsApp Status.</div>
+    <div class="share-hint">Save the card, post it to your WhatsApp Status, and dare your study group to beat your score.</div>
   </div>
 </div>
 <div class="combo-popup" id="comboPopup"></div>
@@ -961,6 +961,7 @@
   </div>
   <div id="sparReview" style="margin-top:14px"></div>
   <button class="drill-check" style="width:100%;margin-top:14px" onclick="startSpar()">Spar again</button>
+  <button class="send-wa-btn" style="width:100%;margin-top:8px" onclick="shareSparScore()">📲 Challenge a friend</button>
   <button class="submit-btn" onclick="goHome()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">Done</button>
 </div>
 </div>
@@ -1023,6 +1024,7 @@
     <div class="results-det" id="teamLbRows" style="margin-top:12px;text-align:left"></div>
   </div>
   <button class="drill-check" style="width:100%;margin-top:14px" onclick="teamPlayAgain()">Spar again (same group)</button>
+  <button class="send-wa-btn" style="width:100%;margin-top:8px" onclick="shareTeamScore()">📲 Challenge another group</button>
   <button class="submit-btn" onclick="teamNewGroup()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">New group</button>
   <button class="submit-btn" onclick="goHome()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">Done</button>
 </div>
@@ -3119,7 +3121,7 @@ function viewSolutions(){ goBack(); }
 // WHATSAPP SHARE
 // ================================================================
 function shareWhatsApp(){
-  const msg=`I just scored ${lastResultPct}% on ${lastResultTopic} in CramBox! 🔥\n\nCramBox — pass your O-Levels from your phone. No data needed.\n\nGet it: https://crambox-prep.vercel.app`;
+  const msg=`I just scored ${lastResultPct}% on ${lastResultTopic} in CramBox! 🔥 Think you can beat me? 👇\n\nCramBox — pass your O-Levels from your phone, no data needed. $5 once (or grab a Squad deal for your study group).\n\nTake the challenge: https://crambox-prep.vercel.app`;
   const url='https://wa.me/?text='+encodeURIComponent(msg);
   window.open(url,'_blank');
 }
@@ -4208,17 +4210,23 @@ function cssVarValue(varStr) {
   return v || '#ffffff';
 }
 
-function openShareModal() {
+function openShareModal(ctx) {
   let nick = getNickname();
   if (!nick) {
     nick = promptNickname();
     if (!nick) return;
   }
-  if (!window._shareCtx) {
-    window._shareCtx = { mode:'PRACTICE', topic:lastResultTopic||'', scoreText:(lastResultPct||0)+'%', subtitle:'' };
-  }
+  // Always set fresh context so different modes never show stale scores.
+  window._shareCtx = ctx || { mode:'PRACTICE', topic:lastResultTopic||'', scoreText:(lastResultPct||0)+'%', subtitle:'' };
   renderShareCard(document.getElementById('shareCanvas'));
   document.getElementById('shareModal').classList.add('show');
+}
+function shareSparScore() {
+  openShareModal({ mode:'INVIGILATOR', topic:'', scoreText: document.getElementById('sparVPct').textContent, subtitle:'Beat the Invigilator' });
+}
+function shareTeamScore() {
+  const grade = (document.getElementById('teamLbTitle').textContent.match(/Grade (\w)/) || [,'?'])[1];
+  openShareModal({ mode:'TEAM SPAR', topic:'', scoreText:'Grade ' + grade, subtitle: document.getElementById('teamLbTitle').textContent });
 }
 function closeShareModal() {
   document.getElementById('shareModal').classList.remove('show');
@@ -4230,15 +4238,15 @@ function renderShareCard(canvas) {
   canvas.width = W; canvas.height = H;
 
   const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0,    '#0a0a0a');
-  grad.addColorStop(0.55, '#141424');
-  grad.addColorStop(1,    '#0a1a14');
+  grad.addColorStop(0,    '#0c1320');
+  grad.addColorStop(0.55, '#111a2b');
+  grad.addColorStop(1,    '#0a1f16');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
 
   const glow = ctx.createRadialGradient(W/2, 100, 50, W/2, 100, W*0.9);
-  glow.addColorStop(0, 'rgba(0,230,118,0.22)');
-  glow.addColorStop(1, 'rgba(0,230,118,0)');
+  glow.addColorStop(0, 'rgba(16,185,129,0.22)');
+  glow.addColorStop(1, 'rgba(16,185,129,0)');
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, H);
 
@@ -4255,9 +4263,9 @@ function renderShareCard(canvas) {
   const startX = (W - (cramW + boxW)) / 2;
   ctx.textBaseline = 'alphabetic';
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#f0f0f0';
+  ctx.fillStyle = '#eef2f8';
   ctx.fillText('Cram', startX, 200);
-  ctx.fillStyle = '#00e676';
+  ctx.fillStyle = '#10b981';
   ctx.fillText('Box',  startX + cramW, 200);
 
   ctx.textAlign = 'center';
@@ -4271,7 +4279,7 @@ function renderShareCard(canvas) {
   ctx.font = '700 42px ' + fontFamily;
   ctx.fillText(data.mode, W/2, 490);
 
-  ctx.fillStyle = '#00e676';
+  ctx.fillStyle = '#10b981';
   const scoreFontSize = data.scoreText.length > 6 ? 200 : 280;
   ctx.font = '900 ' + scoreFontSize + 'px ' + fontFamily;
   ctx.fillText(data.scoreText, W/2, 900);
@@ -4300,12 +4308,15 @@ function renderShareCard(canvas) {
     ctx.fillText(topicShort, W/2, 1530);
   }
 
+  ctx.fillStyle = '#ffce4d';
+  ctx.font = '800 46px ' + fontFamily;
+  ctx.fillText('👆 Think you can beat me?', W/2, 1700);
   ctx.fillStyle = '#888888';
   ctx.font = '600 34px ' + fontFamily;
-  ctx.fillText('Get yours → crambox-prep.vercel.app', W/2, 1780);
-  ctx.fillStyle = '#00e676';
+  ctx.fillText('Take the challenge → crambox-prep.vercel.app', W/2, 1790);
+  ctx.fillStyle = '#10b981';
   ctx.font = '800 40px ' + fontFamily;
-  ctx.fillText('$3 once. Pass O-Levels.', W/2, 1840);
+  ctx.fillText('$5 once · Squad deals for your crew', W/2, 1850);
 }
 
 function saveShareImage() {
@@ -4329,8 +4340,8 @@ function saveShareImage() {
 
 function shareToWhatsAppFromModal() {
   const data = window._shareCtx || { scoreText:'0%', mode:'PRACTICE' };
-  const text = 'I just scored ' + data.scoreText + ' on CramBox ' + data.mode +
-    '! O-Level Maths on your phone, $3 once. Try it: crambox-prep.vercel.app';
+  const text = 'I scored ' + data.scoreText + ' on CramBox ' + data.mode +
+    ' 🔥 Beat that! O-Level Maths on your phone — $5 once, or a Squad deal for your crew. Take the challenge: crambox-prep.vercel.app';
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
 
