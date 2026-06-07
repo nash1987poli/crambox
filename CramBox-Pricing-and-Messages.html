@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CramBox — Pricing &amp; Messages ($5 + Squad)</title>
+<style>
+  :root{
+    --bg:#0c1320;--bg2:#111a2b;--card:#162033;--border:#273249;
+    --text:#eef2f8;--text2:#8b95a9;--green:#10b981;--green-bg:rgba(16,185,129,.12);
+    --gold:#ffce4d;--gold-bg:rgba(255,206,77,.12);--blue:#4d8dff;--blue-bg:rgba(77,141,255,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  .wrap{max-width:840px;margin:0 auto;padding:0 18px 80px}
+  header{padding:42px 0 26px;text-align:center;border-bottom:1px solid var(--border);background:radial-gradient(800px 280px at 50% -40%,rgba(16,185,129,.10),transparent)}
+  .logo{font-size:13px;letter-spacing:3px;color:var(--green);text-transform:uppercase;font-weight:700}
+  h1{font-size:30px;margin:10px 0 6px}
+  .tagline{color:var(--text2);font-size:14px}
+  h2{font-size:21px;margin:34px 0 6px}
+  .sub{color:var(--text2);font-size:14px;margin-bottom:18px}
+  h3{font-size:15px;margin:22px 0 8px;color:var(--gold)}
+  /* pricing tiers */
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+  @media(max-width:640px){.tiers{grid-template-columns:1fr}}
+  .tier{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center}
+  .tier.feat{border-color:var(--green);position:relative}
+  .tier.feat::after{content:'BEST VALUE';position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--green);color:#04241a;font-size:10px;font-weight:800;padding:2px 10px;border-radius:20px;letter-spacing:.5px}
+  .tier .name{font-size:13px;color:var(--text2);text-transform:uppercase;letter-spacing:1px}
+  .tier .price{font-size:38px;font-weight:800;color:var(--green);margin:6px 0}
+  .tier .per{font-size:12px;color:var(--text2)}
+  .tier .desc{font-size:13px;margin-top:8px}
+  /* message blocks */
+  .msg{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:10px;padding:14px 16px;margin:10px 0;font-size:14px;white-space:pre-wrap}
+  .msg .label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:8px}
+  .callout{background:var(--gold-bg);border:1px solid var(--gold);border-radius:12px;padding:14px 16px;font-size:14px;margin:16px 0}
+  .callout b{color:var(--gold)}
+  ul{margin:8px 0 8px 20px}li{margin:5px 0;font-size:14px;color:var(--text2)}li b{color:var(--text)}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+  th,td{text-align:left;padding:10px;border-bottom:1px solid var(--border)}th{color:var(--text2);font-size:12px;text-transform:uppercase}
+  footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--border);color:var(--text2);font-size:12px;text-align:center}
+  code{background:var(--bg2);padding:1px 6px;border-radius:4px;color:var(--green)}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo">CramBox</div>
+    <h1>Pricing &amp; Messages</h1>
+    <p class="tagline">The $5 + Squad model · ready-to-send copy · updated 7 June 2026</p>
+  </div>
+</header>
+<div class="wrap">
+
+  <h2>The model</h2>
+  <p class="sub">$5 is the premium single option. The Squad deal is the smart buy — and it keeps word-of-mouth alive because groups pay less per head.</p>
+  <div class="tiers">
+    <div class="tier">
+      <div class="name">Solo</div>
+      <div class="price">$5</div>
+      <div class="per">one student · once</div>
+      <div class="desc">Full syllabus, AI Sparring, offline. No subscription.</div>
+    </div>
+    <div class="tier">
+      <div class="name">Squad-3</div>
+      <div class="price">$12</div>
+      <div class="per">$4 / head · save $3</div>
+      <div class="desc">A small study circle. 3 devices on one code.</div>
+    </div>
+    <div class="tier feat">
+      <div class="name">Squad-5</div>
+      <div class="price">$18</div>
+      <div class="per">$3.60 / head · save $7</div>
+      <div class="desc">A full study group. 5 devices on one code.</div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Why $5 (not $3) now:</b> the product is worth more than at launch — an AI exam coach (the Invigilator), Team Spar group study, the full 4004 syllabus, all offline. At $5 you're still under <b>1/6 of a single $30 tutor lesson</b>. Always show the value <em>before</em> the price.</div>
+
+  <h2>The golden rules</h2>
+  <ul>
+    <li><b>Never show "$5" naked.</b> Lead with the value (AI coach + whole syllabus + offline), then the price lands cheap.</li>
+    <li><b>Anchor against the alternative:</b> "$30+ for one tutor hour" or "exam stakes" make $5 vanish.</li>
+    <li><b>Push the Squad for groups.</b> It's cheaper per head <em>and</em> it spreads the app — exactly how Zimbabwean students study.</li>
+    <li><b>Let scores do the selling.</b> The in-app "Challenge a friend" card carries the price + link automatically.</li>
+  </ul>
+
+  <h2>Ready-to-send messages</h2>
+  <p class="sub">Copy, paste, send. Swap the link for your own if you set up a custom domain later.</p>
+
+  <h3>WhatsApp — launch / cold</h3>
+  <div class="msg"><span class="label">Send to a student</span>CramBox — pass your O-Level Maths from your phone. 📵 Works fully offline (no data after download), the whole 4004 syllabus, plus an AI coach that drills your weak spots.
+
+$5 once. No subscription. Studying in a group? Grab a Squad code — 3 for $12, or 5 for $18 (cheapest per person).
+
+Try it: https://crambox-prep.vercel.app</div>
+
+  <h3>WhatsApp — the Squad pitch (groups)</h3>
+  <div class="msg"><span class="label">Send to a study group</span>You lot study together anyway 👇 CramBox now has Team Spar — your whole crew on one phone, learning out loud, with a leaderboard.
+
+One Squad code unlocks everyone:
+• Squad-3 → $12 ($4 each)
+• Squad-5 → $18 ($3.60 each)
+
+Cheaper than buying separately, and one of you just sends the codes round. Sort it: https://crambox-prep.vercel.app</div>
+
+  <h3>WhatsApp — the challenge (re-share)</h3>
+  <div class="msg"><span class="label">This is what the app auto-generates</span>I scored 84% on CramBox Transformations 🔥 Think you can beat me? 👇 O-Level Maths on your phone — $5 once, or a Squad deal for your crew. Take the challenge: crambox-prep.vercel.app</div>
+
+  <h3>WhatsApp — to a parent (incl. diaspora)</h3>
+  <div class="msg"><span class="label">Sell to the payer</span>Want proof your child is ready for O-Level Maths without paying $30/hour for a tutor? CramBox is an AI-powered exam crammer on their phone — full 4004 syllabus, works offline, shows exactly where they're weak.
+
+$5 once (a Squad code covers siblings/cousins cheaper). Pay by EcoCash. https://crambox-prep.vercel.app</div>
+
+  <h3>Social caption (TikTok / Status)</h3>
+  <div class="msg"><span class="label">Short</span>O-Level Maths, an AI coach, your whole syllabus — on the cheapest phone, no data. $5 once. Beat your friends' scores → crambox-prep.vercel.app</div>
+
+  <h2>Objection handling</h2>
+  <table>
+    <tr><th>They say</th><th>You say</th></tr>
+    <tr><td>"$5 is a lot."</td><td>"It's once — not monthly. One tutor hour is $30+. And a Squad code drops it to ~$4 each."</td></tr>
+    <tr><td>"Does it need data?"</td><td>"No. Download once, use it all month offline. That's the whole point."</td></tr>
+    <tr><td>"Can my whole group use one?"</td><td>"Yes — that's the Squad code. 3 for $12 or 5 for $18, everyone gets their own access."</td></tr>
+    <tr><td>"Is it official ZIMSEC?"</td><td>"No — it's an independent tool built to the 4004 syllabus. We say so right in the app."</td></tr>
+  </table>
+
+  <div class="callout"><b>Note on the old campaign docs:</b> the earlier $3 campaign files reflect the original launch-price strategy. This sheet is the current source of truth for pricing &amp; messaging. The app itself (share cards + links) already uses $5.</div>
+
+  <footer>CramBox · Curious Inc · internal pricing reference. Not affiliated with ZIMSEC.</footer>
+</div>
+</body>
+</html>
