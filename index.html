@@ -153,6 +153,44 @@
   .tag-practice { background:var(--gold-bg); color:var(--gold); }
   .tag-locked { background:var(--bg2); color:var(--text2); }
 
+  /* Curriculum Tree (Scrimba-style) */
+  .curriculum-section {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    margin-bottom:8px; overflow:hidden;
+  }
+  .cs-head { display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; transition:background 0.15s; }
+  .cs-head:hover { background:var(--card2); }
+  .cs-chevron { color:var(--text2); font-size:11px; transition:transform 0.2s; flex-shrink:0; width:12px; }
+  .curriculum-section.open .cs-chevron { transform:rotate(90deg); }
+  .cs-num {
+    width:30px; height:30px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; font-weight:700; font-size:12px; background:var(--bg2);
+    color:var(--text2); flex-shrink:0;
+  }
+  .cs-num.done { background:var(--green); color:#04241a; }
+  .cs-info { flex:1; min-width:0; }
+  .cs-info h4 { font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .cs-info p { font-size:11px; color:var(--text2); }
+  .cs-best { font-size:11px; font-weight:700; color:var(--gold); flex-shrink:0; }
+  .cs-body { display:none; border-top:1px solid var(--border); }
+  .curriculum-section.open .cs-body { display:block; }
+  .cs-row {
+    display:flex; align-items:center; gap:12px; padding:12px 16px 12px 22px;
+    cursor:pointer; border-bottom:1px solid var(--border); transition:background 0.15s;
+  }
+  .cs-row:last-child { border-bottom:none; }
+  .cs-row:hover { background:var(--card2); }
+  .cs-play {
+    width:28px; height:28px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; font-size:11px; flex-shrink:0;
+  }
+  .cs-play.lesson { background:var(--green-bg); color:var(--green); }
+  .cs-play.practice { background:var(--gold-bg); color:var(--gold); }
+  .cs-row-info { flex:1; min-width:0; }
+  .cs-row-info h5 { font-size:13px; font-weight:600; }
+  .cs-row-info span { font-size:11px; color:var(--text2); }
+  .cs-meta-tag { font-size:10px; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; flex-shrink:0; }
+
   /* XP Popup */
   .xp-popup {
     position:fixed; top:60px; left:50%; transform:translateX(-50%);
@@ -2240,28 +2278,30 @@ function openSubject(key) {
   d.topics.forEach((t, i) => {
     const complete = done.includes(i);
     const score = scores['t'+i];
-    // Lesson card (always unlocked)
-    const c = document.createElement('div');
-    c.className = 'topic-card';
-    c.onclick = () => openTopic(i,'lesson');
-    c.innerHTML = `<div class="topic-inner">
-      <div class="topic-num ${complete?'done':''}">${complete?'&#10003;':i+1}</div>
-      <div class="topic-det"><h4>${t.title}</h4><p>${t.sub+(score!=null?' — Best: '+score+'%':'')}</p></div>
-      <span class="topic-tag tag-lesson">Lesson</span>
-    </div>`;
-    list.appendChild(c);
-    // Practice card (always unlocked)
-    if (t.practice) {
-      const pc = document.createElement('div');
-      pc.className = 'topic-card';
-      pc.onclick = () => openTopic(i,'practice');
-      pc.innerHTML = `<div class="topic-inner">
-        <div class="topic-num" style="background:var(--gold-bg);color:var(--gold);">?</div>
-        <div class="topic-det"><h4>Practice: ${t.title}</h4><p>${t.practice.length} questions</p></div>
-        <span class="topic-tag tag-practice">Practice</span>
+    const steps = (t.steps || []).length;
+    const pq = t.practice ? t.practice.length : 0;
+    const sec = document.createElement('div');
+    sec.className = 'curriculum-section' + (i === 0 ? ' open' : '');
+
+    let body = `<div class="cs-row" onclick="openTopic(${i},'lesson')">
+        <div class="cs-play lesson">&#9654;</div>
+        <div class="cs-row-info"><h5>Lesson</h5><span>${steps} steps</span></div>
+        <span class="cs-meta-tag">Learn</span>
       </div>`;
-      list.appendChild(pc);
+    if (t.practice) {
+      body += `<div class="cs-row" onclick="openTopic(${i},'practice')">
+        <div class="cs-play practice">?</div>
+        <div class="cs-row-info"><h5>Practice quiz</h5><span>${pq} questions${score!=null?' &middot; best '+score+'%':''}</span></div>
+        <span class="cs-meta-tag">Quiz</span>
+      </div>`;
     }
+    sec.innerHTML = `<div class="cs-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="cs-chevron">&#9654;</span>
+        <div class="cs-num ${complete?'done':''}">${complete?'&#10003;':i+1}</div>
+        <div class="cs-info"><h4>${t.title}</h4><p>${t.sub}</p></div>
+        ${score!=null?'<span class="cs-best">'+score+'%</span>':''}
+      </div><div class="cs-body">${body}</div>`;
+    list.appendChild(sec);
   });
   history.push(screen); showScreen('subjectScreen');
 }
