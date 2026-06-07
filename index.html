@@ -1848,6 +1848,32 @@ function sparIntensityTier(avgReadiness) {
   if (avgReadiness >= 50) return 1;
   return 0;
 }
+
+// Unified grader for spar questions. Coordinate questions are matched by integer
+// extraction (mirrors the drill); everything else delegates to the existing answersMatch.
+function matchSparAnswer(q, input) {
+  if (q.isCoord) {
+    const nums = (String(input).match(/-?\d+/g) || []).map(Number);
+    return nums.length === 2 && nums[0] === q.coordPair[0] && nums[1] === q.coordPair[1];
+  }
+  return answersMatch(input, q.answer);
+}
+
+// Sparring store block lives under store.sparring; absent block = fresh start.
+function getSparring() {
+  const s = getStore();
+  if (!s.sparring) s.sparring = { readiness: {}, bouts: [], intensityTier: 0 };
+  return s.sparring;
+}
+function saveBoutResult(result) {
+  const s = getStore();
+  if (!s.sparring) s.sparring = { readiness: {}, bouts: [], intensityTier: 0 };
+  s.sparring.bouts.push(result);
+  if (s.sparring.bouts.length > 50) s.sparring.bouts = s.sparring.bouts.slice(-50);
+  s.sparring.readiness = result.readinessAfter || s.sparring.readiness;
+  s.sparring.intensityTier = result.intensityTier != null ? result.intensityTier : s.sparring.intensityTier;
+  setStore(s);
+}
 // ===== SPAR MODULE END =====
 
 // ================================================================

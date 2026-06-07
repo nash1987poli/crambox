@@ -126,5 +126,21 @@ H.test('clockState: green normal, amber <=90s, red <=30s', () => {
   H.assert(H.ctx.clockState(5) === 'red');
 });
 
+// Provide a stub answersMatch in the spar context for delegation tests.
+H.ctx.answersMatch = (a, b) => String(a).replace(/\s/g,'').toLowerCase() === String(b).replace(/\s/g,'').toLowerCase();
+
+H.test('matchSparAnswer: coordinate questions match via integer extraction', () => {
+  const q = { isCoord: true, coordPair: [6, 1], answer: '(6, 1)' };
+  H.assert(H.ctx.matchSparAnswer(q, '(6, 1)') === true);
+  H.assert(H.ctx.matchSparAnswer(q, '6 1') === true);
+  H.assert(H.ctx.matchSparAnswer(q, '6,1') === true);
+  H.assert(H.ctx.matchSparAnswer(q, '1, 6') === false);
+});
+H.test('matchSparAnswer: non-coordinate delegates to answersMatch', () => {
+  const q = { answer: '12' };
+  H.assert(H.ctx.matchSparAnswer(q, ' 12 ') === true);
+  H.assert(H.ctx.matchSparAnswer(q, '13') === false);
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();
