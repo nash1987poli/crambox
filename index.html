@@ -2422,6 +2422,48 @@ function teamLeaderboard(players, answers) {
   const teamPct = teamPossible ? Math.round(teamMarks / teamPossible * 100) : 0;
   return { rows, teamMarks, teamPossible, teamPct, teamGrade: _grade(teamPct) };
 }
+
+// ----- Setup controller -----
+let teamPlayers = [], teamBout = [], teamIdx = 0, teamAnswers = [], teamSeed = 1;
+
+function openTeamSetup() {
+  if (!document.getElementById('teamNameRows').children.length) {
+    teamRenderRows(['', '']); // start with 2 blank rows
+  }
+  teamUpdateSetupState();
+  history.push(screen); showScreen('teamSetupScreen');
+}
+
+function teamRenderRows(names) {
+  const wrap = document.getElementById('teamNameRows');
+  wrap.innerHTML = '';
+  names.forEach((n, i) => {
+    const row = document.createElement('div'); row.className = 'team-name-row';
+    row.innerHTML = '<input type="text" maxlength="14" placeholder="Player ' + (i+1) + '" value="' + n.replace(/"/g,'&quot;') + '" oninput="teamUpdateSetupState()">' +
+      (names.length > 2 ? '<button onclick="teamRemoveRow(' + i + ')">&#10005;</button>' : '');
+    wrap.appendChild(row);
+  });
+}
+function _teamCurrentNames() {
+  return [...document.querySelectorAll('#teamNameRows input')].map(i => i.value);
+}
+function teamAddRow() {
+  const names = _teamCurrentNames();
+  if (names.length >= 5) return;
+  names.push('');
+  teamRenderRows(names); teamUpdateSetupState();
+}
+function teamRemoveRow(idx) {
+  const names = _teamCurrentNames();
+  if (names.length <= 2) return;
+  names.splice(idx, 1);
+  teamRenderRows(names); teamUpdateSetupState();
+}
+function teamUpdateSetupState() {
+  const names = _teamCurrentNames();
+  document.getElementById('teamAddBtn').style.display = names.length >= 5 ? 'none' : '';
+  document.getElementById('teamStartBtn').disabled = names.length < 2;
+}
 // ===== TEAM SPAR MODULE END =====
 
 // ================================================================
