@@ -2554,6 +2554,41 @@ function teamNext() {
   if (teamIdx >= teamBout.length) teamFinish();
   else teamGotoPass();
 }
+
+// ----- Finish + leaderboard -----
+function teamFinish() {
+  const lb = teamLeaderboard(teamPlayers, teamAnswers);
+  document.getElementById('teamLbTitle').textContent =
+    'Team: ' + lb.teamMarks + '/' + lb.teamPossible + ' — Grade ' + lb.teamGrade;
+  const wrap = document.getElementById('teamLbRows'); wrap.innerHTML = '';
+  lb.rows.forEach((r, i) => {
+    const div = document.createElement('div');
+    div.className = 'team-lb-row' + (r.isMVP ? ' mvp' : '');
+    div.innerHTML =
+      '<span class="team-lb-rank">' + (i+1) + '</span>' +
+      '<span class="team-lb-name">' + (r.isMVP ? '👑 ' : '') + r.name + '</span>' +
+      '<span class="team-lb-marks">' + r.marks + ' marks &middot; ' + r.correct + '&#10003;</span>';
+    wrap.appendChild(div);
+  });
+  // Fixed XP to the host per completed session (not per question — no grinding).
+  addXP(15, 'Team Spar session');
+  recordStreak();
+  if (typeof fireConfetti === 'function') fireConfetti();
+  showScreen('teamLeaderboardScreen');
+}
+
+function teamPlayAgain() {
+  teamSeed = Date.now() & 0xffffffff;
+  teamBout = assembleTeamBout(SPAR_BANK, teamPlayers.length, { seed: teamSeed });
+  if (teamBout.length === 0) { goHome(); return; }
+  teamAnswers = []; teamIdx = 0;
+  teamGotoPass();
+}
+function teamNewGroup() {
+  teamPlayers = []; teamAnswers = []; teamBout = []; teamIdx = 0;
+  document.getElementById('teamNameRows').innerHTML = '';
+  openTeamSetup();
+}
 // ===== TEAM SPAR MODULE END =====
 
 // ================================================================
