@@ -452,6 +452,19 @@
     color:var(--text);
   }
 
+  /* Sparring (Invigilator) */
+  .spar-clock-green { background: var(--green-bg); color: var(--green); }
+  .spar-clock-amber { background: #4a3a00; color: var(--gold); }
+  .spar-clock-red   { background: var(--red-bg); color: var(--red); }
+  .spar-bar { margin:6px 0; }
+  .spar-bar-label { font-size:12px; color:var(--text2); display:flex; justify-content:space-between; }
+  .spar-bar-track { height:8px; background:var(--bg2); border-radius:4px; overflow:hidden; margin-top:3px; }
+  .spar-bar-fill { height:100%; background:var(--accent); transition:width .6s ease; }
+  .spar-review-item { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:8px; font-size:13px; }
+  .spar-review-item .sr-q { color:var(--text); margin-bottom:4px; }
+  .spar-review-item .sr-exp { color:var(--text2); white-space:pre-wrap; }
+  .spar-review-item.sr-wrong { border-color:var(--red); }
+
   /* Rank Card */
   .rank-card {
     background:var(--card); border:1px solid var(--border); border-radius:14px;
@@ -679,6 +692,15 @@
     <span class="subj-pct" style="color:var(--purple)">NEW</span>
   </div>
 
+  <div class="subject-card" onclick="startSpar()" style="border-color:var(--red);margin-bottom:20px">
+    <div class="subj-icon" style="background:var(--red-bg);color:var(--red);">VS</div>
+    <div class="subj-info">
+      <h3>Spar with the Invigilator</h3>
+      <p>Adaptive exam pressure — targets your weak topics</p>
+    </div>
+    <span class="subj-pct" style="color:var(--red)">NEW</span>
+  </div>
+
   <div class="section-head">
     <div class="section-title">Subjects</div>
   </div>
@@ -813,6 +835,55 @@
     <button class="drill-next" id="drillNextBtn" onclick="nextDrill()">Next Question</button>
   </div>
   <button class="submit-btn" onclick="endDrill()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border)">End Drill</button>
+</div>
+</div>
+
+<!-- ==================== SPAR: PRE-BOUT ==================== -->
+<div class="screen" id="sparIntroScreen">
+<div class="container">
+  <div class="drill-q-card">
+    <div class="q-num">The Invigilator</div>
+    <p id="sparIntroLine" style="font-size:14px;color:var(--text);margin:10px 0">I've seen your record.</p>
+    <div id="sparIntroFocus" style="font-size:13px;color:var(--text2);margin-bottom:6px"></div>
+    <div id="sparIntroMeta" style="font-size:12px;color:var(--text2);margin-bottom:16px"></div>
+    <button class="drill-check" style="width:100%" onclick="beginBout()">Begin</button>
+  </div>
+  <button class="submit-btn" onclick="goBack()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border)">Not now</button>
+</div>
+</div>
+
+<!-- ==================== SPAR: IN-BOUT ==================== -->
+<div class="screen" id="sparScreen">
+<div class="container">
+  <div class="drill-counter">
+    <span id="sparCount">Q1</span>
+    <span class="drill-streak-badge spar-clock-green" id="sparClock">00:00</span>
+    <span id="sparMarks">0 / 0 marks</span>
+  </div>
+  <div class="drill-q-card">
+    <div class="q-num"><span id="sparTopicLabel"></span> <span id="sparMarkTag" style="color:var(--text2)"></span></div>
+    <div class="drill-equation" id="sparQ" style="font-size:16px;line-height:1.5"></div>
+    <div class="drill-input-row">
+      <input type="text" class="drill-ans" id="sparAns" placeholder="?" autocomplete="off">
+      <button class="drill-check" id="sparNextBtn" onclick="sparAdvance()">Next</button>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-top:8px">The Invigilator is silent. No hints until the paper is done.</div>
+  </div>
+  <button class="submit-btn" onclick="endBout(true)" style="background:var(--bg2);color:var(--text);border:1px solid var(--border)">Hand in early</button>
+</div>
+</div>
+
+<!-- ==================== SPAR: VERDICT ==================== -->
+<div class="screen" id="sparVerdictScreen">
+<div class="container">
+  <div class="results-card">
+    <div class="results-circle" id="sparVCircle"><span id="sparVPct">0%</span><small id="sparVMarks">0/0</small></div>
+    <div class="results-msg" id="sparVerdictLine">The Invigilator considers...</div>
+    <div class="results-det" id="sparReadinessBars" style="margin:14px 0;text-align:left"></div>
+  </div>
+  <div id="sparReview" style="margin-top:14px"></div>
+  <button class="drill-check" style="width:100%;margin-top:14px" onclick="startSpar()">Spar again</button>
+  <button class="submit-btn" onclick="goHome()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">Done</button>
 </div>
 </div>
 
@@ -1741,6 +1812,417 @@ const DATA = {
     ]
   }
 };
+
+// ===== SPAR MODULE START =====
+const SPAR_BANK = [
+  { topic:'Transformations', difficulty:'easy', marks:2, isCoord:true, coordPair:[5,-3],
+    q:'Reflect the point (5, 3) in the x-axis. Give the image point.',
+    answer:'(5, -3)', exp:'In the x-axis: (x, y) &#8594; (x, -y) = (5, -3)' },
+  { topic:'Transformations', difficulty:'easy', marks:2, isCoord:true, coordPair:[-4,2],
+    q:'Reflect the point (4, 2) in the y-axis. Give the image point.',
+    answer:'(-4, 2)', exp:'In the y-axis: (x, y) &#8594; (-x, y) = (-4, 2)' },
+  { topic:'Transformations', difficulty:'medium', marks:2, isCoord:true, coordPair:[-3,-7],
+    q:'The point (3, 7) is rotated 180&#176; about the origin. State the image point.',
+    answer:'(-3, -7)', exp:'180&#176; about O: (x, y) &#8594; (-x, -y) = (-3, -7)' },
+  { topic:'Transformations', difficulty:'medium', marks:3, isCoord:true, coordPair:[6,1],
+    q:'Translate the point (2, 4) by the vector (4 &nbsp;-3). Give the image point.',
+    answer:'(6, 1)', exp:'(2+4, 4+(-3)) = (6, 1)' },
+  { topic:'Transformations', difficulty:'exam', marks:3, isCoord:true, coordPair:[2,5],
+    q:'A point P(5, 2) is reflected in the line y = x. Write down the coordinates of its image.',
+    answer:'(2, 5)', exp:'Reflection in y = x swaps coordinates: (5, 2) &#8594; (2, 5)' },
+  { topic:'Transformations', difficulty:'exam', marks:4, isCoord:true, coordPair:[-1,-6],
+    q:'The point (1, 6) is first reflected in the y-axis, then in the x-axis. Give the final image point.',
+    answer:'(-1, -6)', exp:'y-axis: (1,6)&#8594;(-1,6). Then x-axis: (-1,6)&#8594;(-1,-6).' },
+  { topic:'Transformations', difficulty:'easy', marks:2, isCoord:true, coordPair:[0,-4],
+    q:'Reflect the point (0, 4) in the x-axis. Give the image point.',
+    answer:'(0, -4)', exp:'In the x-axis: (x, y) &#8594; (x, -y) = (0, -4)' },
+  { topic:'Transformations', difficulty:'medium', marks:3, isCoord:true, coordPair:[-2,-1],
+    q:'Translate the point (3, 2) by the vector (-5 &nbsp;-3). Give the image point.',
+    answer:'(-2, -1)', exp:'(3+(-5), 2+(-3)) = (-2, -1)' },
+
+  // --- Solving Linear Equations ---
+  { topic:'Solving Linear Equations', difficulty:'easy', marks:2, answer:'5',
+    q:'Solve for x:  3x + 7 = 22', exp:'3x = 22 - 7 = 15, so x = 15/3 = 5' },
+  { topic:'Solving Linear Equations', difficulty:'easy', marks:2, answer:'7',
+    q:'Solve for x:  5x = 35', exp:'x = 35 / 5 = 7' },
+  { topic:'Solving Linear Equations', difficulty:'medium', marks:3, answer:'6',
+    q:'Solve for x:  4x - 3 = 2x + 9', exp:'4x - 2x = 9 + 3, so 2x = 12, x = 6' },
+  { topic:'Solving Linear Equations', difficulty:'exam', marks:3, answer:'5',
+    q:'Solve for x:  2(x + 3) = 16', exp:'x + 3 = 8, so x = 5' },
+
+  // --- Fractions and Percentages ---
+  { topic:'Fractions and Percentages', difficulty:'easy', marks:2, answer:'20',
+    q:'Find 25% of 80.', exp:'25% = 1/4, and 1/4 of 80 = 20' },
+  { topic:'Fractions and Percentages', difficulty:'easy', marks:2, answer:'15',
+    q:'Find 1/4 of 60.', exp:'60 / 4 = 15' },
+  { topic:'Fractions and Percentages', difficulty:'medium', marks:3, answer:'55',
+    q:'Increase 50 by 10%.', exp:'10% of 50 = 5, so 50 + 5 = 55' },
+  { topic:'Fractions and Percentages', difficulty:'exam', marks:3, answer:'30',
+    q:'Find 15% of 200.', exp:'15/100 &#215; 200 = 30' },
+
+  // --- Area and Perimeter ---
+  { topic:'Area and Perimeter', difficulty:'easy', marks:2, answer:'40',
+    q:'Find the area of a rectangle 8 cm by 5 cm. Give the value in cm&#178;.', exp:'Area = length &#215; width = 8 &#215; 5 = 40' },
+  { topic:'Area and Perimeter', difficulty:'easy', marks:2, answer:'24',
+    q:'Find the perimeter of a square of side 6 cm.', exp:'Perimeter = 4 &#215; 6 = 24' },
+  { topic:'Area and Perimeter', difficulty:'medium', marks:3, answer:'30',
+    q:'Find the area of a triangle with base 10 cm and height 6 cm. Give the value in cm&#178;.', exp:'Area = &#189; &#215; base &#215; height = &#189; &#215; 10 &#215; 6 = 30' },
+  { topic:'Area and Perimeter', difficulty:'exam', marks:3, answer:'32',
+    q:'A rectangle has length 12 cm and width 4 cm. Find its perimeter.', exp:'Perimeter = 2(l + w) = 2(12 + 4) = 32' },
+
+  // --- Indices (Index Laws) ---
+  { topic:'Indices (Index Laws)', difficulty:'easy', marks:2, answer:'32',
+    q:'Evaluate:  2&#179; &#215; 2&#178;', exp:'Add the powers: 2^(3+2) = 2^5 = 32' },
+  { topic:'Indices (Index Laws)', difficulty:'easy', marks:2, answer:'1',
+    q:'Evaluate:  5&#8304;', exp:'Any non-zero number to the power 0 equals 1' },
+  { topic:'Indices (Index Laws)', difficulty:'medium', marks:3, answer:'9',
+    q:'Evaluate:  3&#8308; &#247; 3&#178;', exp:'Subtract the powers: 3^(4-2) = 3^2 = 9' },
+  { topic:'Indices (Index Laws)', difficulty:'exam', marks:3, answer:'64',
+    q:'Evaluate:  (2&#179;)&#178;', exp:'Multiply the powers: 2^(3&#215;2) = 2^6 = 64' },
+
+  // --- Standard Form ---
+  { topic:'Standard Form', difficulty:'easy', marks:2, answer:'36000',
+    q:'Write 3.6 &#215; 10&#8308; as an ordinary number.', exp:'Move the point 4 places right: 36000' },
+  { topic:'Standard Form', difficulty:'easy', marks:2, answer:'8000',
+    q:'Write 8 &#215; 10&#179; as an ordinary number.', exp:'8 followed by 3 zeros: 8000' },
+  { topic:'Standard Form', difficulty:'medium', marks:3, answer:'450',
+    q:'Write 4.5 &#215; 10&#178; as an ordinary number.', exp:'Move the point 2 places right: 450' },
+  { topic:'Standard Form', difficulty:'exam', marks:3, answer:'50000000',
+    q:'Write 5 &#215; 10&#8311; as an ordinary number.', exp:'5 followed by 7 zeros: 50000000' },
+
+  // --- Mean, Median and Mode ---
+  { topic:'Mean, Median and Mode', difficulty:'easy', marks:2, answer:'4',
+    q:'Find the mean of 2, 4, 6.', exp:'(2 + 4 + 6) / 3 = 12 / 3 = 4' },
+  { topic:'Mean, Median and Mode', difficulty:'easy', marks:2, answer:'5',
+    q:'Find the median of 3, 7, 5.', exp:'Order them: 3, 5, 7. The middle value is 5' },
+  { topic:'Mean, Median and Mode', difficulty:'medium', marks:3, answer:'4',
+    q:'Find the mode of 2, 4, 4, 6.', exp:'The most frequent value is 4' },
+  { topic:'Mean, Median and Mode', difficulty:'exam', marks:3, answer:'25',
+    q:'Find the mean of 10, 20, 30, 40.', exp:'(10+20+30+40)/4 = 100/4 = 25' },
+
+  // --- Trigonometry (Right-Angled) ---
+  { topic:'Trigonometry (Right-Angled)', difficulty:'easy', marks:2, answer:'5',
+    q:'A right-angled triangle has the two shorter sides 3 cm and 4 cm. Find the hypotenuse.', exp:'h = &#8730;(3&#178; + 4&#178;) = &#8730;25 = 5' },
+  { topic:'Trigonometry (Right-Angled)', difficulty:'easy', marks:2, answer:'10',
+    q:'The shorter sides of a right-angled triangle are 6 cm and 8 cm. Find the hypotenuse.', exp:'h = &#8730;(6&#178; + 8&#178;) = &#8730;100 = 10' },
+  { topic:'Trigonometry (Right-Angled)', difficulty:'medium', marks:3, answer:'13',
+    q:'A right-angled triangle has legs 5 cm and 12 cm. Find the hypotenuse.', exp:'h = &#8730;(5&#178; + 12&#178;) = &#8730;169 = 13' },
+  { topic:'Trigonometry (Right-Angled)', difficulty:'exam', marks:3, answer:'17',
+    q:'A right-angled triangle has legs 8 cm and 15 cm. Find the hypotenuse.', exp:'h = &#8730;(8&#178; + 15&#178;) = &#8730;289 = 17' },
+
+  // --- Financial Mathematics ---
+  { topic:'Financial Mathematics', difficulty:'easy', marks:2, answer:'10',
+    q:'Find the simple interest on $100 at 10% per year for 1 year.', exp:'I = PRT/100 = 100&#215;10&#215;1/100 = 10' },
+  { topic:'Financial Mathematics', difficulty:'medium', marks:3, answer:'50',
+    q:'Find the simple interest on $500 at 5% per year for 2 years.', exp:'I = PRT/100 = 500&#215;5&#215;2/100 = 50' },
+  { topic:'Financial Mathematics', difficulty:'medium', marks:3, answer:'160',
+    q:'A shirt costs $200. A 20% discount is given. How much do you pay?', exp:'Discount = 20% of 200 = 40, so you pay 200 - 40 = 160' },
+  { topic:'Financial Mathematics', difficulty:'exam', marks:3, answer:'240',
+    q:'Find the simple interest on $1000 at 8% per year for 3 years.', exp:'I = PRT/100 = 1000&#215;8&#215;3/100 = 240' },
+
+  // --- Ratio, Rate and Proportion ---
+  { topic:'Ratio, Rate and Proportion', difficulty:'easy', marks:2, answer:'50',
+    q:'$80 is shared in the ratio 3 : 5. Find the larger share.', exp:'Total parts = 8, each part = 80/8 = 10. Larger = 5 &#215; 10 = 50' },
+  { topic:'Ratio, Rate and Proportion', difficulty:'easy', marks:2, answer:'3:2',
+    q:'Simplify the ratio 12 : 8.', exp:'Divide both by 4: 12:8 = 3:2' },
+  { topic:'Ratio, Rate and Proportion', difficulty:'medium', marks:3, answer:'32',
+    q:'5 books cost $20. At the same rate, find the cost of 8 books.', exp:'One book = 20/5 = $4, so 8 books = 8 &#215; 4 = 32' },
+  { topic:'Ratio, Rate and Proportion', difficulty:'exam', marks:3, answer:'24',
+    q:'Divide 60 in the ratio 2 : 3. Find the smaller part.', exp:'Total parts = 5, each = 60/5 = 12. Smaller = 2 &#215; 12 = 24' },
+
+  // --- Probability ---
+  { topic:'Probability', difficulty:'easy', marks:2, answer:'1/6',
+    q:'A fair die is rolled. Find the probability of getting a 6. Give your answer as a fraction.', exp:'One favourable outcome out of 6: P = 1/6' },
+  { topic:'Probability', difficulty:'easy', marks:2, answer:'1/2',
+    q:'A fair coin is tossed. Find the probability of getting a head. Give your answer as a fraction.', exp:'One head out of two outcomes: P = 1/2' },
+  { topic:'Probability', difficulty:'medium', marks:3, answer:'3/10',
+    q:'A bag has 3 red and 7 blue balls. One is drawn at random. Find P(red) as a fraction.', exp:'3 red out of 10 total: P = 3/10' },
+  { topic:'Probability', difficulty:'exam', marks:3, answer:'7/10',
+    q:'A bag has 3 red and 7 blue balls. One is drawn at random. Find P(not red) as a fraction.', exp:'P(not red) = 1 - 3/10 = 7/10' },
+
+  // --- Variation ---
+  { topic:'Variation', difficulty:'easy', marks:2, answer:'5',
+    q:'y varies directly as x, and y = 10 when x = 2. Find the constant k.', exp:'k = y/x = 10/2 = 5' },
+  { topic:'Variation', difficulty:'medium', marks:3, answer:'20',
+    q:'y varies directly as x, and y = 12 when x = 3. Find y when x = 5.', exp:'k = 12/3 = 4, so y = 4 &#215; 5 = 20' },
+  { topic:'Variation', difficulty:'medium', marks:3, answer:'21',
+    q:'y = kx with k = 3. Find y when x = 7.', exp:'y = 3 &#215; 7 = 21' },
+  { topic:'Variation', difficulty:'exam', marks:3, answer:'6',
+    q:'y varies inversely as x, and y = 8 when x = 3. Find y when x = 4.', exp:'k = y&#215;x = 8&#215;3 = 24, so y = 24/4 = 6' },
+
+  // --- Number Bases ---
+  { topic:'Number Bases', difficulty:'easy', marks:2, answer:'10',
+    q:'Convert the binary number 1010 to base 10.', exp:'8 + 0 + 2 + 0 = 10' },
+  { topic:'Number Bases', difficulty:'easy', marks:2, answer:'13',
+    q:'Convert the binary number 1101 to base 10.', exp:'8 + 4 + 0 + 1 = 13' },
+  { topic:'Number Bases', difficulty:'medium', marks:3, answer:'110',
+    q:'Convert the base 10 number 6 to binary.', exp:'6 = 4 + 2 = 110 in binary' },
+  { topic:'Number Bases', difficulty:'exam', marks:3, answer:'15',
+    q:'Convert the binary number 1111 to base 10.', exp:'8 + 4 + 2 + 1 = 15' },
+
+  // --- Sets and Venn Diagrams ---
+  { topic:'Sets and Venn Diagrams', difficulty:'easy', marks:2, answer:'4',
+    q:'A = {1, 2, 3} and B = {3, 4}. How many elements are in A &#8746; B?', exp:'A &#8746; B = {1, 2, 3, 4}, which has 4 elements' },
+  { topic:'Sets and Venn Diagrams', difficulty:'easy', marks:2, answer:'1',
+    q:'A = {1, 2, 3} and B = {3, 4}. How many elements are in A &#8745; B?', exp:'A &#8745; B = {3}, which has 1 element' },
+  { topic:'Sets and Venn Diagrams', difficulty:'medium', marks:3, answer:'22',
+    q:'12 students like tea, 15 like coffee, and 5 like both. How many like tea or coffee?', exp:'12 + 15 - 5 = 22' },
+  { topic:'Sets and Venn Diagrams', difficulty:'exam', marks:3, answer:'8',
+    q:'In a class of 30, 22 study Maths. How many do not study Maths?', exp:'30 - 22 = 8' }
+];
+
+// Readiness % per topic, derived from best practice scores already in the store.
+// topicTitles: array of DATA.maths.topics[].title in index order. Unknown/untouched = 0 (probe early).
+function sparReadiness(store, topicTitles) {
+  const scores = (store && store.maths && store.maths.scores) || {};
+  const out = {};
+  topicTitles.forEach((title, idx) => {
+    const v = scores['t' + idx];
+    out[title] = (typeof v === 'number') ? v : 0;
+  });
+  return out;
+}
+
+// Deterministic seeded RNG (mulberry32) so bouts are testable.
+function _sparRng(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function _shuffleSeeded(arr, rng) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+// Build a bout: ~70% from weakest non-mastered topics, ~30% from the rest.
+// readiness: {title:0-100}. bank: SPAR_BANK array. opts: {size, masteryThreshold, seed}.
+function assembleBout(readiness, bank, opts) {
+  const size = opts.size || 6;
+  const mastery = opts.masteryThreshold || 80;
+  const rng = _sparRng(opts.seed || 1);
+
+  const topics = Object.keys(readiness).sort((x, y) =>
+    readiness[x] !== readiness[y] ? readiness[x] - readiness[y] : (x < y ? -1 : 1));
+
+  let targetTopics = topics.filter(t => readiness[t] < mastery);
+  let championship = false;
+  if (targetTopics.length === 0) { targetTopics = topics; championship = true; }
+
+  const weakSet = new Set(targetTopics.slice(0, Math.max(2, Math.ceil(targetTopics.length / 2))));
+
+  const order = { easy: 0, medium: 1, exam: 2 };
+  const pool = bank.filter(q => championship || (readiness[q.topic] !== undefined && readiness[q.topic] < mastery));
+  const fromWeak = _shuffleSeeded(pool.filter(q => weakSet.has(q.topic)), rng)
+    .sort((a, b) => order[a.difficulty] - order[b.difficulty]);
+  const fromRest = _shuffleSeeded(pool.filter(q => !weakSet.has(q.topic)), rng);
+
+  const wantWeak = Math.round(size * 0.7);
+  const bout = [];
+  for (const q of fromWeak) { if (bout.length >= wantWeak) break; bout.push(q); }
+  for (const q of fromRest) { if (bout.length >= size) break; bout.push(q); }
+  if (bout.length < size) {
+    for (const q of pool) { if (bout.length >= size) break; if (!bout.includes(q)) bout.push(q); }
+  }
+  return bout.slice(0, size);
+}
+
+// Seconds-per-mark by intensity tier (tightens as the student sharpens).
+const SPAR_SEC_PER_MARK = [60, 50, 40];
+function boutTimeBudget(totalMarks, tier) {
+  const spm = SPAR_SEC_PER_MARK[Math.min(tier || 0, SPAR_SEC_PER_MARK.length - 1)];
+  return totalMarks * spm;
+}
+// Visual urgency for the countdown.
+function clockState(secondsLeft) {
+  if (secondsLeft <= 30) return 'red';
+  if (secondsLeft <= 90) return 'amber';
+  return 'green';
+}
+// Intensity tier derived from average readiness across targeted topics.
+function sparIntensityTier(avgReadiness) {
+  if (avgReadiness >= 75) return 2;
+  if (avgReadiness >= 50) return 1;
+  return 0;
+}
+
+// Unified grader for spar questions. Coordinate questions are matched by integer
+// extraction (mirrors the drill); everything else delegates to the existing answersMatch.
+function matchSparAnswer(q, input) {
+  if (q.isCoord) {
+    const nums = (String(input).match(/-?\d+/g) || []).map(Number);
+    return nums.length === 2 && nums[0] === q.coordPair[0] && nums[1] === q.coordPair[1];
+  }
+  return answersMatch(input, q.answer);
+}
+
+// Sparring store block lives under store.sparring; absent block = fresh start.
+function getSparring() {
+  const s = getStore();
+  if (!s.sparring) s.sparring = { readiness: {}, bouts: [], intensityTier: 0 };
+  return s.sparring;
+}
+function saveBoutResult(result) {
+  const s = getStore();
+  if (!s.sparring) s.sparring = { readiness: {}, bouts: [], intensityTier: 0 };
+  s.sparring.bouts.push(result);
+  if (s.sparring.bouts.length > 50) s.sparring.bouts = s.sparring.bouts.slice(-50);
+  s.sparring.readiness = result.readinessAfter || s.sparring.readiness;
+  s.sparring.intensityTier = result.intensityTier != null ? result.intensityTier : s.sparring.intensityTier;
+  setStore(s);
+}
+
+// ----- Bout runtime controller -----
+let sparBout = [], sparIdx = 0, sparAnswers = [], sparDeadline = 0, sparTimerId = null, sparTier = 0;
+
+function _sparTopicTitles() { return DATA.maths.topics.map(t => t.title); }
+
+function startSpar() {
+  const titles = _sparTopicTitles();
+  const readiness = sparReadiness(getStore(), titles);
+  const vals = titles.map(t => readiness[t]);
+  const avg = vals.reduce((a,b)=>a+b,0) / (vals.length || 1);
+  sparTier = sparIntensityTier(avg);
+  const seed = Date.now() & 0xffffffff;
+  sparBout = assembleBout(readiness, SPAR_BANK, { size: 6, masteryThreshold: 80, seed });
+  sparAnswers = [];
+  sparIdx = 0;
+
+  const focusTopics = [...new Set(sparBout.map(q => q.topic))].slice(0, 3);
+  document.getElementById('sparIntroLine').textContent =
+    avg >= 75 ? "You're sharp. I'll make this harder." : "I've seen your record. Let's work on your gaps.";
+  document.getElementById('sparIntroFocus').textContent = 'Today: ' + focusTopics.join(', ');
+  const totalMarks = sparBout.reduce((a,q)=>a+q.marks,0);
+  const budget = boutTimeBudget(totalMarks, sparTier);
+  document.getElementById('sparIntroMeta').textContent =
+    sparBout.length + ' questions · ' + totalMarks + ' marks · ' + Math.round(budget/60) + ' min';
+  history.push(screen); showScreen('sparIntroScreen');
+}
+
+function beginBout() {
+  const totalMarks = sparBout.reduce((a,q)=>a+q.marks,0);
+  const budget = boutTimeBudget(totalMarks, sparTier);
+  sparDeadline = Date.now() + budget * 1000;
+  history.push('homeScreen'); // verdict returns home, not back into the bout
+  showScreen('sparScreen');
+  renderSparQ();
+  if (sparTimerId) clearInterval(sparTimerId);
+  sparTimerId = setInterval(tickSparClock, 250);
+  tickSparClock();
+}
+
+function tickSparClock() {
+  const left = Math.max(0, Math.round((sparDeadline - Date.now()) / 1000));
+  const clk = document.getElementById('sparClock');
+  const mm = String(Math.floor(left/60)).padStart(2,'0');
+  const ss = String(left%60).padStart(2,'0');
+  clk.textContent = mm + ':' + ss;
+  clk.className = 'drill-streak-badge spar-clock-' + clockState(left);
+  if (left <= 0) { endBout(false); }
+}
+
+function renderSparQ() {
+  const q = sparBout[sparIdx];
+  document.getElementById('sparCount').textContent = 'Q' + (sparIdx+1) + ' / ' + sparBout.length;
+  document.getElementById('sparTopicLabel').textContent = q.topic;
+  document.getElementById('sparMarkTag').textContent = '[' + q.marks + ' marks]';
+  document.getElementById('sparQ').innerHTML = q.q;
+  const earned = sparAnswers.reduce((a,x)=>a + (x.correct ? x.marks : 0), 0);
+  const totalSoFar = sparBout.reduce((a,x)=>a+x.marks,0);
+  document.getElementById('sparMarks').textContent = earned + ' / ' + totalSoFar + ' marks';
+  const inp = document.getElementById('sparAns');
+  inp.value = ''; inp.disabled = false; inp.focus();
+  document.getElementById('sparNextBtn').textContent = (sparIdx === sparBout.length - 1) ? 'Hand in' : 'Next';
+}
+
+function sparAdvance() {
+  const q = sparBout[sparIdx];
+  const val = document.getElementById('sparAns').value;
+  const correct = val.trim() !== '' && matchSparAnswer(q, val);
+  sparAnswers.push({ topic: q.topic, marks: q.marks, correct, given: val, q });
+  sparIdx++;
+  if (sparIdx >= sparBout.length) endBout(true);
+  else renderSparQ();
+}
+
+function _grade(pct) {
+  if (pct >= 75) return 'A'; if (pct >= 60) return 'B'; if (pct >= 50) return 'C';
+  if (pct >= 40) return 'D'; if (pct >= 30) return 'E'; return 'U';
+}
+
+function endBout(handedIn) {
+  if (sparTimerId) { clearInterval(sparTimerId); sparTimerId = null; }
+  for (let i = sparAnswers.length; i < sparBout.length; i++) {
+    const q = sparBout[i];
+    sparAnswers.push({ topic: q.topic, marks: q.marks, correct: false, given: '', q });
+  }
+  const marksEarned = sparAnswers.reduce((a,x)=>a + (x.correct ? x.marks : 0), 0);
+  const marksTotal = sparBout.reduce((a,x)=>a+x.marks,0);
+  const correctCount = sparAnswers.filter(x=>x.correct).length;
+  const pct = marksTotal ? Math.round(marksEarned/marksTotal*100) : 0;
+
+  const titles = _sparTopicTitles();
+  const readiness = sparReadiness(getStore(), titles);
+  const byTopic = {};
+  sparAnswers.forEach(a => {
+    if (!byTopic[a.topic]) byTopic[a.topic] = { e:0, t:0 };
+    byTopic[a.topic].t += a.marks; if (a.correct) byTopic[a.topic].e += a.marks;
+  });
+  const readinessAfter = Object.assign({}, readiness);
+  Object.keys(byTopic).forEach(t => {
+    const boutPct = Math.round(byTopic[t].e / byTopic[t].t * 100);
+    readinessAfter[t] = Math.round((readiness[t] * 0.6) + (boutPct * 0.4));
+  });
+
+  saveBoutResult({
+    date: new Date().toISOString(), focusTopics: Object.keys(byTopic),
+    score: correctCount, total: sparBout.length, marksEarned, marksTotal,
+    beatClock: handedIn, readinessAfter, intensityTier: sparTier
+  });
+  if (marksEarned > 0) addXP(marksEarned * 4 + (handedIn ? 10 : 0), 'Sparring · ' + _grade(pct));
+  recordStreak();
+
+  renderVerdict(pct, marksEarned, marksTotal, correctCount, byTopic, readiness, readinessAfter);
+}
+
+function renderVerdict(pct, marksEarned, marksTotal, correctCount, byTopic, before, after) {
+  document.getElementById('sparVPct').textContent = pct + '%';
+  document.getElementById('sparVMarks').textContent = marksEarned + '/' + marksTotal;
+  const grade = _grade(pct);
+  document.getElementById('sparVerdictLine').textContent =
+    correctCount + ' of ' + sparBout.length + ' — Grade ' + grade + '. ' +
+    (pct >= 60 ? "I'm gaining respect for you." : "We go again.");
+
+  const bars = document.getElementById('sparReadinessBars'); bars.innerHTML = '';
+  Object.keys(byTopic).forEach(t => {
+    const wrap = document.createElement('div'); wrap.className = 'spar-bar';
+    wrap.innerHTML =
+      '<div class="spar-bar-label"><span>' + t + '</span><span>' + (before[t]||0) + '% &#8594; ' + (after[t]||0) + '%</span></div>' +
+      '<div class="spar-bar-track"><div class="spar-bar-fill" style="width:' + (before[t]||0) + '%"></div></div>';
+    bars.appendChild(wrap);
+    requestAnimationFrame(() => { wrap.querySelector('.spar-bar-fill').style.width = (after[t]||0) + '%'; });
+  });
+
+  const review = document.getElementById('sparReview'); review.innerHTML = '';
+  sparAnswers.filter(a => !a.correct).forEach(a => {
+    const div = document.createElement('div'); div.className = 'spar-review-item sr-wrong';
+    div.innerHTML = '<div class="sr-q">' + a.q.q + '</div>' +
+      '<div class="sr-exp"><strong>Answer:</strong> ' + a.q.answer + '\n' + a.q.exp + '</div>';
+    review.appendChild(div);
+  });
+  showScreen('sparVerdictScreen');
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && screen === 'sparScreen') { e.preventDefault(); sparAdvance(); }
+  });
+}
+// ===== SPAR MODULE END =====
 
 // ================================================================
 // SUBJECT / TOPICS
