@@ -585,6 +585,20 @@
   .gate-device code {
     background:var(--bg2); padding:2px 6px; border-radius:4px; font-size:10px;
   }
+  .gate-disclaimer {
+    margin-top:18px; padding-top:14px; border-top:1px solid var(--border);
+    font-size:10px; color:var(--text2); line-height:1.5;
+  }
+
+  /* App footer (disclaimer) */
+  .app-footer {
+    margin-top:28px; padding:18px 4px 8px; border-top:1px solid var(--border);
+    text-align:center;
+  }
+  .app-footer-brand { font-size:16px; font-weight:800; letter-spacing:-0.5px; color:var(--text2); margin-bottom:8px; }
+  .app-footer-brand span { color:var(--accent); }
+  .app-footer p { font-size:11px; color:var(--text2); line-height:1.6; max-width:340px; margin:0 auto; }
+  .app-footer-copy { margin-top:10px; opacity:0.7; }
 
   /* ===== EXAM COUNTDOWN BANNER (Feature 2) ===== */
   .exam-countdown {
@@ -660,6 +674,7 @@
     <button class="gate-btn" id="gateBtn" onclick="activateApp()">Activate</button>
     <div class="gate-error" id="gateError"></div>
     <div class="gate-device">Device ID: <code id="gateDeviceId">...</code></div>
+    <div class="gate-disclaimer">CramBox is an independent study tool. It is not affiliated with, endorsed by, or connected to ZIMSEC. Prepared in line with the O-Level Mathematics 4004 syllabus.</div>
   </div>
 </div>
 
@@ -767,6 +782,12 @@
     </div>
     <span class="subj-pct" style="color:var(--text2)">Soon</span>
   </div>
+
+  <footer class="app-footer">
+    <div class="app-footer-brand">Cram<span>Box</span></div>
+    <p>CramBox is an independent study tool. It is not affiliated with, endorsed by, or connected to ZIMSEC. Prepared in line with the O-Level Mathematics 4004 syllabus.</p>
+    <p class="app-footer-copy">&copy; 2026 CramBox &middot; Curious Inc</p>
+  </footer>
 </div>
 </div>
 
