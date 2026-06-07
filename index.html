@@ -2329,6 +2329,26 @@ function assembleTeamBout(bank, players, opts) {
   }
   return picked.slice(0, size);
 }
+
+// Rank players by marks earned; tiebreak: more correct answers, then setup order.
+// Returns { rows:[{name,marks,correct,isMVP}], teamMarks, teamPossible, teamPct, teamGrade }.
+function teamLeaderboard(players, answers) {
+  const order = {};
+  players.forEach((p, i) => { order[p.name] = i; });
+  const agg = {};
+  players.forEach(p => { agg[p.name] = { name: p.name, marks: 0, correct: 0 }; });
+  let teamMarks = 0, teamPossible = 0;
+  answers.forEach(a => {
+    teamPossible += a.marks;
+    if (!agg[a.player]) agg[a.player] = { name: a.player, marks: 0, correct: 0 };
+    if (a.correct) { agg[a.player].marks += a.marks; agg[a.player].correct += 1; teamMarks += a.marks; }
+  });
+  const rows = Object.values(agg).sort((x, y) =>
+    y.marks - x.marks || y.correct - x.correct || order[x.name] - order[y.name]);
+  rows.forEach((r, i) => { r.isMVP = (i === 0 && r.marks > 0); });
+  const teamPct = teamPossible ? Math.round(teamMarks / teamPossible * 100) : 0;
+  return { rows, teamMarks, teamPossible, teamPct, teamGrade: _grade(teamPct) };
+}
 // ===== TEAM SPAR MODULE END =====
 
 // ================================================================

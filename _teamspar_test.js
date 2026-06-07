@@ -88,5 +88,33 @@ H.test('assembleTeamBout: deterministic for same seed, varied topics', () => {
   H.assert(distinctTopics >= 4, 'should spread across topics, got ' + distinctTopics);
 });
 
+H.test('teamLeaderboard: sums marks per player, ranks with tiebreaks, marks MVP', () => {
+  const players = [{ name: 'Tariro' }, { name: 'Tendai' }, { name: 'Rufaro' }];
+  const answers = [
+    { player: 'Tariro', marks: 2, correct: true },
+    { player: 'Tendai', marks: 3, correct: true },
+    { player: 'Rufaro', marks: 2, correct: false },
+    { player: 'Tariro', marks: 2, correct: true },
+    { player: 'Tendai', marks: 2, correct: false },
+    { player: 'Rufaro', marks: 3, correct: true },
+  ];
+  const lb = H.ctx.teamLeaderboard(players, answers);
+  H.assert(lb.rows[0].name === 'Tariro' && lb.rows[0].marks === 4, 'Tariro should lead with 4');
+  H.assert(lb.rows[0].isMVP === true, 'rank 1 is MVP');
+  H.assert(lb.rows[1].name === 'Tendai' && lb.rows[2].name === 'Rufaro', 'tiebreak by setup order');
+  H.assert(lb.teamMarks === 10 && lb.teamPossible === 14, 'team totals');
+  H.assert(typeof lb.teamGrade === 'string' && lb.teamGrade.length === 1, 'team grade letter');
+});
+
+H.test('teamLeaderboard: correct-count breaks marks ties before setup order', () => {
+  const players = [{ name: 'A' }, { name: 'B' }];
+  const answers = [
+    { player: 'A', marks: 4, correct: true },
+    { player: 'B', marks: 2, correct: true }, { player: 'B', marks: 2, correct: true },
+  ];
+  const lb = H.ctx.teamLeaderboard(players, answers);
+  H.assert(lb.rows[0].name === 'B', 'more correct answers wins the marks tie');
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();
