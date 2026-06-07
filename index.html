@@ -1936,6 +1936,153 @@ function saveBoutResult(result) {
   s.sparring.intensityTier = result.intensityTier != null ? result.intensityTier : s.sparring.intensityTier;
   setStore(s);
 }
+
+// ----- Bout runtime controller -----
+let sparBout = [], sparIdx = 0, sparAnswers = [], sparDeadline = 0, sparTimerId = null, sparTier = 0;
+
+function _sparTopicTitles() { return DATA.maths.topics.map(t => t.title); }
+
+function startSpar() {
+  const titles = _sparTopicTitles();
+  const readiness = sparReadiness(getStore(), titles);
+  const vals = titles.map(t => readiness[t]);
+  const avg = vals.reduce((a,b)=>a+b,0) / (vals.length || 1);
+  sparTier = sparIntensityTier(avg);
+  const seed = Date.now() & 0xffffffff;
+  sparBout = assembleBout(readiness, SPAR_BANK, { size: 6, masteryThreshold: 80, seed });
+  sparAnswers = [];
+  sparIdx = 0;
+
+  const focusTopics = [...new Set(sparBout.map(q => q.topic))].slice(0, 3);
+  document.getElementById('sparIntroLine').textContent =
+    avg >= 75 ? "You're sharp. I'll make this harder." : "I've seen your record. Let's work on your gaps.";
+  document.getElementById('sparIntroFocus').textContent = 'Today: ' + focusTopics.join(', ');
+  const totalMarks = sparBout.reduce((a,q)=>a+q.marks,0);
+  const budget = boutTimeBudget(totalMarks, sparTier);
+  document.getElementById('sparIntroMeta').textContent =
+    sparBout.length + ' questions · ' + totalMarks + ' marks · ' + Math.round(budget/60) + ' min';
+  history.push(screen); showScreen('sparIntroScreen');
+}
+
+function beginBout() {
+  const totalMarks = sparBout.reduce((a,q)=>a+q.marks,0);
+  const budget = boutTimeBudget(totalMarks, sparTier);
+  sparDeadline = Date.now() + budget * 1000;
+  history.push('homeScreen'); // verdict returns home, not back into the bout
+  showScreen('sparScreen');
+  renderSparQ();
+  if (sparTimerId) clearInterval(sparTimerId);
+  sparTimerId = setInterval(tickSparClock, 250);
+  tickSparClock();
+}
+
+function tickSparClock() {
+  const left = Math.max(0, Math.round((sparDeadline - Date.now()) / 1000));
+  const clk = document.getElementById('sparClock');
+  const mm = String(Math.floor(left/60)).padStart(2,'0');
+  const ss = String(left%60).padStart(2,'0');
+  clk.textContent = mm + ':' + ss;
+  clk.className = 'drill-streak-badge spar-clock-' + clockState(left);
+  if (left <= 0) { endBout(false); }
+}
+
+function renderSparQ() {
+  const q = sparBout[sparIdx];
+  document.getElementById('sparCount').textContent = 'Q' + (sparIdx+1) + ' / ' + sparBout.length;
+  document.getElementById('sparTopicLabel').textContent = q.topic;
+  document.getElementById('sparMarkTag').textContent = '[' + q.marks + ' marks]';
+  document.getElementById('sparQ').innerHTML = q.q;
+  const earned = sparAnswers.reduce((a,x)=>a + (x.correct ? x.marks : 0), 0);
+  const totalSoFar = sparBout.reduce((a,x)=>a+x.marks,0);
+  document.getElementById('sparMarks').textContent = earned + ' / ' + totalSoFar + ' marks';
+  const inp = document.getElementById('sparAns');
+  inp.value = ''; inp.disabled = false; inp.focus();
+  document.getElementById('sparNextBtn').textContent = (sparIdx === sparBout.length - 1) ? 'Hand in' : 'Next';
+}
+
+function sparAdvance() {
+  const q = sparBout[sparIdx];
+  const val = document.getElementById('sparAns').value;
+  const correct = val.trim() !== '' && matchSparAnswer(q, val);
+  sparAnswers.push({ topic: q.topic, marks: q.marks, correct, given: val, q });
+  sparIdx++;
+  if (sparIdx >= sparBout.length) endBout(true);
+  else renderSparQ();
+}
+
+function _grade(pct) {
+  if (pct >= 75) return 'A'; if (pct >= 60) return 'B'; if (pct >= 50) return 'C';
+  if (pct >= 40) return 'D'; if (pct >= 30) return 'E'; return 'U';
+}
+
+function endBout(handedIn) {
+  if (sparTimerId) { clearInterval(sparTimerId); sparTimerId = null; }
+  for (let i = sparAnswers.length; i < sparBout.length; i++) {
+    const q = sparBout[i];
+    sparAnswers.push({ topic: q.topic, marks: q.marks, correct: false, given: '', q });
+  }
+  const marksEarned = sparAnswers.reduce((a,x)=>a + (x.correct ? x.marks : 0), 0);
+  const marksTotal = sparBout.reduce((a,x)=>a+x.marks,0);
+  const correctCount = sparAnswers.filter(x=>x.correct).length;
+  const pct = marksTotal ? Math.round(marksEarned/marksTotal*100) : 0;
+
+  const titles = _sparTopicTitles();
+  const readiness = sparReadiness(getStore(), titles);
+  const byTopic = {};
+  sparAnswers.forEach(a => {
+    if (!byTopic[a.topic]) byTopic[a.topic] = { e:0, t:0 };
+    byTopic[a.topic].t += a.marks; if (a.correct) byTopic[a.topic].e += a.marks;
+  });
+  const readinessAfter = Object.assign({}, readiness);
+  Object.keys(byTopic).forEach(t => {
+    const boutPct = Math.round(byTopic[t].e / byTopic[t].t * 100);
+    readinessAfter[t] = Math.round((readiness[t] * 0.6) + (boutPct * 0.4));
+  });
+
+  saveBoutResult({
+    date: new Date().toISOString(), focusTopics: Object.keys(byTopic),
+    score: correctCount, total: sparBout.length, marksEarned, marksTotal,
+    beatClock: handedIn, readinessAfter, intensityTier: sparTier
+  });
+  if (marksEarned > 0) addXP(marksEarned * 4 + (handedIn ? 10 : 0), 'Sparring · ' + _grade(pct));
+  recordStreak();
+
+  renderVerdict(pct, marksEarned, marksTotal, correctCount, byTopic, readiness, readinessAfter);
+}
+
+function renderVerdict(pct, marksEarned, marksTotal, correctCount, byTopic, before, after) {
+  document.getElementById('sparVPct').textContent = pct + '%';
+  document.getElementById('sparVMarks').textContent = marksEarned + '/' + marksTotal;
+  const grade = _grade(pct);
+  document.getElementById('sparVerdictLine').textContent =
+    correctCount + ' of ' + sparBout.length + ' — Grade ' + grade + '. ' +
+    (pct >= 60 ? "I'm gaining respect for you." : "We go again.");
+
+  const bars = document.getElementById('sparReadinessBars'); bars.innerHTML = '';
+  Object.keys(byTopic).forEach(t => {
+    const wrap = document.createElement('div'); wrap.className = 'spar-bar';
+    wrap.innerHTML =
+      '<div class="spar-bar-label"><span>' + t + '</span><span>' + (before[t]||0) + '% &#8594; ' + (after[t]||0) + '%</span></div>' +
+      '<div class="spar-bar-track"><div class="spar-bar-fill" style="width:' + (before[t]||0) + '%"></div></div>';
+    bars.appendChild(wrap);
+    requestAnimationFrame(() => { wrap.querySelector('.spar-bar-fill').style.width = (after[t]||0) + '%'; });
+  });
+
+  const review = document.getElementById('sparReview'); review.innerHTML = '';
+  sparAnswers.filter(a => !a.correct).forEach(a => {
+    const div = document.createElement('div'); div.className = 'spar-review-item sr-wrong';
+    div.innerHTML = '<div class="sr-q">' + a.q.q + '</div>' +
+      '<div class="sr-exp"><strong>Answer:</strong> ' + a.q.answer + '\n' + a.q.exp + '</div>';
+    review.appendChild(div);
+  });
+  showScreen('sparVerdictScreen');
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && screen === 'sparScreen') { e.preventDefault(); sparAdvance(); }
+  });
+}
 // ===== SPAR MODULE END =====
 
 // ================================================================
