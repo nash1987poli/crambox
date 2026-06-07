@@ -83,5 +83,36 @@ H.test('sparReadiness: known topics use stored %, unknown topics default low', (
   H.assert(r['Probability'] === 0, 'unknown should be 0, got ' + r['Probability']);
 });
 
+H.test('assembleBout: weights toward weakest topics, respects mastery, deterministic', () => {
+  const readiness = { Transformations: 20, Probability: 35, Vectors: 95 }; // Vectors mastered
+  const bank = [];
+  ['Transformations','Probability','Vectors'].forEach(t => {
+    for (let i=0;i<6;i++) bank.push({ topic:t, difficulty:'easy', marks:2, q:t+i, answer:'1', exp:'x' });
+  });
+  const bout = H.ctx.assembleBout(readiness, bank, { size: 6, masteryThreshold: 80, seed: 1 });
+  H.assert(bout.length === 6, 'size ' + bout.length);
+  H.assert(bout.every(q => q.topic !== 'Vectors'), 'mastered topic leaked in');
+  const weak = bout.filter(q => q.topic==='Transformations' || q.topic==='Probability').length;
+  H.assert(weak >= 4, 'not weighted to weak topics: ' + weak);
+  const bout2 = H.ctx.assembleBout(readiness, bank, { size: 6, masteryThreshold: 80, seed: 1 });
+  H.assert(JSON.stringify(bout) === JSON.stringify(bout2), 'not deterministic');
+});
+
+H.test('assembleBout: all-mastered falls back to a mixed championship bout', () => {
+  const readiness = { Transformations: 90, Probability: 95 };
+  const bank = [];
+  ['Transformations','Probability'].forEach(t => { for(let i=0;i<6;i++) bank.push({topic:t,difficulty:'exam',marks:3,q:t+i,answer:'1',exp:'x'}); });
+  const bout = H.ctx.assembleBout(readiness, bank, { size: 6, masteryThreshold: 80, seed: 2 });
+  H.assert(bout.length === 6, 'should still produce a bout');
+});
+
+H.test('assembleBout: shrinks gracefully when bank too small', () => {
+  const readiness = { Transformations: 10 };
+  const bank = [ {topic:'Transformations',difficulty:'easy',marks:2,q:'a',answer:'1',exp:'x'},
+                 {topic:'Transformations',difficulty:'easy',marks:2,q:'b',answer:'1',exp:'x'} ];
+  const bout = H.ctx.assembleBout(readiness, bank, { size: 6, masteryThreshold: 80, seed: 3 });
+  H.assert(bout.length === 2, 'should shrink to available: ' + bout.length);
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();
