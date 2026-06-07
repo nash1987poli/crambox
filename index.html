@@ -2464,6 +2464,96 @@ function teamUpdateSetupState() {
   document.getElementById('teamAddBtn').style.display = names.length >= 5 ? 'none' : '';
   document.getElementById('teamStartBtn').disabled = names.length < 2;
 }
+
+// ----- Relay controller -----
+function teamStart() {
+  const names = _teamCurrentNames().map((n, i) => ({ name: (n.trim() || ('Player ' + (i+1))) }));
+  if (names.length < 2) return;
+  teamPlayers = names;
+  teamSeed = Date.now() & 0xffffffff;
+  teamBout = assembleTeamBout(SPAR_BANK, teamPlayers.length, { seed: teamSeed });
+  if (teamBout.length === 0) {
+    alert('Not enough questions yet for ' + teamPlayers.length + ' players. Try fewer players.');
+    return;
+  }
+  teamAnswers = [];
+  teamIdx = 0;
+  history.push('homeScreen'); // leaderboard returns home, not back into the bout
+  teamGotoPass();
+}
+
+function _teamPlayerForIdx(i) { return teamPlayers[i % teamPlayers.length].name; }
+
+function teamGotoPass() {
+  document.getElementById('teamPassName').textContent = _teamPlayerForIdx(teamIdx);
+  document.getElementById('teamPassProgress').textContent = 'Question ' + (teamIdx+1) + ' of ' + teamBout.length;
+  showScreen('teamPassScreen');
+}
+
+function teamShowQ() {
+  const q = teamBout[teamIdx];
+  document.getElementById('teamCount').textContent = 'Q' + (teamIdx+1) + ' of ' + teamBout.length;
+  document.getElementById('teamCurrent').textContent = _teamPlayerForIdx(teamIdx);
+  document.getElementById('teamTopicLabel').textContent = q.topic;
+  document.getElementById('teamMarkTag').textContent = '[' + q.marks + ' marks]';
+  document.getElementById('teamQ').innerHTML = q.q;
+
+  const inp = document.getElementById('teamAns');
+  inp.value = ''; inp.disabled = false;
+  document.getElementById('teamCheckBtn').style.display = '';
+  document.getElementById('teamCheckBtn').disabled = false;
+  document.getElementById('teamFeedback').className = 'drill-feedback'; document.getElementById('teamFeedback').style.display = 'none';
+  document.getElementById('teamSolution').style.display = 'none';
+  document.getElementById('teamNextBtn').style.display = 'none';
+  document.getElementById('teamTally').innerHTML = '';
+  teamRenderTeamScore();
+  showScreen('teamSparScreen');
+  inp.focus();
+}
+
+function teamRenderTeamScore() {
+  const earned = teamAnswers.reduce((a,x)=>a + (x.correct ? x.marks : 0), 0);
+  document.getElementById('teamTeamScore').textContent = earned + ' marks';
+}
+
+function teamCheck() {
+  const q = teamBout[teamIdx];
+  const val = document.getElementById('teamAns').value;
+  const correct = val.trim() !== '' && matchSparAnswer(q, val);
+  teamAnswers.push({ player: _teamPlayerForIdx(teamIdx), topic: q.topic, marks: q.marks, correct, given: val });
+
+  const inp = document.getElementById('teamAns'); inp.disabled = true;
+  document.getElementById('teamCheckBtn').style.display = 'none';
+  const fb = document.getElementById('teamFeedback');
+  fb.textContent = correct ? 'Correct!' : 'Not quite.';
+  fb.className = 'drill-feedback show ' + (correct ? 'correct-fb' : 'wrong-fb');
+  inp.style.borderColor = correct ? 'var(--green)' : 'var(--red)';
+  inp.style.background = correct ? 'var(--green-bg)' : 'var(--red-bg)';
+
+  // Collaborative: always show the worked solution.
+  const sol = document.getElementById('teamSolution');
+  sol.innerHTML = '<strong>Answer:</strong> ' + q.answer + '\n' + q.exp;
+  sol.style.display = 'block';
+
+  teamRenderTally();
+  teamRenderTeamScore();
+  document.getElementById('teamNextBtn').style.display = 'block';
+  document.getElementById('teamNextBtn').textContent = (teamIdx === teamBout.length - 1) ? 'See results' : 'Next';
+}
+
+function teamRenderTally() {
+  const byP = {};
+  teamPlayers.forEach(p => byP[p.name] = { c: 0, t: 0 });
+  teamAnswers.forEach(a => { if (!byP[a.player]) byP[a.player] = { c:0,t:0 }; byP[a.player].t++; if (a.correct) byP[a.player].c++; });
+  document.getElementById('teamTally').innerHTML =
+    teamPlayers.map(p => p.name + ' ' + '&#10003;'.repeat(byP[p.name].c) + (byP[p.name].t - byP[p.name].c ? '&middot;'.repeat(byP[p.name].t - byP[p.name].c) : '')).join('  &middot;  ');
+}
+
+function teamNext() {
+  teamIdx++;
+  if (teamIdx >= teamBout.length) teamFinish();
+  else teamGotoPass();
+}
 // ===== TEAM SPAR MODULE END =====
 
 // ================================================================
