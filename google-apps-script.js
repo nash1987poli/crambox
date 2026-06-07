@@ -3,13 +3,21 @@
 // ============================================================
 // SETUP:
 // 1. Create a Google Sheet with a tab named "Codes"
-// 2. Row 1 headers: Code | Name | Status | Device | Activated
+// 2. Row 1 headers: Code | Name | Status | Device | Activated | MaxDevices
 // 3. Add codes in Column A, student names in Column B
 // 4. Open Extensions > Apps Script, paste this code
 // 5. Deploy > New Deployment > Web App
 //    - Execute as: Me
 //    - Who has access: Anyone
 // 6. Copy the Web App URL into CramBox (SHEET_SCRIPT_URL)
+//
+// SQUAD CODES (multi-device):
+//   - Column F "MaxDevices" sets how many phones one code unlocks.
+//   - Leave it BLANK or 1 for a normal solo code ($5).
+//   - Set it to 3 for a Squad-3 code ($12), or 5 for a Squad-5 code ($18).
+//   - Column D auto-fills with the devices that have activated (comma-separated).
+//   - Status shows ACTIVE while spots remain, USED once the squad is full.
+//   - Existing solo codes (no Column F) keep working exactly as before.
 // ============================================================
 
 function doPost(e) {
@@ -52,24 +60,48 @@ function handleValidate(sheet, code, fp) {
 
       var name = rows[i][1] || 'Student';
       var status = String(rows[i][2]).toUpperCase().trim();
-      var existingFp = String(rows[i][3]).trim();
+      var deviceField = String(rows[i][3] || '').trim();
 
-      // Already used
-      if (status === 'USED') {
-        if (existingFp === fp) {
-          return jsonResponse({ valid: true, name: name, status: 'already_activated' });
-        }
+      // Column F (index 5) = MaxDevices for Squad codes. Empty/missing = 1 (solo, original behaviour).
+      var maxDevices = parseInt(rows[i][5], 10);
+      if (!maxDevices || maxDevices < 1) maxDevices = 1;
+
+      // Devices are stored comma-separated in column D. A single legacy fp still parses to [fp].
+      var devices = deviceField ? deviceField.split(',').map(function (s) { return s.trim(); }).filter(String) : [];
+
+      // This device already registered on this code -> let it back in (offline-safe re-entry).
+      if (devices.indexOf(fp) !== -1) {
+        return jsonResponse({ valid: true, name: name, status: 'already_activated',
+          slotsTotal: maxDevices, slotsUsed: devices.length });
+      }
+
+      // Manually disabled code (marked USED with no devices) -> treat as unavailable.
+      if (status === 'USED' && devices.length === 0) {
         return jsonResponse({ valid: false, error: 'Code already used on another device' });
       }
 
-      // Activate: mark as used (atomic within lock)
+      // Full?
+      if (devices.length >= maxDevices) {
+        var fullMsg = maxDevices === 1
+          ? 'Code already used on another device'
+          : 'This squad code is full — all ' + maxDevices + ' spots are taken.';
+        return jsonResponse({ valid: false, error: fullMsg });
+      }
+
+      // Register this device (atomic within lock).
+      devices.push(fp);
       var row = i + 1;
-      sheet.getRange(row, 3).setValue('USED');
-      sheet.getRange(row, 4).setValue(fp);
-      sheet.getRange(row, 5).setValue(new Date().toISOString());
+      // Mark USED only once every slot is filled; otherwise keep it open for the rest of the squad.
+      sheet.getRange(row, 3).setValue(devices.length >= maxDevices ? 'USED' : 'ACTIVE');
+      sheet.getRange(row, 4).setValue(devices.join(','));
+      // Column E: record first activation if blank, else leave the original timestamp.
+      if (!String(rows[i][4] || '').trim()) {
+        sheet.getRange(row, 5).setValue(new Date().toISOString());
+      }
       SpreadsheetApp.flush();
 
-      return jsonResponse({ valid: true, name: name, status: 'activated' });
+      return jsonResponse({ valid: true, name: name, status: 'activated',
+        slotsTotal: maxDevices, slotsUsed: devices.length, slotsLeft: maxDevices - devices.length });
     }
 
     return jsonResponse({ valid: false, error: 'Invalid code' });
