@@ -503,6 +503,16 @@
   .spar-review-item .sr-exp { color:var(--text2); white-space:pre-wrap; }
   .spar-review-item.sr-wrong { border-color:var(--red); }
 
+  /* Team Spar */
+  .team-name-row { display:flex; gap:8px; margin-bottom:8px; }
+  .team-name-row input { flex:1; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text); }
+  .team-name-row button { background:var(--red-bg); color:var(--red); border:none; border-radius:8px; padding:0 12px; cursor:pointer; }
+  .team-lb-row { display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--bg2); border:1px solid var(--border); border-radius:8px; margin-bottom:8px; }
+  .team-lb-row.mvp { border-color:var(--gold); background:var(--gold-bg); }
+  .team-lb-rank { color:var(--text2); width:24px; }
+  .team-lb-name { flex:1; color:var(--text); font-weight:600; }
+  .team-lb-marks { color:var(--accent); }
+
   /* Rank Card */
   .rank-card {
     background:var(--card); border:1px solid var(--border); border-radius:14px;
@@ -745,13 +755,22 @@
     <span class="subj-pct" style="color:var(--purple)">NEW</span>
   </div>
 
-  <div class="subject-card" onclick="startSpar()" style="border-color:var(--red);margin-bottom:20px">
+  <div class="subject-card" onclick="startSpar()" style="border-color:var(--red);margin-bottom:10px">
     <div class="subj-icon" style="background:var(--red-bg);color:var(--red);">VS</div>
     <div class="subj-info">
       <h3>Spar with the Invigilator</h3>
       <p>Adaptive exam pressure — targets your weak topics</p>
     </div>
     <span class="subj-pct" style="color:var(--red)">NEW</span>
+  </div>
+
+  <div class="subject-card" onclick="openTeamSetup()" style="border-color:var(--blue);margin-bottom:20px">
+    <div class="subj-icon" style="background:var(--blue-bg);color:var(--blue);">T</div>
+    <div class="subj-info">
+      <h3>Team Spar</h3>
+      <p>Study together — one phone, 2–5 players, learn out loud</p>
+    </div>
+    <span class="subj-pct" style="color:var(--blue)">NEW</span>
   </div>
 
   <div class="section-head">
@@ -942,6 +961,69 @@
   </div>
   <div id="sparReview" style="margin-top:14px"></div>
   <button class="drill-check" style="width:100%;margin-top:14px" onclick="startSpar()">Spar again</button>
+  <button class="submit-btn" onclick="goHome()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">Done</button>
+</div>
+</div>
+
+<!-- ==================== TEAM: SETUP ==================== -->
+<div class="screen" id="teamSetupScreen">
+<div class="container">
+  <div class="drill-q-card">
+    <div class="q-num">Team Spar</div>
+    <p style="font-size:13px;color:var(--text2);margin:6px 0 12px">Study together &mdash; one phone, the whole crew. Add 2&ndash;5 names.</p>
+    <div id="teamNameRows"></div>
+    <button class="submit-btn" id="teamAddBtn" onclick="teamAddRow()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">+ Add player</button>
+    <button class="drill-check" id="teamStartBtn" style="width:100%;margin-top:12px" onclick="teamStart()">Start</button>
+    <p id="teamSetupHint" style="font-size:11px;color:var(--text2);margin-top:8px">Add at least 2 players. Studying alone? Use Spar with the Invigilator.</p>
+  </div>
+  <button class="submit-btn" onclick="goBack()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border)">Back</button>
+</div>
+</div>
+
+<!-- ==================== TEAM: PASS INTERSTITIAL ==================== -->
+<div class="screen" id="teamPassScreen">
+<div class="container">
+  <div class="drill-q-card" style="text-align:center">
+    <div class="q-num">Pass the phone</div>
+    <div style="font-size:26px;color:var(--accent);margin:18px 0">&#9654; <span id="teamPassName">NAME</span></div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:16px" id="teamPassProgress">Question 1 of 6</div>
+    <button class="drill-check" style="width:100%" onclick="teamShowQ()">Ready</button>
+  </div>
+</div>
+</div>
+
+<!-- ==================== TEAM: QUESTION ==================== -->
+<div class="screen" id="teamSparScreen">
+<div class="container">
+  <div class="drill-counter">
+    <span id="teamCount">Q1 of 6</span>
+    <span class="drill-streak-badge drill-streak-cold" id="teamCurrent">NAME</span>
+    <span id="teamTeamScore">0 marks</span>
+  </div>
+  <div class="drill-q-card">
+    <div class="q-num"><span id="teamTopicLabel"></span> <span id="teamMarkTag" style="color:var(--text2)"></span></div>
+    <div class="drill-equation" id="teamQ" style="font-size:16px;line-height:1.5"></div>
+    <div class="drill-input-row">
+      <input type="text" class="drill-ans" id="teamAns" placeholder="?" autocomplete="off">
+      <button class="drill-check" id="teamCheckBtn" onclick="teamCheck()">Check</button>
+    </div>
+    <div class="drill-feedback" id="teamFeedback"></div>
+    <div class="drill-solution" id="teamSolution"></div>
+    <div id="teamTally" style="font-size:12px;color:var(--text2);margin-top:10px"></div>
+    <button class="drill-next" id="teamNextBtn" onclick="teamNext()" style="display:none">Next</button>
+  </div>
+</div>
+</div>
+
+<!-- ==================== TEAM: LEADERBOARD ==================== -->
+<div class="screen" id="teamLeaderboardScreen">
+<div class="container">
+  <div class="results-card">
+    <div class="results-msg" id="teamLbTitle">Team: 0/0 &mdash; Grade U</div>
+    <div class="results-det" id="teamLbRows" style="margin-top:12px;text-align:left"></div>
+  </div>
+  <button class="drill-check" style="width:100%;margin-top:14px" onclick="teamPlayAgain()">Spar again (same group)</button>
+  <button class="submit-btn" onclick="teamNewGroup()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">New group</button>
   <button class="submit-btn" onclick="goHome()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">Done</button>
 </div>
 </div>
@@ -2282,6 +2364,241 @@ if (typeof document !== 'undefined') {
   });
 }
 // ===== SPAR MODULE END =====
+
+// ===== TEAM SPAR MODULE START =====
+// Deterministic seeded RNG (mulberry32) — bouts must be testable.
+function _tsRng(seed) {
+  let a = (seed || 1) >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function _tsShuffle(arr, rng) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+// Build a fair, mixed-spread group bout.
+// size target = min(players*2, 12), shrunk to the largest whole multiple of `players`
+// the bank can fill (>=1 each). Returns [] if even 1-each is impossible.
+function assembleTeamBout(bank, players, opts) {
+  opts = opts || {};
+  const rng = _tsRng(opts.seed || 1);
+  const cap = 12;
+  let target = Math.min(players * 2, cap);
+  target = Math.floor(target / players) * players; // whole multiple of players
+  let size = Math.min(target, Math.floor(bank.length / players) * players);
+  if (size < players) return []; // can't even give 1 each
+
+  // Mixed spread: round-robin across distinct topics so variety wins while it lasts.
+  const byTopic = {};
+  _tsShuffle(bank, rng).forEach(q => { (byTopic[q.topic] = byTopic[q.topic] || []).push(q); });
+  const topics = _tsShuffle(Object.keys(byTopic), rng);
+  const picked = [];
+  let round = 0;
+  while (picked.length < size) {
+    let progressed = false;
+    for (const t of topics) {
+      if (picked.length >= size) break;
+      if (byTopic[t][round]) { picked.push(byTopic[t][round]); progressed = true; }
+    }
+    if (!progressed) break;
+    round++;
+  }
+  return picked.slice(0, size);
+}
+
+// Rank players by marks earned; tiebreak: more correct answers, then setup order.
+// Returns { rows:[{name,marks,correct,isMVP}], teamMarks, teamPossible, teamPct, teamGrade }.
+function teamLeaderboard(players, answers) {
+  const order = {};
+  players.forEach((p, i) => { order[p.name] = i; });
+  const agg = {};
+  players.forEach(p => { agg[p.name] = { name: p.name, marks: 0, correct: 0 }; });
+  let teamMarks = 0, teamPossible = 0;
+  answers.forEach(a => {
+    teamPossible += a.marks;
+    if (!agg[a.player]) agg[a.player] = { name: a.player, marks: 0, correct: 0 };
+    if (a.correct) { agg[a.player].marks += a.marks; agg[a.player].correct += 1; teamMarks += a.marks; }
+  });
+  const rows = Object.values(agg).sort((x, y) =>
+    y.marks - x.marks || y.correct - x.correct || order[x.name] - order[y.name]);
+  rows.forEach((r, i) => { r.isMVP = (i === 0 && r.marks > 0); });
+  const teamPct = teamPossible ? Math.round(teamMarks / teamPossible * 100) : 0;
+  return { rows, teamMarks, teamPossible, teamPct, teamGrade: _grade(teamPct) };
+}
+
+// ----- Setup controller -----
+let teamPlayers = [], teamBout = [], teamIdx = 0, teamAnswers = [], teamSeed = 1;
+
+function openTeamSetup() {
+  if (!document.getElementById('teamNameRows').children.length) {
+    teamRenderRows(['', '']); // start with 2 blank rows
+  }
+  teamUpdateSetupState();
+  history.push(screen); showScreen('teamSetupScreen');
+}
+
+function teamRenderRows(names) {
+  const wrap = document.getElementById('teamNameRows');
+  wrap.innerHTML = '';
+  names.forEach((n, i) => {
+    const row = document.createElement('div'); row.className = 'team-name-row';
+    row.innerHTML = '<input type="text" maxlength="14" placeholder="Player ' + (i+1) + '" value="' + n.replace(/"/g,'&quot;') + '" oninput="teamUpdateSetupState()">' +
+      (names.length > 2 ? '<button onclick="teamRemoveRow(' + i + ')">&#10005;</button>' : '');
+    wrap.appendChild(row);
+  });
+}
+function _teamCurrentNames() {
+  return [...document.querySelectorAll('#teamNameRows input')].map(i => i.value);
+}
+function teamAddRow() {
+  const names = _teamCurrentNames();
+  if (names.length >= 5) return;
+  names.push('');
+  teamRenderRows(names); teamUpdateSetupState();
+}
+function teamRemoveRow(idx) {
+  const names = _teamCurrentNames();
+  if (names.length <= 2) return;
+  names.splice(idx, 1);
+  teamRenderRows(names); teamUpdateSetupState();
+}
+function teamUpdateSetupState() {
+  const names = _teamCurrentNames();
+  document.getElementById('teamAddBtn').style.display = names.length >= 5 ? 'none' : '';
+  document.getElementById('teamStartBtn').disabled = names.length < 2;
+}
+
+// ----- Relay controller -----
+function teamStart() {
+  const names = _teamCurrentNames().map((n, i) => ({ name: (n.trim() || ('Player ' + (i+1))) }));
+  if (names.length < 2) return;
+  teamPlayers = names;
+  teamSeed = Date.now() & 0xffffffff;
+  teamBout = assembleTeamBout(SPAR_BANK, teamPlayers.length, { seed: teamSeed });
+  if (teamBout.length === 0) {
+    alert('Not enough questions yet for ' + teamPlayers.length + ' players. Try fewer players.');
+    return;
+  }
+  teamAnswers = [];
+  teamIdx = 0;
+  history.push('homeScreen'); // leaderboard returns home, not back into the bout
+  teamGotoPass();
+}
+
+function _teamPlayerForIdx(i) { return teamPlayers[i % teamPlayers.length].name; }
+
+function teamGotoPass() {
+  document.getElementById('teamPassName').textContent = _teamPlayerForIdx(teamIdx);
+  document.getElementById('teamPassProgress').textContent = 'Question ' + (teamIdx+1) + ' of ' + teamBout.length;
+  showScreen('teamPassScreen');
+}
+
+function teamShowQ() {
+  const q = teamBout[teamIdx];
+  document.getElementById('teamCount').textContent = 'Q' + (teamIdx+1) + ' of ' + teamBout.length;
+  document.getElementById('teamCurrent').textContent = _teamPlayerForIdx(teamIdx);
+  document.getElementById('teamTopicLabel').textContent = q.topic;
+  document.getElementById('teamMarkTag').textContent = '[' + q.marks + ' marks]';
+  document.getElementById('teamQ').innerHTML = q.q;
+
+  const inp = document.getElementById('teamAns');
+  inp.value = ''; inp.disabled = false;
+  document.getElementById('teamCheckBtn').style.display = '';
+  document.getElementById('teamCheckBtn').disabled = false;
+  document.getElementById('teamFeedback').className = 'drill-feedback'; document.getElementById('teamFeedback').style.display = 'none';
+  document.getElementById('teamSolution').style.display = 'none';
+  document.getElementById('teamNextBtn').style.display = 'none';
+  document.getElementById('teamTally').innerHTML = '';
+  teamRenderTeamScore();
+  showScreen('teamSparScreen');
+  inp.focus();
+}
+
+function teamRenderTeamScore() {
+  const earned = teamAnswers.reduce((a,x)=>a + (x.correct ? x.marks : 0), 0);
+  document.getElementById('teamTeamScore').textContent = earned + ' marks';
+}
+
+function teamCheck() {
+  const q = teamBout[teamIdx];
+  const val = document.getElementById('teamAns').value;
+  const correct = val.trim() !== '' && matchSparAnswer(q, val);
+  teamAnswers.push({ player: _teamPlayerForIdx(teamIdx), topic: q.topic, marks: q.marks, correct, given: val });
+
+  const inp = document.getElementById('teamAns'); inp.disabled = true;
+  document.getElementById('teamCheckBtn').style.display = 'none';
+  const fb = document.getElementById('teamFeedback');
+  fb.textContent = correct ? 'Correct!' : 'Not quite.';
+  fb.className = 'drill-feedback show ' + (correct ? 'correct-fb' : 'wrong-fb');
+  inp.style.borderColor = correct ? 'var(--green)' : 'var(--red)';
+  inp.style.background = correct ? 'var(--green-bg)' : 'var(--red-bg)';
+
+  // Collaborative: always show the worked solution.
+  const sol = document.getElementById('teamSolution');
+  sol.innerHTML = '<strong>Answer:</strong> ' + q.answer + '\n' + q.exp;
+  sol.style.display = 'block';
+
+  teamRenderTally();
+  teamRenderTeamScore();
+  document.getElementById('teamNextBtn').style.display = 'block';
+  document.getElementById('teamNextBtn').textContent = (teamIdx === teamBout.length - 1) ? 'See results' : 'Next';
+}
+
+function teamRenderTally() {
+  const byP = {};
+  teamPlayers.forEach(p => byP[p.name] = { c: 0, t: 0 });
+  teamAnswers.forEach(a => { if (!byP[a.player]) byP[a.player] = { c:0,t:0 }; byP[a.player].t++; if (a.correct) byP[a.player].c++; });
+  document.getElementById('teamTally').innerHTML =
+    teamPlayers.map(p => p.name + ' ' + '&#10003;'.repeat(byP[p.name].c) + (byP[p.name].t - byP[p.name].c ? '&middot;'.repeat(byP[p.name].t - byP[p.name].c) : '')).join('  &middot;  ');
+}
+
+function teamNext() {
+  teamIdx++;
+  if (teamIdx >= teamBout.length) teamFinish();
+  else teamGotoPass();
+}
+
+// ----- Finish + leaderboard -----
+function teamFinish() {
+  const lb = teamLeaderboard(teamPlayers, teamAnswers);
+  document.getElementById('teamLbTitle').textContent =
+    'Team: ' + lb.teamMarks + '/' + lb.teamPossible + ' — Grade ' + lb.teamGrade;
+  const wrap = document.getElementById('teamLbRows'); wrap.innerHTML = '';
+  lb.rows.forEach((r, i) => {
+    const div = document.createElement('div');
+    div.className = 'team-lb-row' + (r.isMVP ? ' mvp' : '');
+    div.innerHTML =
+      '<span class="team-lb-rank">' + (i+1) + '</span>' +
+      '<span class="team-lb-name">' + (r.isMVP ? '👑 ' : '') + r.name + '</span>' +
+      '<span class="team-lb-marks">' + r.marks + ' marks &middot; ' + r.correct + '&#10003;</span>';
+    wrap.appendChild(div);
+  });
+  // Fixed XP to the host per completed session (not per question — no grinding).
+  addXP(15, 'Team Spar session');
+  recordStreak();
+  if (typeof fireConfetti === 'function') fireConfetti();
+  showScreen('teamLeaderboardScreen');
+}
+
+function teamPlayAgain() {
+  teamSeed = Date.now() & 0xffffffff;
+  teamBout = assembleTeamBout(SPAR_BANK, teamPlayers.length, { seed: teamSeed });
+  if (teamBout.length === 0) { goHome(); return; }
+  teamAnswers = []; teamIdx = 0;
+  teamGotoPass();
+}
+function teamNewGroup() {
+  teamPlayers = []; teamAnswers = []; teamBout = []; teamIdx = 0;
+  document.getElementById('teamNameRows').innerHTML = '';
+  openTeamSetup();
+}
+// ===== TEAM SPAR MODULE END =====
 
 // ================================================================
 // SUBJECT / TOPICS
