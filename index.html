@@ -452,6 +452,19 @@
     color:var(--text);
   }
 
+  /* Sparring (Invigilator) */
+  .spar-clock-green { background: var(--green-bg); color: var(--green); }
+  .spar-clock-amber { background: #4a3a00; color: var(--gold); }
+  .spar-clock-red   { background: var(--red-bg); color: var(--red); }
+  .spar-bar { margin:6px 0; }
+  .spar-bar-label { font-size:12px; color:var(--text2); display:flex; justify-content:space-between; }
+  .spar-bar-track { height:8px; background:var(--bg2); border-radius:4px; overflow:hidden; margin-top:3px; }
+  .spar-bar-fill { height:100%; background:var(--accent); transition:width .6s ease; }
+  .spar-review-item { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:8px; font-size:13px; }
+  .spar-review-item .sr-q { color:var(--text); margin-bottom:4px; }
+  .spar-review-item .sr-exp { color:var(--text2); white-space:pre-wrap; }
+  .spar-review-item.sr-wrong { border-color:var(--red); }
+
   /* Rank Card */
   .rank-card {
     background:var(--card); border:1px solid var(--border); border-radius:14px;
@@ -813,6 +826,55 @@
     <button class="drill-next" id="drillNextBtn" onclick="nextDrill()">Next Question</button>
   </div>
   <button class="submit-btn" onclick="endDrill()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border)">End Drill</button>
+</div>
+</div>
+
+<!-- ==================== SPAR: PRE-BOUT ==================== -->
+<div class="screen" id="sparIntroScreen">
+<div class="container">
+  <div class="drill-q-card">
+    <div class="q-num">The Invigilator</div>
+    <p id="sparIntroLine" style="font-size:14px;color:var(--text);margin:10px 0">I've seen your record.</p>
+    <div id="sparIntroFocus" style="font-size:13px;color:var(--text2);margin-bottom:6px"></div>
+    <div id="sparIntroMeta" style="font-size:12px;color:var(--text2);margin-bottom:16px"></div>
+    <button class="drill-check" style="width:100%" onclick="beginBout()">Begin</button>
+  </div>
+  <button class="submit-btn" onclick="goBack()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border)">Not now</button>
+</div>
+</div>
+
+<!-- ==================== SPAR: IN-BOUT ==================== -->
+<div class="screen" id="sparScreen">
+<div class="container">
+  <div class="drill-counter">
+    <span id="sparCount">Q1</span>
+    <span class="drill-streak-badge spar-clock-green" id="sparClock">00:00</span>
+    <span id="sparMarks">0 / 0 marks</span>
+  </div>
+  <div class="drill-q-card">
+    <div class="q-num"><span id="sparTopicLabel"></span> <span id="sparMarkTag" style="color:var(--text2)"></span></div>
+    <div class="drill-equation" id="sparQ" style="font-size:16px;line-height:1.5"></div>
+    <div class="drill-input-row">
+      <input type="text" class="drill-ans" id="sparAns" placeholder="?" autocomplete="off">
+      <button class="drill-check" id="sparNextBtn" onclick="sparAdvance()">Next</button>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-top:8px">The Invigilator is silent. No hints until the paper is done.</div>
+  </div>
+  <button class="submit-btn" onclick="endBout(true)" style="background:var(--bg2);color:var(--text);border:1px solid var(--border)">Hand in early</button>
+</div>
+</div>
+
+<!-- ==================== SPAR: VERDICT ==================== -->
+<div class="screen" id="sparVerdictScreen">
+<div class="container">
+  <div class="results-card">
+    <div class="results-circle" id="sparVCircle"><span id="sparVPct">0%</span><small id="sparVMarks">0/0</small></div>
+    <div class="results-msg" id="sparVerdictLine">The Invigilator considers...</div>
+    <div class="results-det" id="sparReadinessBars" style="margin:14px 0;text-align:left"></div>
+  </div>
+  <div id="sparReview" style="margin-top:14px"></div>
+  <button class="drill-check" style="width:100%;margin-top:14px" onclick="startSpar()">Spar again</button>
+  <button class="submit-btn" onclick="goHome()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);margin-top:8px">Done</button>
 </div>
 </div>
 
