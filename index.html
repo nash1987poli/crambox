@@ -57,6 +57,22 @@
   .screen { display:none; } .screen.active { display:block; }
 
   /* ===== HOME ===== */
+  .readiness-hero{display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px;cursor:pointer;transition:.15s}
+  .readiness-hero:hover{border-color:var(--green)}
+  .rh-ring{position:relative;width:96px;height:96px;flex-shrink:0}
+  .rh-ring svg{width:96px;height:96px;transform:rotate(-90deg)}
+  .rh-track{fill:none;stroke:var(--bg2);stroke-width:10}
+  .rh-fill{fill:none;stroke:var(--green);stroke-width:10;stroke-linecap:round;stroke-dasharray:327;stroke-dashoffset:327;transition:stroke-dashoffset .8s ease}
+  .rh-pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .rh-pct span{font-size:24px;font-weight:800;color:var(--text)}
+  .rh-pct small{font-size:12px;font-weight:700;color:var(--gold)}
+  .rh-info{flex:1;min-width:0}
+  .rh-title{font-size:13px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+  .rh-sub{font-size:13px;color:var(--text2);margin-top:2px}
+  .rh-coach{font-size:14px;color:var(--text);margin-top:6px}
+  .rh-next{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+  .rh-chip{font-size:11px;background:var(--red-bg);color:var(--red);border-radius:20px;padding:3px 10px;cursor:pointer}
+  .rh-chip.amber{background:var(--gold-bg);color:var(--gold)}
   .streak-bar {
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     border:1px solid var(--border); border-radius:16px;
@@ -711,6 +727,15 @@
 <!-- ==================== HOME ==================== -->
 <div class="screen active" id="homeScreen">
 <div class="container">
+  <div class="readiness-hero" id="readinessHero" onclick="openReadiness()">
+    <div class="rh-ring"><svg viewBox="0 0 120 120"><circle class="rh-track" cx="60" cy="60" r="52"/><circle class="rh-fill" id="rhFill" cx="60" cy="60" r="52"/></svg><div class="rh-pct"><span id="rhPct">0%</span><small id="rhGrade">U</small></div></div>
+    <div class="rh-info">
+      <div class="rh-title">Exam Readiness</div>
+      <div class="rh-sub" id="rhSub">0 / 37 topics mastered</div>
+      <div class="rh-coach" id="rhCoach">Take a session to find your starting point.</div>
+      <div class="rh-next" id="rhNext"></div>
+    </div>
+  </div>
   <div class="exam-countdown" id="examCountdown" onclick="onExamBannerTap()"></div>
   <div class="streak-bar">
     <div class="streak-info">
@@ -1308,6 +1333,7 @@ function saveScore(subj, idx, earned, total) {
 
 function updateHome() {
   renderExamCountdown();
+  renderReadinessHero();
   const s = getStore();
   // XP badge
   document.getElementById('xpBadge').textContent = (s.xp||0) + ' XP';
@@ -2685,6 +2711,44 @@ function touchTopic(title) {
   s.readiness.touched[title] = new Date().toISOString();
   setStore(s);
 }
+
+// Build the topic meta list (title + total marks available) used by the readiness engine.
+function readinessTopicMeta() {
+  return DATA.maths.topics.map(function (t) {
+    return { title: t.title, marks: (t.practice || []).reduce(function (a, q) { return a + (q.marks || 0); }, 0), drillKey: null };
+  });
+}
+
+function renderReadinessHero() {
+  if (typeof document === 'undefined') return;
+  var el = document.getElementById('readinessHero'); if (!el) return;
+  var store = getStore();
+  var topics = readinessTopicMeta();
+  var examDate = store.examDate ? Date.parse(store.examDate) : null;
+  var r = examReadiness(store, topics, Date.now(), examDate);
+  if (!store.readiness) store.readiness = { touched:{}, lastTopicReadiness:{}, overall:0, milestonesSeen:[] };
+  store.readiness.overall = r.overall; setStore(store);
+
+  document.getElementById('rhPct').textContent = r.overall + '%';
+  document.getElementById('rhGrade').textContent = predictedGrade(r.overall);
+  var circ = 327, off = circ - circ * r.overall / 100;
+  document.getElementById('rhFill').style.strokeDashoffset = off;
+  document.getElementById('rhSub').textContent = r.mastered + ' / ' + r.total + ' topics mastered';
+  var grade = predictedGrade(r.overall);
+  document.getElementById('rhCoach').textContent =
+    r.overall === 0 ? 'Take a session to find your starting point.'
+    : 'Tracking a ' + grade + ' — focus your weak topics to climb.';
+  var next = studyNext(r.perTopic, 3).filter(function (t) { return t.readiness < 80; });
+  var nx = document.getElementById('rhNext'); nx.innerHTML = '';
+  next.forEach(function (t) {
+    var c = document.createElement('span');
+    c.className = 'rh-chip' + (t.readiness >= 40 ? ' amber' : '');
+    c.textContent = t.title + ' ' + t.readiness + '%';
+    c.onclick = function (e) { e.stopPropagation(); openTopic(t.idx, 'lesson'); };
+    nx.appendChild(c);
+  });
+}
+function openReadiness() { openSubject('maths'); } // v1: deep view = curriculum tree with bars
 // ===== READINESS MODULE END =====
 
 // ================================================================
