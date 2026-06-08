@@ -84,5 +84,29 @@ H.test('applyDecay: base 0 stays 0', () => {
   H.assert(H.ctx.applyDecay(0, Date.UTC(2026,0,1), Date.UTC(2026,0,20), 999) === 0);
 });
 
+H.test('examReadiness: overall = mean across ALL topics (untouched drags down)', () => {
+  const topics = [{title:'A',marks:10},{title:'B',marks:10},{title:'C',marks:10}];
+  const store = { maths:{scores:{t0:90}}, sparring:{readiness:{}}, drillMastery:{}, readiness:{touched:{}} };
+  const now = Date.UTC(2026,0,20);
+  const r = H.ctx.examReadiness(store, topics, now, null);
+  H.assert(r.overall === 30, 'got ' + r.overall);
+  H.assert(r.perTopic.length === 3);
+  H.assert(r.perTopic[0].readiness === 90 && r.perTopic[1].readiness === 0);
+});
+H.test('studyNext: lowest readiness first, marks tiebreak', () => {
+  const perTopic = [
+    {idx:0,title:'A',readiness:20,marks:6},
+    {idx:1,title:'B',readiness:20,marks:10},
+    {idx:2,title:'C',readiness:80,marks:10}
+  ];
+  const top = H.ctx.studyNext(perTopic, 2);
+  H.assert(top[0].title === 'B' && top[1].title === 'A', 'order ' + top.map(t=>t.title));
+});
+H.test('xpForReadinessLift: scales with gap, ~0 for re-grinding mastered', () => {
+  H.assert(H.ctx.xpForReadinessLift(40, 60) > H.ctx.xpForReadinessLift(40, 45), 'bigger lift more xp');
+  H.assert(H.ctx.xpForReadinessLift(85, 88) <= 2, 'mastered re-grind tiny');
+  H.assert(H.ctx.xpForReadinessLift(60, 55) === 0, 'no negative xp');
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();

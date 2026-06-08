@@ -2644,6 +2644,36 @@ function applyDecay(base, lastTouched, now, daysToExam) {
   var floor = Math.round(base * 0.5);
   return Math.max(floor, base - loss);
 }
+
+// Roll up per-topic readiness (with decay) into the headline number + per-topic rows.
+function examReadiness(store, topics, now, examDate) {
+  var touched = (store && store.readiness && store.readiness.touched) || {};
+  var daysToExam = examDate ? Math.ceil((examDate - now) / 86400000) : null;
+  var perTopic = topics.map(function (t, i) {
+    var base = topicReadiness(store, i, t.title, t.drillKey);
+    var last = touched[t.title] ? Date.parse(touched[t.title]) : null;
+    var r = last ? applyDecay(base, last, now, daysToExam) : base;
+    return { idx: i, title: t.title, readiness: r, marks: t.marks || 0 };
+  });
+  var overall = perTopic.length
+    ? Math.round(perTopic.reduce(function (a, x) { return a + x.readiness; }, 0) / perTopic.length)
+    : 0;
+  var mastered = perTopic.filter(function (x) { return x.readiness >= 80; }).length;
+  return { perTopic: perTopic, overall: overall, mastered: mastered, total: perTopic.length };
+}
+// The N weakest topics, tie-broken by marks-available (more first), then order.
+function studyNext(perTopic, n) {
+  return perTopic.slice().sort(function (a, b) {
+    return a.readiness - b.readiness || b.marks - a.marks || a.idx - b.idx;
+  }).slice(0, n);
+}
+// Bonus XP scaled to the readiness gap closed; near-zero once a topic is mastered.
+function xpForReadinessLift(before, after) {
+  var lift = after - before;
+  if (lift <= 0) return 0;
+  var headroom = Math.max(0, 100 - before) / 100;
+  return Math.round(lift * headroom);
+}
 // ===== READINESS MODULE END =====
 
 // ================================================================
