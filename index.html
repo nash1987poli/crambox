@@ -2616,6 +2616,21 @@ function readinessRank(pct) {
   if (pct >= 20) return { name: 'Bronze',     color: '#cd7f32',      min: 20 };
   return { name: 'Beginner', color: 'var(--text2)', min: 0 };
 }
+
+// Base readiness for one topic: weighted average of whichever signals exist.
+// Weights practice .4 / invigilator .4 / drill .2, renormalised over present signals.
+function topicReadiness(store, idx, title, drillKey) {
+  const out = [];
+  const p = store && store.maths && store.maths.scores ? store.maths.scores['t' + idx] : undefined;
+  if (typeof p === 'number') out.push([p, 0.4]);
+  const s = store && store.sparring && store.sparring.readiness ? store.sparring.readiness[title] : undefined;
+  if (typeof s === 'number') out.push([s, 0.4]);
+  const dm = store && store.drillMastery && drillKey ? store.drillMastery[drillKey] : undefined;
+  if (dm && dm.total > 0) out.push([Math.round(dm.correct / dm.total * 100), 0.2]);
+  if (out.length === 0) return 0;
+  const wsum = out.reduce((a, x) => a + x[1], 0);
+  return Math.round(out.reduce((a, x) => a + x[0] * x[1], 0) / wsum);
+}
 // ===== READINESS MODULE END =====
 
 // ================================================================

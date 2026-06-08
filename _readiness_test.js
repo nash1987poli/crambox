@@ -47,5 +47,20 @@ H.test('readinessRank: maps % to rank name', () => {
   H.assert(typeof H.ctx.readinessRank(55).name === 'string');
 });
 
+H.test('topicReadiness: single signal used directly', () => {
+  const store = { maths: { scores: { t0: 80 } }, sparring: { readiness: {} }, drillMastery: {} };
+  H.assert(H.ctx.topicReadiness(store, 0, 'Algebra') === 80, 'practice-only');
+  const store2 = { maths:{scores:{}}, sparring:{ readiness:{ Algebra: 60 } }, drillMastery:{} };
+  H.assert(H.ctx.topicReadiness(store2, 0, 'Algebra') === 60, 'spar-only');
+});
+H.test('topicReadiness: multi-signal renormalised weighted blend', () => {
+  const store = { maths:{scores:{t0:80}}, sparring:{readiness:{Algebra:60}}, drillMastery:{} };
+  H.assert(H.ctx.topicReadiness(store, 0, 'Algebra') === 70, 'got ' + H.ctx.topicReadiness(store,0,'Algebra'));
+});
+H.test('topicReadiness: untouched topic = 0', () => {
+  const store = { maths:{scores:{}}, sparring:{readiness:{}}, drillMastery:{} };
+  H.assert(H.ctx.topicReadiness(store, 5, 'Vectors') === 0);
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();
