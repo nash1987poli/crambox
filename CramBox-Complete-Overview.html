@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CramBox — Complete Overview</title>
+<style>
+  :root{
+    --bg:#0c1320;--bg2:#111a2b;--card:#162033;--card2:#1c2740;--border:#273249;
+    --text:#eef2f8;--text2:#8b95a9;
+    --green:#10b981;--green-bg:rgba(16,185,129,.12);
+    --gold:#ffce4d;--gold-bg:rgba(255,206,77,.12);
+    --blue:#4d8dff;--blue-bg:rgba(77,141,255,.12);
+    --red:#ff6b6b;--red-bg:rgba(255,107,107,.12);
+    --purple:#b38bff;--purple-bg:rgba(179,139,255,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 18px 90px}
+  a{color:var(--blue)}
+
+  header{padding:50px 0 30px;text-align:center;border-bottom:1px solid var(--border);background:radial-gradient(900px 340px at 50% -50%,rgba(16,185,129,.12),transparent)}
+  .logo{font-size:13px;letter-spacing:4px;color:var(--green);text-transform:uppercase;font-weight:700}
+  h1{font-size:42px;letter-spacing:-1px;margin:10px 0 8px}
+  h1 span{color:var(--green)}
+  .tagline{color:var(--text2);font-size:16px;max-width:600px;margin:0 auto}
+  .pills{margin-top:18px}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;background:var(--green-bg);color:var(--green);margin:3px}
+
+  nav{position:sticky;top:0;z-index:30;background:rgba(12,19,32,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;gap:2px;overflow-x:auto;padding:8px 10px;justify-content:center}
+  nav button{background:none;border:none;color:var(--text2);font-size:14px;font-weight:600;padding:9px 14px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:.15s}
+  nav button:hover{color:var(--text)}
+  nav button.active{background:var(--green-bg);color:var(--green)}
+
+  section{display:none;padding-top:30px}
+  section.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h2{font-size:24px;margin:4px 0 4px}
+  .sub{color:var(--text2);font-size:14px;margin-bottom:20px}
+  h3{font-size:16px;margin:24px 0 10px}
+
+  .lead{font-size:17px;color:var(--text);background:var(--card);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:0 12px 12px 0;padding:16px 18px;margin:8px 0 16px}
+  .callout{background:var(--gold-bg);border:1px solid var(--gold);border-radius:12px;padding:14px 16px;font-size:14px;margin:16px 0}
+  .callout b{color:var(--gold)}
+  ul{margin:8px 0 8px 20px}li{margin:6px 0;font-size:14.5px;color:var(--text2)}li b{color:var(--text)}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  .mini{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+  .mini h4{font-size:15px;margin-bottom:3px}
+  .mini p{font-size:13px;color:var(--text2)}
+
+  /* expandable feature cards */
+  .feat{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:.15s}
+  .feat:hover{border-color:var(--green)}
+  .feat-head{display:flex;align-items:center;gap:14px;padding:16px 18px}
+  .feat-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--bg3,#1c2740);flex-shrink:0}
+  .feat-head h4{font-size:16px;margin:0}
+  .feat-head .badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:3px 9px;border-radius:20px;background:var(--green-bg);color:var(--green);margin-left:auto}
+  .chev{color:var(--text2);font-size:13px;transition:.2s;margin-left:8px}
+  .feat.open .chev{transform:rotate(180deg)}
+  .feat-body{display:none;padding:0 18px 16px 76px;font-size:14px;color:var(--text2)}
+  .feat.open .feat-body{display:block}
+
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:14px 0}
+  .node{flex:1;min-width:150px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px}
+  .node .ic{font-size:20px}.node h4{font-size:14px;margin:6px 0 3px}.node p{font-size:12px;color:var(--text2)}
+  .arrow{display:flex;align-items:center;color:var(--text2);font-size:20px}
+  @media(max-width:720px){.arrow{transform:rotate(90deg);width:100%;justify-content:center}.node{min-width:100%}}
+
+  .quad{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+  @media(max-width:640px){.quad{grid-template-columns:1fr}}
+  .q{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px}
+  .q h4{font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .q.e h4{color:var(--red)}.q.r h4{color:var(--gold)}.q.ra h4{color:var(--green)}.q.c h4{color:var(--blue)}
+  .q li{font-size:13px;margin-left:14px}
+
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+  @media(max-width:560px){.tiers{grid-template-columns:1fr}}
+  .tier{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center}
+  .tier.feat2{border-color:var(--green)}
+  .tier .nm{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text2)}
+  .tier .pr{font-size:34px;font-weight:800;color:var(--green);margin:5px 0}
+  .tier .pp{font-size:12px;color:var(--text2)}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+  th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--text2);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  td b{color:var(--text)}
+  .st{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+  .st-live{background:var(--green-bg);color:var(--green)}
+  .st-next{background:var(--gold-bg);color:var(--gold)}
+  .st-future{background:var(--blue-bg);color:var(--blue)}
+
+  footer{margin-top:50px;padding-top:20px;border-top:1px solid var(--border);color:var(--text2);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo">CramBox · Curious Inc</div>
+    <h1>Cram<span>Box</span></h1>
+    <p class="tagline">The offline AI exam-crammer for Zimbabwean O-Level students — the whole syllabus, an AI coach, and group study, on the cheapest phone with no data.</p>
+    <div class="pills"><span class="pill">Live</span><span class="pill">Offline-first</span><span class="pill">AI-powered</span><span class="pill">$5 once</span></div>
+  </div>
+</header>
+
+<nav class="wrap">
+  <button class="active" data-t="overview">Overview</button>
+  <button data-t="features">Features</button>
+  <button data-t="how">How it works</button>
+  <button data-t="pricing">Pricing</button>
+  <button data-t="growth">Growth</button>
+  <button data-t="roadmap">Roadmap</button>
+  <button data-t="vision">Vision</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- OVERVIEW -->
+  <section class="active" id="overview">
+    <h2>What CramBox is</h2>
+    <p class="sub">Built for how Zimbabwean students actually study.</p>
+    <div class="lead">A self-contained study app that helps students pass O-Level Mathematics (ZIMSEC 4004) — on a shared phone, on a tight budget, often without reliable data.</div>
+    <div class="callout"><b>Positioning:</b> "Study all month for the price of one data bundle — and never spend data again." CramBox is the high-intensity <b>cram weapon</b> for the weeks before the exam, not another year-long course.</div>
+
+    <h3>The problem it solves</h3>
+    <ul>
+      <li><b>Data is expensive</b> — streaming tutorials and PDFs burn money. CramBox works offline after one load.</li>
+      <li><b>Tutors are costly</b> — $30+/hour. CramBox is $5 once.</li>
+      <li><b>Textbooks are passive</b> — CramBox is interactive, gamified, focused on what comes up.</li>
+      <li><b>Students study in groups</b> sharing one phone — CramBox embraces it with Team Spar.</li>
+    </ul>
+
+    <h3>Who it's for</h3>
+    <div class="grid">
+      <div class="mini"><h4>Students</h4><p>O-Level candidates cramming for 4004 Maths — the daily user.</p></div>
+      <div class="mini"><h4>Study groups</h4><p>Circles of 2–5 friends revising together on one phone.</p></div>
+      <div class="mini"><h4>Parents</h4><p>The payer — want proof their child is ready, without tutor costs.</p></div>
+      <div class="mini"><h4>Diaspora relatives</h4><p>Family abroad funding a student back home (card payments).</p></div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <h2>What it does</h2>
+    <p class="sub">Tap any feature to expand.</p>
+
+    <div class="feat" onclick="this.classList.toggle('open')">
+      <div class="feat-head"><div class="feat-ic">🎧</div><h4>Lessons</h4><span class="badge">Live</span><span class="chev">▾</span></div>
+      <div class="feat-body">Voice-narrated, step-by-step concept teaching across the whole syllabus — learn hands-free, out loud, or in a group.</div>
+    </div>
+    <div class="feat" onclick="this.classList.toggle('open')">
+      <div class="feat-head"><div class="feat-ic">📝</div><h4>Practice</h4><span class="badge">Live</span><span class="chev">▾</span></div>
+      <div class="feat-body">147 exam-style questions with mark allocations and full worked solutions revealed after you submit — real exam simulation.</div>
+    </div>
+    <div class="feat" onclick="this.classList.toggle('open')">
+      <div class="feat-head"><div class="feat-ic">⚡</div><h4>Infinite Drills</h4><span class="badge">Live</span><span class="chev">▾</span></div>
+      <div class="feat-body">31 topic generators producing endless, never-repeating rapid-fire questions with instant feedback, streaks, combos, and confetti.</div>
+    </div>
+    <div class="feat" onclick="this.classList.toggle('open')">
+      <div class="feat-head"><div class="feat-ic">⚔️</div><h4>Spar with the Invigilator</h4><span class="badge">Live</span><span class="chev">▾</span></div>
+      <div class="feat-body">An adaptive AI examiner that studies your record, <b style="color:var(--text)">hunts the topics you keep dropping marks on</b>, and tests them under a marks-based bout timer that tightens as you sharpen. Ends on a grade verdict, worked solutions, and rising readiness bars. AI-authored questions, baked in — fully offline.</div>
+    </div>
+    <div class="feat" onclick="this.classList.toggle('open')">
+      <div class="feat-head"><div class="feat-ic">👥</div><h4>Team Spar</h4><span class="badge">Live</span><span class="chev">▾</span></div>
+      <div class="feat-body">Offline group study: 2–5 named players relay through one bout on one phone, the worked solution shows after every question so the whole group learns together, and it ends on a ranked leaderboard with an MVP and a team grade.</div>
+    </div>
+    <div class="feat" onclick="this.classList.toggle('open')">
+      <div class="feat-head"><div class="feat-ic">🏆</div><h4>Progress &amp; motivation</h4><span class="badge">Live</span><span class="chev">▾</span></div>
+      <div class="feat-body">XP, ranks (Beginner → Exam Ready), daily streaks, and an exam countdown that keeps the pressure productive.</div>
+    </div>
+    <div class="feat" onclick="this.classList.toggle('open')">
+      <div class="feat-head"><div class="feat-ic">📲</div><h4>Challenge cards</h4><span class="badge">Live</span><span class="chev">▾</span></div>
+      <div class="feat-body">Finish any mode and share a "👆 think you can beat me?" score card to WhatsApp — carrying the link and price automatically. Every share is free advertising and a viral hook.</div>
+    </div>
+    <div class="feat" onclick="this.classList.toggle('open')">
+      <div class="feat-head"><div class="feat-ic">📴</div><h4>Offline-first</h4><span class="badge">Live</span><span class="chev">▾</span></div>
+      <div class="feat-body">The whole app is one self-contained file. After the first load it needs zero data — the core competitive edge in this market.</div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how">
+    <h2>How it works</h2>
+    <p class="sub">From payment to studying offline.</p>
+    <div class="flow">
+      <div class="node"><div class="ic">🔗</div><h4>Open / receive</h4><p>Via link or a WhatsApp file.</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="ic">💸</div><h4>Pay $5</h4><p>EcoCash (or a Squad code).</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="ic">🔑</div><h4>Activate once</h4><p>Code locks to the device.</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="ic">📴</div><h4>Study offline</h4><p>Forever, zero data.</p></div>
+    </div>
+    <div class="callout"><b>The AI approach — baked in, not live.</b> AI writes the exam-style questions and worked solutions <i>up front</i>; they ship inside the app file. So the "AI coach" runs <b>offline, at zero per-student cost</b>, with no exposed API key — protecting both the offline promise and the margins. A live online "Challenge Mode" is reserved as a future premium tier.</div>
+    <h3>Under the hood</h3>
+    <ul>
+      <li><b>Architecture:</b> one self-contained HTML app on Vercel; activation via Google Apps Script + Sheet — lean, cheap, resilient.</li>
+      <li><b>Reliability:</b> automated test suites cover the question banks, scoring, and game logic.</li>
+      <li><b>Activation:</b> one-time code, device-locked; Squad codes unlock multiple devices.</li>
+    </ul>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <h2>Pricing</h2>
+    <p class="sub">$5 is the premium single option; the Squad deal is the smart buy — and it keeps word-of-mouth alive.</p>
+    <div class="tiers">
+      <div class="tier"><div class="nm">Solo</div><div class="pr">$5</div><div class="pp">one student · once</div></div>
+      <div class="tier"><div class="nm">Squad-3</div><div class="pr">$12</div><div class="pp">$4 / head · save $3</div></div>
+      <div class="tier feat2"><div class="nm">Squad-5</div><div class="pr">$18</div><div class="pp">$3.60 / head · save $7</div></div>
+    </div>
+    <div class="callout"><b>Why $5:</b> the product is worth more than at launch — an AI coach, group study, the full syllabus, all offline. At $5 a student still pays under <b>1/6 of a single $30 tutor lesson</b>. Always show value before price.</div>
+    <ul>
+      <li>One Squad code unlocks multiple devices — built for how groups pool money.</li>
+      <li>No subscription. One-time EcoCash payment. Cards supported for diaspora later.</li>
+    </ul>
+  </section>
+
+  <!-- GROWTH -->
+  <section id="growth">
+    <h2>Why it wins &amp; how it spreads</h2>
+    <p class="sub">Blue Ocean strategy + WhatsApp-native distribution.</p>
+    <h3>The Four Actions grid</h3>
+    <div class="quad">
+      <div class="q e"><h4>Eliminate</h4><ul><li>Dependence on a tutor</li><li>Heavy data use</li><li>The book nobody finishes</li></ul></div>
+      <div class="q ra"><h4>Raise</h4><ul><li>Engagement &amp; fun</li><li>Feedback quality</li><li>Visible exam-readiness</li></ul></div>
+      <div class="q r"><h4>Reduce</h4><ul><li>Price (micro-EcoCash)</li><li>Time-to-value</li><li>Content bloat</li></ul></div>
+      <div class="q c"><h4>Create</h4><ul><li>Works with zero data</li><li>AI sparring partner</li><li>Diaspora gifting</li></ul></div>
+    </div>
+    <h3>Distribution engine</h3>
+    <ul>
+      <li><b>WhatsApp-native</b> — spreads as a link or file where this market lives.</li>
+      <li><b>Challenge cards</b> turn every score into a shareable advert.</li>
+      <li><b>Squad codes</b> make groups the growth engine — one buyer brings 2–4 friends.</li>
+      <li><b>Sell to the payer</b> — parents &amp; diaspora, anchored against tutor/exam-fee costs.</li>
+    </ul>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <h2>Roadmap &amp; future plans</h2>
+    <p class="sub">What's live, what's next, and where it's going.</p>
+    <table>
+      <tr><th>Plan</th><th>What it adds</th><th>Status</th></tr>
+      <tr><td><b>Spar with the Invigilator</b></td><td>Adaptive solo AI sparring</td><td><span class="st st-live">Live</span></td></tr>
+      <tr><td><b>Team Spar</b></td><td>Offline group study</td><td><span class="st st-live">Live</span></td></tr>
+      <tr><td><b>Challenge cards</b></td><td>Viral WhatsApp score-sharing</td><td><span class="st st-live">Live</span></td></tr>
+      <tr><td><b>$5 + Squad pricing</b></td><td>Multi-device group codes</td><td><span class="st st-live">Live</span></td></tr>
+      <tr><td><b>Real-phone squad testing</b></td><td>Confirm multi-device codes across phones</td><td><span class="st st-next">Next</span></td></tr>
+      <tr><td><b>Human maths review</b></td><td>Subject-expert pass over AI questions</td><td><span class="st st-next">Next</span></td></tr>
+      <tr><td><b>Live "Challenge Mode"</b></td><td>Premium online tier with live AI questions</td><td><span class="st st-future">Future</span></td></tr>
+      <tr><td><b>Diaspora readiness report</b></td><td>Shareable progress summary for parents abroad</td><td><span class="st st-future">Future</span></td></tr>
+      <tr><td><b>Referral discounts</b></td><td>"Refer a friend, both save"</td><td><span class="st st-future">Future</span></td></tr>
+      <tr><td><b>More subjects</b></td><td>Combined Science 5006, English 1122</td><td><span class="st st-future">Future</span></td></tr>
+      <tr><td><b>Cambridge IGCSE SKU</b></td><td>Same engine, 0580 content — higher-priced market</td><td><span class="st st-future">Future</span></td></tr>
+      <tr><td><b>Custom domain</b></td><td>crambox.app — fully owned address</td><td><span class="st st-future">Future</span></td></tr>
+      <tr><td><b>More exam boards</b></td><td>WAEC, KNEC, UNEB, CAPS — pan-African</td><td><span class="st st-future">Future</span></td></tr>
+    </table>
+  </section>
+
+  <!-- VISION -->
+  <section id="vision">
+    <h2>The bigger picture</h2>
+    <p class="sub">CramBox is the first product of Curious Inc.</p>
+    <div class="lead">A lean, AI-powered studio proving a repeatable model: one self-contained, offline, AI-authored learning app per exam board, distributed through WhatsApp, sold for the price of a data bundle.</div>
+    <div class="callout">"ZIMSEC pays the bills. Cambridge unlocks the margin. The next boards build the business. CramBox isn't an app — it's a template for affordable, offline, AI-built education across every market the big platforms ignore."</div>
+    <h3>Trust &amp; independence</h3>
+    <ul>
+      <li>CramBox is an <b>independent study tool</b>, not affiliated with or endorsed by ZIMSEC — stated clearly in-app.</li>
+      <li>All questions are <b>original</b>, written to the 4004 syllabus.</li>
+      <li><b>Live:</b> <a href="https://crambox-prep.vercel.app">crambox-prep.vercel.app</a></li>
+    </ul>
+  </section>
+
+  <footer>CramBox · Curious Inc · Complete Overview · 7 June 2026 · Independent study tool, not affiliated with ZIMSEC</footer>
+</div>
+
+<script>
+  document.querySelectorAll('nav button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+      b.classList.add('active');
+      document.getElementById(b.dataset.t).classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>
