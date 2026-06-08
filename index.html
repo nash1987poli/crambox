@@ -745,7 +745,7 @@
     <div class="streak-info">
       <h3>Daily Streak</h3>
       <div class="streak-number" id="streakNum">0</div>
-      <div class="streak-label">days in a row</div>
+      <div class="streak-label">days keeping readiness warm</div>
     </div>
     <div class="streak-dots" id="streakDots"></div>
   </div>
@@ -1376,21 +1376,16 @@ function updateHome() {
   const ml = (s.maths||{}).lessons||[];
   const total = DATA.maths.topics.length;
   document.getElementById('mathsPct').textContent = Math.round((ml.length/total)*100)+'%';
-  // Rank
-  const rank = getRank(s.xp || 0);
+  // Rank — now driven by Exam Readiness, not raw XP (renderReadinessHero persisted overall)
+  const _ov = (getStore().readiness && getStore().readiness.overall) || 0;
+  const rank = readinessRank(_ov);
   document.getElementById('rankTitle').textContent = rank.name;
   document.getElementById('rankTitle').style.color = rank.color;
   const bar = document.getElementById('rankBar');
-  if (rank.next) {
-    const pct = Math.round(((s.xp || 0) - rank.min) / (rank.max - rank.min) * 100);
-    bar.style.width = pct + '%';
-    bar.style.background = rank.color;
-    document.getElementById('rankNext').textContent = (rank.max - (s.xp || 0)) + ' XP to ' + rank.next;
-  } else {
-    bar.style.width = '100%';
-    bar.style.background = rank.color;
-    document.getElementById('rankNext').textContent = 'Maximum rank achieved!';
-  }
+  bar.style.width = _ov + '%';
+  bar.style.background = rank.color;
+  document.getElementById('rankNext').textContent =
+    rank.name === 'Exam Ready' ? 'Exam ready!' : (_ov + '% ready — keep climbing');
 }
 
 // --- Theme ---
@@ -2753,6 +2748,33 @@ function renderReadinessHero() {
   });
 }
 function openReadiness() { openSubject('maths'); } // v1: deep view = curriculum tree with bars
+
+// After a session: award XP scaled to the readiness gained, and fire milestones once.
+function awardReadinessProgress(title) {
+  if (typeof getStore !== 'function') return;
+  var store = getStore();
+  if (!store.readiness) store.readiness = { touched:{}, lastTopicReadiness:{}, overall:0, milestonesSeen:[] };
+  var topics = readinessTopicMeta();
+  var idx = DATA.maths.topics.findIndex(function (t) { return t.title === title; });
+  var before = (store.readiness.lastTopicReadiness && store.readiness.lastTopicReadiness[title]) || 0;
+  var after = topicReadiness(store, idx, title, null);
+  var bonus = xpForReadinessLift(before, after);
+  if (bonus > 0 && typeof addXP === 'function') addXP(bonus, 'Readiness +' + (after - before) + '% · ' + title);
+  if (before < 80 && after >= 80 && store.readiness.milestonesSeen.indexOf(title + ':mastered') === -1) {
+    store.readiness.milestonesSeen.push(title + ':mastered');
+    if (typeof fireConfetti === 'function') fireConfetti();
+    if (typeof showLevelUp === 'function') showLevelUp({ name: title + ' mastered!', color: 'var(--green)', next: null });
+  }
+  var r = examReadiness(store, topics, Date.now(), store.examDate ? Date.parse(store.examDate) : null);
+  var key = 'grade:' + predictedGrade(r.overall);
+  if (r.overall >= 60 && store.readiness.milestonesSeen.indexOf(key) === -1) {
+    store.readiness.milestonesSeen.push(key);
+    if (typeof fireConfetti === 'function') fireConfetti();
+  }
+  store.readiness.lastTopicReadiness[title] = after;
+  store.readiness.overall = r.overall;
+  setStore(store);
+}
 // ===== READINESS MODULE END =====
 
 // ================================================================
@@ -3101,6 +3123,7 @@ function submitPractice(){
     exp.querySelector('pre').innerHTML=q.exp;
   });
   saveScore(subject,practiceTopicIdx,earned,total);
+  if (subject==='maths') awardReadinessProgress(DATA.maths.topics[practiceTopicIdx].title);
   lastResultPct=Math.round(earned/total*100); lastResultType='practice';
   lastResultTopic=DATA[subject].topics[practiceTopicIdx].title;
   setTimeout(()=>showResults(earned,total),500);
