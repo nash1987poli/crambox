@@ -188,6 +188,10 @@
   .cs-info h4 { font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .cs-info p { font-size:11px; color:var(--text2); }
   .cs-best { font-size:11px; font-weight:700; color:var(--gold); flex-shrink:0; }
+  .cs-rd{font-size:12px;font-weight:700;flex-shrink:0;padding:2px 8px;border-radius:20px}
+  .cs-rd.r-strong{background:var(--green-bg);color:var(--green)}
+  .cs-rd.r-mid{background:var(--gold-bg);color:var(--gold)}
+  .cs-rd.r-weak{background:var(--red-bg);color:var(--red)}
   .cs-body { display:none; border-top:1px solid var(--border); }
   .curriculum-section.open .cs-body { display:block; }
   .cs-row {
@@ -2762,11 +2766,14 @@ function openSubject(key) {
   document.getElementById('subjectDesc').textContent = d.desc;
   const done = (s[key]||{}).lessons||[];
   const scores = (s[key]||{}).scores||{};
+  const _rd = examReadiness(s, readinessTopicMeta(), Date.now(), s.examDate ? Date.parse(s.examDate) : null);
   const list = document.getElementById('topicList');
   list.innerHTML = '';
   d.topics.forEach((t, i) => {
     const complete = done.includes(i);
     const score = scores['t'+i];
+    const rv = _rd.perTopic[i].readiness;
+    const rcls = rv >= 80 ? 'r-strong' : rv >= 40 ? 'r-mid' : 'r-weak';
     const steps = (t.steps || []).length;
     const pq = t.practice ? t.practice.length : 0;
     const sec = document.createElement('div');
@@ -2788,7 +2795,7 @@ function openSubject(key) {
         <span class="cs-chevron">&#9654;</span>
         <div class="cs-num ${complete?'done':''}">${complete?'&#10003;':i+1}</div>
         <div class="cs-info"><h4>${t.title}</h4><p>${t.sub}</p></div>
-        ${score!=null?'<span class="cs-best">'+score+'%</span>':''}
+        <span class="cs-rd ${rcls}">${rv}%</span>
       </div><div class="cs-body">${body}</div>`;
     list.appendChild(sec);
   });
