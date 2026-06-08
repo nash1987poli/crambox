@@ -1302,6 +1302,7 @@ function saveScore(subj, idx, earned, total) {
   setStore(s);
   const xp = earned * 5;
   if (xp > 0) addXP(xp, pct + '% — ' + earned + '/' + total);
+  if (subj === 'maths' && DATA.maths.topics[idx]) touchTopic(DATA.maths.topics[idx].title);
   recordStreak();
 }
 
@@ -2327,6 +2328,7 @@ function endBout(handedIn) {
     beatClock: handedIn, readinessAfter, intensityTier: sparTier
   });
   if (marksEarned > 0) addXP(marksEarned * 4 + (handedIn ? 10 : 0), 'Sparring · ' + _grade(pct));
+  Object.keys(byTopic).forEach(function (t) { touchTopic(t); });
   recordStreak();
 
   renderVerdict(pct, marksEarned, marksTotal, correctCount, byTopic, readiness, readinessAfter);
@@ -2673,6 +2675,15 @@ function xpForReadinessLift(before, after) {
   if (lift <= 0) return 0;
   var headroom = Math.max(0, 100 - before) / 100;
   return Math.round(lift * headroom);
+}
+
+// Record that a topic was studied now (drives decay + lift detection). Browser-only.
+function touchTopic(title) {
+  if (!title || typeof getStore !== 'function') return;
+  var s = getStore();
+  if (!s.readiness) s.readiness = { touched: {}, lastTopicReadiness: {}, overall: 0, milestonesSeen: [] };
+  s.readiness.touched[title] = new Date().toISOString();
+  setStore(s);
 }
 // ===== READINESS MODULE END =====
 
@@ -4096,6 +4107,7 @@ function checkDrill() {
 
   if (isCorrect) {
     drillCorrect++; drillStreak++;
+    if (typeof drillTopic !== 'undefined' && drillTopic && drillTopic.name) touchTopic(drillTopic.name);
     inp.style.borderColor = 'var(--green)';
     inp.style.background = 'var(--green-bg)';
     fb.textContent = 'Correct!';
