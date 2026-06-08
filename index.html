@@ -2603,6 +2603,19 @@ function teamNewGroup() {
 // ===== TEAM SPAR MODULE END =====
 
 // ===== READINESS MODULE START =====
+function predictedGrade(pct) {
+  if (pct >= 75) return 'A'; if (pct >= 60) return 'B'; if (pct >= 50) return 'C';
+  if (pct >= 40) return 'D'; if (pct >= 30) return 'E'; return 'U';
+}
+// Readiness-driven rank (replaces the XP-based source for the home rank label).
+function readinessRank(pct) {
+  if (pct >= 85) return { name: 'Exam Ready', color: 'var(--green)', min: 85 };
+  if (pct >= 70) return { name: 'Diamond',    color: 'var(--blue)',  min: 70 };
+  if (pct >= 55) return { name: 'Gold',       color: 'var(--gold)',  min: 55 };
+  if (pct >= 40) return { name: 'Silver',     color: '#aaa',         min: 40 };
+  if (pct >= 20) return { name: 'Bronze',     color: '#cd7f32',      min: 20 };
+  return { name: 'Beginner', color: 'var(--text2)', min: 0 };
+}
 // ===== READINESS MODULE END =====
 
 // ================================================================

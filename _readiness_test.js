@@ -32,5 +32,20 @@ function run() {
 module.exports = { test, run, ctx, assert };
 const H = module.exports;
 
+H.test('predictedGrade: bands at boundaries', () => {
+  H.assert(H.ctx.predictedGrade(75) === 'A');
+  H.assert(H.ctx.predictedGrade(74) === 'B');
+  H.assert(H.ctx.predictedGrade(60) === 'B');
+  H.assert(H.ctx.predictedGrade(50) === 'C');
+  H.assert(H.ctx.predictedGrade(40) === 'D');
+  H.assert(H.ctx.predictedGrade(30) === 'E');
+  H.assert(H.ctx.predictedGrade(29) === 'U');
+});
+H.test('readinessRank: maps % to rank name', () => {
+  H.assert(H.ctx.readinessRank(0).name === 'Beginner');
+  H.assert(H.ctx.readinessRank(100).name === 'Exam Ready');
+  H.assert(typeof H.ctx.readinessRank(55).name === 'string');
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();
