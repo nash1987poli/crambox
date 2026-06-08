@@ -2631,6 +2631,19 @@ function topicReadiness(store, idx, title, drillKey) {
   const wsum = out.reduce((a, x) => a + x[1], 0);
   return Math.round(out.reduce((a, x) => a + x[0] * x[1], 0) / wsum);
 }
+
+// Gentle, spaced-repetition decay. Near the exam (<=21 days) grace shrinks and the rate doubles.
+function applyDecay(base, lastTouched, now, daysToExam) {
+  if (!base || !lastTouched) return base || 0;
+  var finalStretch = (typeof daysToExam === 'number' && daysToExam <= 21);
+  var grace = finalStretch ? 7 : 14;
+  var rate = finalStretch ? 2 : 1; // % per day past grace
+  var daysIdle = Math.floor((now - lastTouched) / 86400000);
+  if (daysIdle <= grace) return base;
+  var loss = (daysIdle - grace) * rate;
+  var floor = Math.round(base * 0.5);
+  return Math.max(floor, base - loss);
+}
 // ===== READINESS MODULE END =====
 
 // ================================================================

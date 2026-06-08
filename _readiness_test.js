@@ -62,5 +62,27 @@ H.test('topicReadiness: untouched topic = 0', () => {
   H.assert(H.ctx.topicReadiness(store, 5, 'Vectors') === 0);
 });
 
+const DAY = 86400000;
+H.test('applyDecay: no decay within grace window', () => {
+  const now = Date.UTC(2026,0,20), touched = now - 10*DAY;
+  H.assert(H.ctx.applyDecay(80, touched, now, 999) === 80, 'within 14d grace');
+});
+H.test('applyDecay: linear decay after grace, floored at 50% base', () => {
+  const now = Date.UTC(2026,0,20);
+  const t24 = now - 24*DAY;
+  H.assert(H.ctx.applyDecay(80, t24, now, 999) === 70, 'got ' + H.ctx.applyDecay(80,t24,now,999));
+  const tOld = now - 400*DAY;
+  H.assert(H.ctx.applyDecay(80, tOld, now, 999) === 40, 'floor 50% of 80');
+});
+H.test('applyDecay: accelerates near exam', () => {
+  const now = Date.UTC(2026,0,20);
+  const t = now - 10*DAY;
+  const v = H.ctx.applyDecay(80, t, now, 14);
+  H.assert(v === 74, 'got ' + v);
+});
+H.test('applyDecay: base 0 stays 0', () => {
+  H.assert(H.ctx.applyDecay(0, Date.UTC(2026,0,1), Date.UTC(2026,0,20), 999) === 0);
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();
