@@ -2889,7 +2889,7 @@ function openSubject(key) {
     sec.innerHTML = `<div class="cs-head" onclick="this.parentElement.classList.toggle('open')">
         <span class="cs-chevron">&#9654;</span>
         <div class="cs-num ${complete?'done':''}">${complete?'&#10003;':i+1}</div>
-        <div class="cs-info"><h4>${(ZIMSEC_WEIGHTS[t.title]||{}).freq>=70?'🔥 ':''}${t.title}</h4><p>${t.sub}</p></div>
+        <div class="cs-info"><h4>${(ZIMSEC_WEIGHTS[t.title]||{}).freq>=80?'🔥 ':''}${t.title}</h4><p>${t.sub}</p></div>
         <span class="cs-rd ${rcls}">${rv}%</span>
       </div><div class="cs-body">${body}</div>`;
     list.appendChild(sec);

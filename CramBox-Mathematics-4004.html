@@ -2630,6 +2630,56 @@ function teamNewGroup() {
 // ===== TEAM SPAR MODULE END =====
 
 // ===== READINESS MODULE START =====
+// --- ZIMSEC Intelligence Layer ---
+// Per-topic exam importance: freq (relative frequency 0-100), marks (typical), diff (1-3).
+// v1 values are informed estimates (seeded from the 4075 specimen paper + O-Level frequency),
+// flagged for a maths-expert to confirm. Wrong weights only mis-prioritise, never mis-grade.
+var ZIMSEC_VERIFIED = false;
+var ZIMSEC_WEIGHTS = {
+  'Solving Linear Equations': { freq: 85, marks: 6, diff: 1 },
+  'Simultaneous Equations': { freq: 80, marks: 6, diff: 2 },
+  'Area and Perimeter': { freq: 88, marks: 10, diff: 2 },
+  'Fractions and Percentages': { freq: 90, marks: 8, diff: 1 },
+  'Mean, Median and Mode': { freq: 80, marks: 6, diff: 1 },
+  'Factorising Quadratics': { freq: 75, marks: 6, diff: 2 },
+  'Indices (Index Laws)': { freq: 70, marks: 4, diff: 2 },
+  'Matrices': { freq: 70, marks: 8, diff: 2 },
+  'Sets and Venn Diagrams': { freq: 78, marks: 6, diff: 1 },
+  'Trigonometry (Right-Angled)': { freq: 85, marks: 10, diff: 3 },
+  'Volume and Surface Area': { freq: 82, marks: 10, diff: 2 },
+  'Variation': { freq: 60, marks: 6, diff: 2 },
+  'Standard Form': { freq: 75, marks: 4, diff: 1 },
+  'Number Bases': { freq: 65, marks: 4, diff: 2 },
+  'Ratio, Rate and Proportion': { freq: 80, marks: 6, diff: 1 },
+  'Approximation and Accuracy': { freq: 70, marks: 3, diff: 1 },
+  'Financial Mathematics': { freq: 88, marks: 10, diff: 2 },
+  'Expanding and Simplifying': { freq: 75, marks: 5, diff: 1 },
+  'Algebraic Fractions': { freq: 65, marks: 5, diff: 2 },
+  'Change of Subject': { freq: 60, marks: 4, diff: 2 },
+  'Quadratic Formula': { freq: 65, marks: 6, diff: 2 },
+  'Inequalities and Linear Programming': { freq: 70, marks: 8, diff: 3 },
+  'Functions and Sequences': { freq: 65, marks: 6, diff: 2 },
+  'Angles and Polygons': { freq: 78, marks: 8, diff: 2 },
+  'Bearings': { freq: 70, marks: 8, diff: 3 },
+  'Circle Theorems': { freq: 72, marks: 8, diff: 3 },
+  'Similarity and Congruence': { freq: 60, marks: 6, diff: 2 },
+  'Constructions and Loci': { freq: 65, marks: 8, diff: 2 },
+  'Sine and Cosine Rule': { freq: 68, marks: 8, diff: 3 },
+  'Probability': { freq: 78, marks: 6, diff: 2 },
+  'Statistical Graphs': { freq: 80, marks: 10, diff: 2 },
+  'Cumulative Frequency': { freq: 70, marks: 10, diff: 2 },
+  'Coordinate Geometry': { freq: 72, marks: 6, diff: 2 },
+  'Functional Graphs': { freq: 75, marks: 10, diff: 3 },
+  'Travel Graphs': { freq: 65, marks: 8, diff: 2 },
+  'Vectors': { freq: 70, marks: 8, diff: 3 },
+  'Transformations': { freq: 75, marks: 10, diff: 3 }
+};
+// Importance = (freq/100) * marks. Missing topic -> neutral default (.5 * 6 = 3).
+function topicExamWeight(weights, title) {
+  var w = (weights && weights[title]) || { freq: 50, marks: 6, diff: 2 };
+  return (w.freq / 100) * w.marks;
+}
+
 function predictedGrade(pct) {
   if (pct >= 75) return 'A'; if (pct >= 60) return 'B'; if (pct >= 50) return 'C';
   if (pct >= 40) return 'D'; if (pct >= 30) return 'E'; return 'U';
@@ -2673,18 +2723,28 @@ function applyDecay(base, lastTouched, now, daysToExam) {
 }
 
 // Roll up per-topic readiness (with decay) into the headline number + per-topic rows.
-function examReadiness(store, topics, now, examDate) {
+// Optional `weights` (ZIMSEC_WEIGHTS) makes the overall a weighted average by exam importance.
+function examReadiness(store, topics, now, examDate, weights) {
   var touched = (store && store.readiness && store.readiness.touched) || {};
   var daysToExam = examDate ? Math.ceil((examDate - now) / 86400000) : null;
   var perTopic = topics.map(function (t, i) {
     var base = topicReadiness(store, i, t.title, t.drillKey);
     var last = touched[t.title] ? Date.parse(touched[t.title]) : null;
     var r = last ? applyDecay(base, last, now, daysToExam) : base;
-    return { idx: i, title: t.title, readiness: r, marks: t.marks || 0 };
+    var w = weights ? topicExamWeight(weights, t.title) : 1;
+    return { idx: i, title: t.title, readiness: r, marks: t.marks || 0, weight: w };
   });
-  var overall = perTopic.length
-    ? Math.round(perTopic.reduce(function (a, x) { return a + x.readiness; }, 0) / perTopic.length)
-    : 0;
+  var overall = 0;
+  if (perTopic.length) {
+    if (weights) {
+      var wsum = perTopic.reduce(function (a, x) { return a + x.weight; }, 0);
+      overall = wsum > 0
+        ? Math.round(perTopic.reduce(function (a, x) { return a + x.readiness * x.weight; }, 0) / wsum)
+        : Math.round(perTopic.reduce(function (a, x) { return a + x.readiness; }, 0) / perTopic.length);
+    } else {
+      overall = Math.round(perTopic.reduce(function (a, x) { return a + x.readiness; }, 0) / perTopic.length);
+    }
+  }
   var mastered = perTopic.filter(function (x) { return x.readiness >= 80; }).length;
   return { perTopic: perTopic, overall: overall, mastered: mastered, total: perTopic.length };
 }
@@ -2692,6 +2752,17 @@ function examReadiness(store, topics, now, examDate) {
 function studyNext(perTopic, n) {
   return perTopic.slice().sort(function (a, b) {
     return a.readiness - b.readiness || b.marks - a.marks || a.idx - b.idx;
+  }).slice(0, n);
+}
+// Biggest-win recommendation: rank un-mastered topics by expected mark impact
+// = (how weak) x (exam importance). Each row gets marksAtStake for "worth ~N marks" copy.
+function studyImpact(perTopic, n) {
+  return perTopic.filter(function (t) { return t.readiness < 80; }).map(function (t) {
+    var wt = (typeof t.weight === 'number') ? t.weight : 3;
+    var gap = (100 - t.readiness) / 100;
+    return Object.assign({}, t, { impact: gap * wt, marksAtStake: Math.round(gap * (t.marks || 0)) });
+  }).sort(function (a, b) {
+    return b.impact - a.impact || a.readiness - b.readiness || a.idx - b.idx;
   }).slice(0, n);
 }
 // Bonus XP scaled to the readiness gap closed; near-zero once a topic is mastered.
@@ -2724,7 +2795,7 @@ function renderReadinessHero() {
   var store = getStore();
   var topics = readinessTopicMeta();
   var examDate = store.examDate ? Date.parse(store.examDate) : null;
-  var r = examReadiness(store, topics, Date.now(), examDate);
+  var r = examReadiness(store, topics, Date.now(), examDate, ZIMSEC_WEIGHTS);
   if (!store.readiness) store.readiness = { touched:{}, lastTopicReadiness:{}, overall:0, milestonesSeen:[] };
   store.readiness.overall = r.overall; setStore(store);
 
@@ -2734,15 +2805,17 @@ function renderReadinessHero() {
   document.getElementById('rhFill').style.strokeDashoffset = off;
   document.getElementById('rhSub').textContent = r.mastered + ' / ' + r.total + ' topics mastered';
   var grade = predictedGrade(r.overall);
+  var next = studyImpact(r.perTopic, 3);
+  var top = next[0];
   document.getElementById('rhCoach').textContent =
     r.overall === 0 ? 'Take a session to find your starting point.'
-    : 'Tracking a ' + grade + ' — focus your weak topics to climb.';
-  var next = studyNext(r.perTopic, 3).filter(function (t) { return t.readiness < 80; });
+    : top ? ('Biggest win: ' + top.title + ' — worth ~' + top.marksAtStake + ' marks.')
+    : ('Tracking a ' + grade + ' — strong across the board!');
   var nx = document.getElementById('rhNext'); nx.innerHTML = '';
   next.forEach(function (t) {
     var c = document.createElement('span');
     c.className = 'rh-chip' + (t.readiness >= 40 ? ' amber' : '');
-    c.textContent = t.title + ' ' + t.readiness + '%';
+    c.textContent = (t.marksAtStake >= 5 ? '🔥 ' : '') + t.title + ' ' + t.readiness + '%';
     c.onclick = function (e) { e.stopPropagation(); openTopic(t.idx, 'lesson'); };
     nx.appendChild(c);
   });
@@ -2788,7 +2861,7 @@ function openSubject(key) {
   document.getElementById('subjectDesc').textContent = d.desc;
   const done = (s[key]||{}).lessons||[];
   const scores = (s[key]||{}).scores||{};
-  const _rd = examReadiness(s, readinessTopicMeta(), Date.now(), s.examDate ? Date.parse(s.examDate) : null);
+  const _rd = examReadiness(s, readinessTopicMeta(), Date.now(), s.examDate ? Date.parse(s.examDate) : null, ZIMSEC_WEIGHTS);
   const list = document.getElementById('topicList');
   list.innerHTML = '';
   d.topics.forEach((t, i) => {
@@ -2816,7 +2889,7 @@ function openSubject(key) {
     sec.innerHTML = `<div class="cs-head" onclick="this.parentElement.classList.toggle('open')">
         <span class="cs-chevron">&#9654;</span>
         <div class="cs-num ${complete?'done':''}">${complete?'&#10003;':i+1}</div>
-        <div class="cs-info"><h4>${t.title}</h4><p>${t.sub}</p></div>
+        <div class="cs-info"><h4>${(ZIMSEC_WEIGHTS[t.title]||{}).freq>=80?'🔥 ':''}${t.title}</h4><p>${t.sub}</p></div>
         <span class="cs-rd ${rcls}">${rv}%</span>
       </div><div class="cs-body">${body}</div>`;
     list.appendChild(sec);
