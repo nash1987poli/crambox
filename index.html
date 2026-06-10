@@ -2795,7 +2795,7 @@ function renderReadinessHero() {
   var store = getStore();
   var topics = readinessTopicMeta();
   var examDate = store.examDate ? Date.parse(store.examDate) : null;
-  var r = examReadiness(store, topics, Date.now(), examDate);
+  var r = examReadiness(store, topics, Date.now(), examDate, ZIMSEC_WEIGHTS);
   if (!store.readiness) store.readiness = { touched:{}, lastTopicReadiness:{}, overall:0, milestonesSeen:[] };
   store.readiness.overall = r.overall; setStore(store);
 
@@ -2805,15 +2805,17 @@ function renderReadinessHero() {
   document.getElementById('rhFill').style.strokeDashoffset = off;
   document.getElementById('rhSub').textContent = r.mastered + ' / ' + r.total + ' topics mastered';
   var grade = predictedGrade(r.overall);
+  var next = studyImpact(r.perTopic, 3);
+  var top = next[0];
   document.getElementById('rhCoach').textContent =
     r.overall === 0 ? 'Take a session to find your starting point.'
-    : 'Tracking a ' + grade + ' — focus your weak topics to climb.';
-  var next = studyNext(r.perTopic, 3).filter(function (t) { return t.readiness < 80; });
+    : top ? ('Biggest win: ' + top.title + ' — worth ~' + top.marksAtStake + ' marks.')
+    : ('Tracking a ' + grade + ' — strong across the board!');
   var nx = document.getElementById('rhNext'); nx.innerHTML = '';
   next.forEach(function (t) {
     var c = document.createElement('span');
     c.className = 'rh-chip' + (t.readiness >= 40 ? ' amber' : '');
-    c.textContent = t.title + ' ' + t.readiness + '%';
+    c.textContent = (t.marksAtStake >= 5 ? '🔥 ' : '') + t.title + ' ' + t.readiness + '%';
     c.onclick = function (e) { e.stopPropagation(); openTopic(t.idx, 'lesson'); };
     nx.appendChild(c);
   });
@@ -2859,7 +2861,7 @@ function openSubject(key) {
   document.getElementById('subjectDesc').textContent = d.desc;
   const done = (s[key]||{}).lessons||[];
   const scores = (s[key]||{}).scores||{};
-  const _rd = examReadiness(s, readinessTopicMeta(), Date.now(), s.examDate ? Date.parse(s.examDate) : null);
+  const _rd = examReadiness(s, readinessTopicMeta(), Date.now(), s.examDate ? Date.parse(s.examDate) : null, ZIMSEC_WEIGHTS);
   const list = document.getElementById('topicList');
   list.innerHTML = '';
   d.topics.forEach((t, i) => {
@@ -2887,7 +2889,7 @@ function openSubject(key) {
     sec.innerHTML = `<div class="cs-head" onclick="this.parentElement.classList.toggle('open')">
         <span class="cs-chevron">&#9654;</span>
         <div class="cs-num ${complete?'done':''}">${complete?'&#10003;':i+1}</div>
-        <div class="cs-info"><h4>${t.title}</h4><p>${t.sub}</p></div>
+        <div class="cs-info"><h4>${(ZIMSEC_WEIGHTS[t.title]||{}).freq>=70?'🔥 ':''}${t.title}</h4><p>${t.sub}</p></div>
         <span class="cs-rd ${rcls}">${rv}%</span>
       </div><div class="cs-body">${body}</div>`;
     list.appendChild(sec);
