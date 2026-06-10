@@ -1,0 +1,93 @@
+CRAMBOX_MATHEMATICS_ENGINE_ARCHITECTURE.md
+Purpose
+This document defines the mathematical architecture of Crambox.
+The objective is to ensure:
+· Correct answers · Verified solutions · Unlimited question generation · Offline operation · ZIMSEC alignment · Exam readiness accuracy Mathematical correctness is a non-negotiable requirement.
+Core Philosophy
+Never trust generated answers.
+Always verify generated answers.
+The architecture must separate:
+1. Question Generation 2. Mathematical Solving 3. Verification 4. Readiness Calculation These are independent systems.
+Why Traditional Question Banks Fail
+Traditional systems:
+Question  Stored Answer  Student
+Problems:
+· Limited questions · Repetition · Human error · Large file sizes
+1
+
+Crambox uses: Question DNA  Generator  Verification Engine  Student Benefits:
+· Infinite questions · Smaller file size · Better scalability · Higher accuracy
+Mathematics Technology Stack
+Runtime Stack
+Runs directly inside the HTML. Student device performs calculations. No internet required.
+Library 1
+MathJS Purpose:
+· Arithmetic · Percentages · Ratios · Financial Mathematics · Statistics · Trigonometry · Matrices · Formula evaluation Examples: Evaluate: 2 × (5 + 3) Evaluate: 10 × tan(35)
+2
+
+Calculate: Mean Median Standard deviation Matrix operations MathJS is the primary numerical engine.
+Library 2
+Nerdamer Purpose:
+· Algebra · Factorisation · Simultaneous Equations · Quadratic Equations · Surds · Formula manipulation · Symbolic mathematics Examples: Factor: x² + 9x + 20 Solve: 2x + 5 = 17 Simplify: 72 Nerdamer is the symbolic engine.
+Library 3
+KaTeX Purpose:
+3
+
+Display mathematics professionally. Examples: Fractions Surds Matrices Algebraic expressions Formula sheets KaTeX does not calculate. KaTeX only displays.
+Library 4
+Dexie.js Purpose: Offline storage. Stores:
+· Progress · Readiness · Mastery · Generator history · Assessments Dexie is the student memory system.
+Future Library
+JSXGraph Purpose: Interactive Geometry Interactive Graphs Transformations
+4
+
+Coordinate Geometry Phase 2 feature. Not required for launch.
+Development Verification Layer
+Used during content development. Not shipped to students.
+SymPy
+Purpose: Master verification engine. Used to validate:
+· Generators · Formula correctness · Expected answers Workflow: Generator  Generate Question  SymPy Solves  Compare Expected Answer  Approve Generator Only approved generators enter production.
+Engine Architecture
+Question DNA Engine
+Stores: Topic Difficulty Variables Formula
+5
+
+Validator Explanation Example: { topic: "factorisation", difficulty: "medium", variables: { a: 4, b: 5 }, formula: "(x+a)(x+b)" } Questions are generated. Questions are never stored in bulk.
+Generator Engine
+Purpose: Create infinite questions. Example: Input: a=4b=5 Output: Factorise: x² + 9x + 20 Generator only creates. Generator does not verify.
+Solver Engine
+Purpose: Solve mathematically. Example: Nerdamer.factor() Produces:
+6
+
+(x+4)(x+5) Solver determines mathematical truth.
+Verification Engine
+Purpose: Confirm correctness. Workflow: Generate  Solve  Verify  Pass  Student If verification fails: Question rejected.
+Explanation Engine
+Purpose: Teach. Uses verified answer. Can provide:
+· Text explanation · Voice explanation · Step-by-step solution Explanation Engine never overrides verification.
+Readiness Engine Integration
+Every question contributes to readiness. Question Difficulty + Topic Weight + Exam Frequency
+7
+
++ Student Accuracy  Readiness Impact Example: Circle Geometry Difficulty: High Frequency: High Impact: High Correct answer increases readiness more.
+ZIMSEC Intelligence Layer
+Every topic receives: Frequency Score Difficulty Score Marks Weight Readiness Weight Example: Topic: Mensuration Frequency: 91% Marks Weight: 12 Difficulty: High Readiness Weight: High This influences recommendations.
+8
+
+Generator Quality Assurance
+Before release: Generate: 1000 Questions For each question: Generate  Solve  Verify  Pass Required: 100% Verification Pass Rate
+Runtime Safety Rules
+If: Undefined Answer or Divide By Zero or Impossible Geometry or Invalid Triangle or Verification Failure Then: Question Disabled Student Never Sees It
+9
+
+Readiness First Principle
+The mathematics engine exists to support: Exam Readiness Not question generation. Not AI. Not gamification. Every mathematical system must answer: Does this improve readiness accuracy? If not: Lower priority.
+Launch Architecture
+HTML  MathJS  Nerdamer  KaTeX  Dexie  Readiness Engine Target File Size: 6­8 MB Target Accuracy: 99%+ Target Experience: Offline Instant ZIMSEC Ready Readiness Focused
+10
+
+Crambox Mathematics Principle
+Question Generator Creates Math Engine Solves Verification Engine Decides Readiness Engine Prioritizes Student Improves
+11
+
+
