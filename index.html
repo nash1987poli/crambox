@@ -2723,18 +2723,28 @@ function applyDecay(base, lastTouched, now, daysToExam) {
 }
 
 // Roll up per-topic readiness (with decay) into the headline number + per-topic rows.
-function examReadiness(store, topics, now, examDate) {
+// Optional `weights` (ZIMSEC_WEIGHTS) makes the overall a weighted average by exam importance.
+function examReadiness(store, topics, now, examDate, weights) {
   var touched = (store && store.readiness && store.readiness.touched) || {};
   var daysToExam = examDate ? Math.ceil((examDate - now) / 86400000) : null;
   var perTopic = topics.map(function (t, i) {
     var base = topicReadiness(store, i, t.title, t.drillKey);
     var last = touched[t.title] ? Date.parse(touched[t.title]) : null;
     var r = last ? applyDecay(base, last, now, daysToExam) : base;
-    return { idx: i, title: t.title, readiness: r, marks: t.marks || 0 };
+    var w = weights ? topicExamWeight(weights, t.title) : 1;
+    return { idx: i, title: t.title, readiness: r, marks: t.marks || 0, weight: w };
   });
-  var overall = perTopic.length
-    ? Math.round(perTopic.reduce(function (a, x) { return a + x.readiness; }, 0) / perTopic.length)
-    : 0;
+  var overall = 0;
+  if (perTopic.length) {
+    if (weights) {
+      var wsum = perTopic.reduce(function (a, x) { return a + x.weight; }, 0);
+      overall = wsum > 0
+        ? Math.round(perTopic.reduce(function (a, x) { return a + x.readiness * x.weight; }, 0) / wsum)
+        : Math.round(perTopic.reduce(function (a, x) { return a + x.readiness; }, 0) / perTopic.length);
+    } else {
+      overall = Math.round(perTopic.reduce(function (a, x) { return a + x.readiness; }, 0) / perTopic.length);
+    }
+  }
   var mastered = perTopic.filter(function (x) { return x.readiness >= 80; }).length;
   return { perTopic: perTopic, overall: overall, mastered: mastered, total: perTopic.length };
 }
@@ -2742,6 +2752,17 @@ function examReadiness(store, topics, now, examDate) {
 function studyNext(perTopic, n) {
   return perTopic.slice().sort(function (a, b) {
     return a.readiness - b.readiness || b.marks - a.marks || a.idx - b.idx;
+  }).slice(0, n);
+}
+// Biggest-win recommendation: rank un-mastered topics by expected mark impact
+// = (how weak) x (exam importance). Each row gets marksAtStake for "worth ~N marks" copy.
+function studyImpact(perTopic, n) {
+  return perTopic.filter(function (t) { return t.readiness < 80; }).map(function (t) {
+    var wt = (typeof t.weight === 'number') ? t.weight : 3;
+    var gap = (100 - t.readiness) / 100;
+    return Object.assign({}, t, { impact: gap * wt, marksAtStake: Math.round(gap * (t.marks || 0)) });
+  }).sort(function (a, b) {
+    return b.impact - a.impact || a.readiness - b.readiness || a.idx - b.idx;
   }).slice(0, n);
 }
 // Bonus XP scaled to the readiness gap closed; near-zero once a topic is mastered.

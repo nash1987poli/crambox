@@ -122,5 +122,28 @@ H.test('ZIMSEC_WEIGHTS: an object covering topics with freq/marks/diff', () => {
   H.assert(typeof sample.freq === 'number' && typeof sample.marks === 'number', 'well-formed');
 });
 
+H.test('examReadiness: weighted overall favours high-weight topics; no-weights = plain mean', () => {
+  const topics = [{title:'A',marks:10},{title:'B',marks:10}];
+  const store = { maths:{scores:{t0:90,t1:10}}, sparring:{readiness:{}}, drillMastery:{}, readiness:{touched:{}} };
+  const now = Date.UTC(2026,0,20);
+  const weights = { A:{freq:90,marks:10,diff:2}, B:{freq:20,marks:2,diff:1} };
+  const rw = H.ctx.examReadiness(store, topics, now, null, weights);
+  H.assert(rw.overall === 87, 'weighted got ' + rw.overall);            // pulled toward mastered high-weight A
+  H.assert(typeof rw.perTopic[0].weight === 'number', 'perTopic carries weight');
+  const rm = H.ctx.examReadiness(store, topics, now, null);             // no weights -> plain mean
+  H.assert(rm.overall === 50, 'plain mean got ' + rm.overall);
+});
+H.test('studyImpact: weak high-weight beats weaker low-weight; mastered excluded; marksAtStake', () => {
+  const perTopic = [
+    {idx:0,title:'A',readiness:30,marks:10,weight:9},
+    {idx:1,title:'B',readiness:20,marks:2,weight:0.4},
+    {idx:2,title:'C',readiness:90,marks:10,weight:9}
+  ];
+  const top = H.ctx.studyImpact(perTopic, 3);
+  H.assert(top.length === 2, 'mastered C excluded, got ' + top.length);
+  H.assert(top[0].title === 'A', 'high-weight weak first, got ' + top[0].title);
+  H.assert(top[0].marksAtStake === 7, 'A marks at stake = round(.7*10)=7, got ' + top[0].marksAtStake);
+});
+
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
 H.run();
