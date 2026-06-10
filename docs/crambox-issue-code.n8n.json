@@ -1,0 +1,96 @@
+{
+  "name": "CramBox — Issue & Email Code",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Get CramBox Access",
+        "formDescription": "Enter your details to receive your activation code.",
+        "formFields": {
+          "values": [
+            { "fieldLabel": "Name", "requiredField": true },
+            { "fieldLabel": "Email", "fieldType": "email", "requiredField": true },
+            { "fieldLabel": "Plan", "fieldType": "dropdown", "fieldOptions": { "values": [ { "option": "Solo" }, { "option": "Squad-3" }, { "option": "Squad-5" } ] }, "requiredField": true },
+            { "fieldLabel": "EcoCash Reference", "requiredField": true }
+          ]
+        },
+        "options": {}
+      },
+      "id": "form-trigger-1",
+      "name": "Get Access Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.1,
+      "position": [ -40, 300 ],
+      "webhookId": "crambox-get-access"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "asg-1", "name": "maxDevices", "type": "number", "value": "={{ $json.Plan === 'Squad-5' ? 5 : ($json.Plan === 'Squad-3' ? 3 : 1) }}" }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "set-maxdevices-1",
+      "name": "Set maxDevices",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [ 180, 300 ]
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "YOUR_EMAIL@gmail.com",
+        "subject": "Approve CramBox order?",
+        "message": "={{ $('Get Access Form').item.json.Name }} ({{ $('Get Access Form').item.json.Email }}) paid ref {{ $('Get Access Form').item.json['EcoCash Reference'] }} for {{ $('Get Access Form').item.json.Plan }}.\n\nClick Approve to issue and email the code.",
+        "responseType": "approval",
+        "options": {}
+      },
+      "id": "approval-1",
+      "name": "Approve order (you)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [ 400, 300 ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "PASTE_YOUR_APPS_SCRIPT_URL_HERE",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [ { "name": "Content-Type", "value": "text/plain;charset=utf-8" } ] },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"issue\",\n  \"key\": \"PASTE_YOUR_SECRET_HERE\",\n  \"name\": \"{{ $('Get Access Form').item.json.Name }}\",\n  \"email\": \"{{ $('Get Access Form').item.json.Email }}\",\n  \"maxDevices\": {{ $('Set maxDevices').item.json.maxDevices }}\n}",
+        "options": {}
+      },
+      "id": "http-issue-1",
+      "name": "Issue Code (Apps Script)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 640, 300 ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get Access Form').item.json.Email }}",
+        "subject": "Your CramBox activation code 🎓",
+        "message": "=Hi {{ $('Get Access Form').item.json.Name }},\n\nWelcome to CramBox! Your activation code is:\n\n    {{ $json.code }}\n\nHow to use it:\n1. Open https://crambox-prep.vercel.app on your phone\n2. Enter the code above\n3. Study offline — no data needed after the first load\n\nStudying with friends? Ask about Squad codes (cheaper per person).\nGood luck! 🔥",
+        "options": {}
+      },
+      "id": "gmail-send-1",
+      "name": "Email the Code",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [ 880, 300 ]
+    }
+  ],
+  "connections": {
+    "Get Access Form": { "main": [ [ { "node": "Set maxDevices", "type": "main", "index": 0 } ] ] },
+    "Set maxDevices": { "main": [ [ { "node": "Approve order (you)", "type": "main", "index": 0 } ] ] },
+    "Approve order (you)": { "main": [ [ { "node": "Issue Code (Apps Script)", "type": "main", "index": 0 } ] ] },
+    "Issue Code (Apps Script)": { "main": [ [ { "node": "Email the Code", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false,
+  "pinData": {}
+}
