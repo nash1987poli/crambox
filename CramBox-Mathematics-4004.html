@@ -1977,6 +1977,52 @@ const DATA = {
           { q:'Rotate (2, 5) by 180&#176; about the origin.', type:'mcq', opts:['(5, 2)','(-2, -5)','(-2, 5)','(2, -5)'], ans:1, marks:3, exp:'180&#176; about O: (x,y) &#8594; (-x,-y) = (-2,-5)' },
           { q:'Reflect the point (4, 1) in the y-axis.', type:'mcq', opts:['(4, -1)','(-4, 1)','(-4, -1)','(1, 4)'], ans:1, marks:2, exp:'In y-axis: (x, y) &#8594; (-x, y) = (-4, 1)' }
         ]
+      },
+      {
+        title:'Numbers: Factors, HCF & LCM', sub:'Numbers — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- Prime factorisation --</span>\n\nBreak a number into a product of PRIMES.\n\n  <span class="number">48</span> = 2 &#215; 24 = 2 &#215; 2 &#215; 12 ...\n  <span class="result">48 = 2&#8308; &#215; 3</span>\n\n<span class="important">Keep dividing by the smallest prime that fits.</span>', n:"Prime factorisation means writing a number as a product of prime numbers. Keep dividing by the smallest prime that fits. 48 equals 2 to the power 4, times 3." },
+          { w:'<span class="comment">-- HCF: Highest Common Factor --</span>\n\nThe BIGGEST number that divides into both.\n\n  24 = 2&#179; &#215; 3\n  36 = 2&#178; &#215; 3&#178;\n\nTake the LOWEST power of each common prime:\n  <span class="result">HCF = 2&#178; &#215; 3 = 12</span>', n:"The Highest Common Factor is the biggest number that divides into both. Write each as prime factors, then take the lowest power of each shared prime. For 24 and 36, the HCF is 12." },
+          { w:'<span class="comment">-- LCM: Lowest Common Multiple --</span>\n\nThe SMALLEST number both divide into.\n\n  24 = 2&#179; &#215; 3\n  36 = 2&#178; &#215; 3&#178;\n\nTake the HIGHEST power of every prime:\n  <span class="result">LCM = 2&#179; &#215; 3&#178; = 72</span>', n:"The Lowest Common Multiple is the smallest number that both divide into. Take the highest power of every prime that appears. For 24 and 36, the LCM is 72." },
+          { w:'<span class="comment">-- Quick check --</span>\n\nFor any two numbers:\n  <span class="highlight">HCF &#215; LCM = product of the two numbers</span>\n\n  12 &#215; 72 = 864\n  24 &#215; 36 = 864  &#10003;', n:"A useful check: the HCF times the LCM always equals the product of the two original numbers. For 24 and 36, both give 864." }
+        ],
+        practice: [
+          { q:'Find the HCF of 12 and 18.', type:'mcq', opts:['2','3','6','36'], ans:2, marks:2, exp:'12=2&#178;&#215;3, 18=2&#215;3&#178;. Common: 2&#215;3 = 6' },
+          { q:'Find the LCM of 4 and 6.', type:'mcq', opts:['2','12','24','10'], ans:1, marks:2, exp:'4=2&#178;, 6=2&#215;3. LCM = 2&#178;&#215;3 = 12' },
+          { q:'Express 48 as a product of primes in index form.', type:'mcq', opts:['2&#179; &#215; 3', '2&#8308; &#215; 3', '2&#178; &#215; 3&#178;', '2 &#215; 3&#179;'], ans:1, marks:2, exp:'48 = 16 &#215; 3 = 2&#8308; &#215; 3' },
+          { q:'Find the HCF of 24 and 36.', type:'mcq', opts:['6','12','72','4'], ans:1, marks:3, exp:'24=2&#179;&#215;3, 36=2&#178;&#215;3&#178;. HCF = 2&#178;&#215;3 = 12' },
+          { q:'Find the LCM of 24 and 36.', type:'mcq', opts:['12','144','72','60'], ans:2, marks:3, exp:'Highest powers: 2&#179;&#215;3&#178; = 72' }
+        ]
+      },
+      {
+        title:'Time and Measures', sub:'Numbers — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- Time units --</span>\n\n  60 seconds = 1 minute\n  60 minutes = 1 hour\n  24 hours   = 1 day\n\n<span class="important">To add times: add seconds, then minutes,\nthen hours &#8212; carry over every 60.</span>', n:"The key time units: 60 seconds in a minute, 60 minutes in an hour, 24 hours in a day. To add times, add seconds first, then minutes, then hours, carrying over every 60." },
+          { w:'<span class="comment">-- Adding time --</span>\n\n  3 h 45 min\n+ 1 h 30 min\n___________\n  45 + 30 = 75 min = 1 h 15 min\n  3 + 1 + 1 = 5 h\n  <span class="result">= 5 h 15 min</span>', n:"To add 3 hours 45 minutes and 1 hour 30 minutes: 45 plus 30 is 75 minutes, which is 1 hour 15 minutes. Carry the hour: 3 plus 1 plus 1 equals 5. The answer is 5 hours 15 minutes." },
+          { w:'<span class="comment">-- 24-hour and 12-hour clock --</span>\n\n  After 1200, subtract 12 for pm.\n\n  0930  &#8594; <span class="result">9:30 am</span>\n  1500  &#8594; <span class="result">3:00 pm</span>\n  1928  &#8594; <span class="result">7:28 pm</span>', n:"On the 24-hour clock, times after 1200 are pm. Subtract 12 to get the 12-hour time. 1500 is 3 pm, and 1928 is 7:28 pm." },
+          { w:'<span class="comment">-- Converting units --</span>\n\n  2 &#189; hours &#8594; 2.5 &#215; 60 = <span class="result">150 minutes</span>\n  2 days &#8594; 2 &#215; 24 = <span class="result">48 hours</span>\n\n<span class="important">Multiply to go to smaller units.</span>', n:"To convert to smaller units, multiply. Two and a half hours is 2.5 times 60, which is 150 minutes. Two days is 2 times 24, which is 48 hours." }
+        ],
+        practice: [
+          { q:'How many minutes are there in 2&#189; hours?', type:'mcq', opts:['120','150','125','250'], ans:1, marks:2, exp:'2.5 &#215; 60 = 150' },
+          { q:'How many hours are there in 2 days?', type:'mcq', opts:['24','36','48','60'], ans:2, marks:1, exp:'2 &#215; 24 = 48' },
+          { q:'Write 1500 (24-hour) in 12-hour time.', type:'mcq', opts:['5:00 am','3:00 pm','5:00 pm','3:00 am'], ans:1, marks:1, exp:'1500 - 12 = 3, afternoon &#8594; 3:00 pm' },
+          { q:'Add: 3 h 45 min + 1 h 30 min. Give the minutes part.', type:'mcq', opts:['75','15','45','30'], ans:1, marks:3, exp:'45+30=75 min = 1 h 15 min, so 15 minutes (carry 1 hour)' }
+        ]
+      },
+      {
+        title:'Money: Exchange Rates & Hire Purchase', sub:'Financial — Paper 1',
+        steps: [
+          { w:'<span class="comment">-- Exchange rates --</span>\n\nIf <span class="keyword">1 USD = 28 ZWL</span>:\n\n  USD &#8594; ZWL: <span class="highlight">multiply</span> by 28\n  ZWL &#8594; USD: <span class="highlight">divide</span> by 28\n\n  5 USD = 5 &#215; 28 = <span class="result">140 ZWL</span>', n:"With an exchange rate of 1 US dollar to 28 ZWL: to go from dollars to ZWL you multiply by 28, and to go from ZWL to dollars you divide by 28. So 5 dollars is 140 ZWL." },
+          { w:'<span class="comment">-- Converting back --</span>\n\n  1 USD = 28 ZWL\n\n  84 ZWL &#8594; 84 &#247; 28 = <span class="result">3 USD</span>\n\n<span class="important">Always check: more ZWL per dollar means the\nZWL number is the bigger one.</span>', n:"To convert 84 ZWL back to US dollars, divide by 28, giving 3 dollars. Remember the ZWL amount is always the bigger number when the rate is more ZWL per dollar." },
+          { w:'<span class="comment">-- Hire Purchase (HP) --</span>\n\nBuy now, pay over time. HP costs MORE than cash.\n\n  <span class="highlight">HP price = Deposit + (Instalment &#215; number)</span>\n\n  Deposit $50 + 6 &#215; $20\n  = 50 + 120 = <span class="result">$170</span>', n:"Hire purchase means buying now and paying in instalments, and it costs more than paying cash. The hire purchase price equals the deposit plus the instalment times the number of payments. A 50 dollar deposit plus six payments of 20 is 170 dollars." },
+          { w:'<span class="comment">-- Extra paid on HP --</span>\n\n  HP price &#8722; Cash price = extra you pay.\n\n  HP $170, cash $150\n  Extra = 170 &#8722; 150 = <span class="result">$20</span>', n:"The extra you pay on hire purchase is the hire purchase price minus the cash price. If the HP price is 170 and the cash price is 150, you pay 20 dollars extra." }
+        ],
+        practice: [
+          { q:'1 USD = 28 ZWL. Convert 5 USD to ZWL.', type:'mcq', opts:['$140','$33','$28','$5'], ans:0, marks:2, exp:'5 &#215; 28 = 140 ZWL' },
+          { q:'1 USD = 28 ZWL. Convert 84 ZWL to USD.', type:'mcq', opts:['$2','$3','$4','$56'], ans:1, marks:2, exp:'84 &#247; 28 = 3 USD' },
+          { q:'A fridge: deposit $50 plus 6 monthly payments of $20. Find the total hire purchase price.', type:'mcq', opts:['$120','$150','$170','$200'], ans:2, marks:3, exp:'50 + (6 &#215; 20) = 50 + 120 = 170' },
+          { q:'HP price is $170, cash price is $150. How much EXTRA is paid on hire purchase?', type:'mcq', opts:['$20','$30','$320','$10'], ans:0, marks:2, exp:'170 - 150 = 20' }
+        ]
       }
     ]
   }
@@ -2672,7 +2718,10 @@ var ZIMSEC_WEIGHTS = {
   'Functional Graphs': { freq: 75, marks: 10, diff: 3 },
   'Travel Graphs': { freq: 65, marks: 8, diff: 2 },
   'Vectors': { freq: 70, marks: 8, diff: 3 },
-  'Transformations': { freq: 75, marks: 10, diff: 3 }
+  'Transformations': { freq: 75, marks: 10, diff: 3 },
+  'Numbers: Factors, HCF & LCM': { freq: 80, marks: 4, diff: 1 },
+  'Time and Measures': { freq: 70, marks: 4, diff: 1 },
+  'Money: Exchange Rates & Hire Purchase': { freq: 80, marks: 8, diff: 2 }
 };
 // Importance = (freq/100) * marks. Missing topic -> neutral default (.5 * 6 = 3).
 function topicExamWeight(weights, title) {
@@ -4072,6 +4121,54 @@ const DRILL_TOPICS = [
       return { equation: `Cost = $${CP}, ${pct}% ${word}`, instruction: 'Find the selling price', answer: SP, steps, variable: '$', _CP: CP, _pct: pct, _isProfit: isProfit };
     },
     _verify(q) { const ch = q._CP * q._pct / 100; return q._isProfit ? q._CP + ch : q._CP - ch; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- HCF & LCM ---
+  {
+    id: 'hcflcm', name: 'HCF & LCM', icon: 'HCF',
+    _raw() {
+      const a = randInt(4, 20), b = randInt(4, 20);
+      const g = gcd(a, b);
+      const isHCF = Math.random() > 0.5;
+      const answer = isHCF ? g : (a * b / g);
+      const steps = isHCF
+        ? `HCF of ${a} and ${b}\nLargest number dividing both = ${g}`
+        : `LCM of ${a} and ${b}\n= ${a} x ${b} / HCF\n= ${a * b} / ${g} = ${answer}`;
+      return { equation: `${a} and ${b}`, instruction: isHCF ? 'Find the HCF' : 'Find the LCM', answer, steps, variable: '', _a: a, _b: b, _isHCF: isHCF };
+    },
+    _verify(q) { const g = gcd(q._a, q._b); return q._isHCF ? g : (q._a * q._b / g); },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- TIME & MEASURES ---
+  {
+    id: 'timemeasures', name: 'Time & Measures', icon: 'T',
+    _raw() {
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const h = randInt(1, 8); const answer = h * 60;
+        return { equation: `${h} hours`, instruction: 'How many minutes?', answer, steps: `${h} x 60 = ${answer} minutes`, variable: '', _v: h, _t: 0 };
+      } else {
+        const d = randInt(1, 6); const answer = d * 24;
+        return { equation: `${d} days`, instruction: 'How many hours?', answer, steps: `${d} x 24 = ${answer} hours`, variable: '', _v: d, _t: 1 };
+      }
+    },
+    _verify(q) { return q._t === 0 ? q._v * 60 : q._v * 24; },
+    generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
+  },
+  // --- MONEY: Exchange Rate & Hire Purchase ---
+  {
+    id: 'moneyhp', name: 'Money & Exchange', icon: '$',
+    _raw() {
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const rate = randInt(10, 40); const usd = randInt(2, 9); const answer = usd * rate;
+        return { equation: `1 USD = ${rate} ZWL`, instruction: `Convert ${usd} USD to ZWL`, answer, steps: `${usd} x ${rate} = ${answer} ZWL`, variable: '', _rate: rate, _usd: usd, _t: 0 };
+      } else {
+        const dep = randInt(2, 10) * 10; const n = randInt(3, 8); const inst = randInt(1, 5) * 10; const answer = dep + n * inst;
+        return { equation: `Deposit $${dep} + ${n} x $${inst}`, instruction: 'Find the hire purchase price', answer, steps: `${dep} + ${n} x ${inst} = ${dep} + ${n * inst} = ${answer}`, variable: '$', _dep: dep, _n: n, _inst: inst, _t: 1 };
+      }
+    },
+    _verify(q) { return q._t === 0 ? q._usd * q._rate : q._dep + q._n * q._inst; },
     generate() { return verifiedGenerate(() => this._raw(), q => this._verify(q)); }
   }
 ];
