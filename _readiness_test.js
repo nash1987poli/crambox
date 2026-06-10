@@ -14,7 +14,7 @@ const ctx = { console, Math, Date };
 vm.createContext(ctx);
 vm.runInContext(
   src + '\n' +
-  ['topicReadiness','applyDecay','examReadiness','predictedGrade','studyNext','readinessRank','xpForReadinessLift']
+  ['topicReadiness','applyDecay','examReadiness','predictedGrade','studyNext','readinessRank','xpForReadinessLift','ZIMSEC_WEIGHTS','topicExamWeight','studyImpact']
     .map(n => `globalThis.${n}=typeof ${n}!=="undefined"?${n}:undefined;`).join(''),
   ctx
 );
@@ -106,6 +106,20 @@ H.test('xpForReadinessLift: scales with gap, ~0 for re-grinding mastered', () =>
   H.assert(H.ctx.xpForReadinessLift(40, 60) > H.ctx.xpForReadinessLift(40, 45), 'bigger lift more xp');
   H.assert(H.ctx.xpForReadinessLift(85, 88) <= 2, 'mastered re-grind tiny');
   H.assert(H.ctx.xpForReadinessLift(60, 55) === 0, 'no negative xp');
+});
+
+H.test('topicExamWeight: freq*marks, neutral default for missing', () => {
+  const w = { Algebra: { freq: 80, marks: 10, diff: 2 } };
+  H.assert(H.ctx.topicExamWeight(w, 'Algebra') === 8, 'got ' + H.ctx.topicExamWeight(w,'Algebra')); // .8*10
+  H.assert(H.ctx.topicExamWeight(w, 'Missing') === 3, 'neutral .5*6=3, got ' + H.ctx.topicExamWeight(w,'Missing'));
+});
+H.test('ZIMSEC_WEIGHTS: an object covering topics with freq/marks/diff', () => {
+  const w = H.ctx.ZIMSEC_WEIGHTS;
+  H.assert(w && typeof w === 'object', 'exists');
+  const keys = Object.keys(w);
+  H.assert(keys.length >= 30, 'covers most topics: ' + keys.length);
+  const sample = w[keys[0]];
+  H.assert(typeof sample.freq === 'number' && typeof sample.marks === 'number', 'well-formed');
 });
 
 // ---- INSERT NEW TESTS ABOVE THIS LINE ----
