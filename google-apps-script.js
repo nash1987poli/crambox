@@ -3,7 +3,8 @@
 // ============================================================
 // SETUP:
 // 1. Create a Google Sheet with a tab named "Codes"
-// 2. Row 1 headers: Code | Name | Status | Device | Activated | MaxDevices
+// 2. Row 1 headers: Code | Name | Status | Device | Activated | MaxDevices | Email
+//    (Email column G is used by the automated 'issue' endpoint + n8n nudges)
 // 3. Add codes in Column A, student names in Column B
 // 4. Open Extensions > Apps Script, paste this code
 // 5. Deploy > New Deployment > Web App
@@ -36,10 +37,49 @@ function doPost(e) {
       return handleValidate(sheet, code, fp);
     }
 
+    // Automated code issuing (called by n8n, not by the app). Secured by ISSUE_SECRET.
+    if (action === 'issue') {
+      return handleIssue(sheet, data);
+    }
+
     return jsonResponse({ valid: false, error: 'Unknown action' });
 
   } catch (err) {
     return jsonResponse({ valid: false, error: 'Server error: ' + err.message });
+  }
+}
+
+// ====== AUTOMATED CODE ISSUING (for n8n) ======
+// IMPORTANT: change this secret to your own random string, and use the SAME value in n8n.
+// It stops anyone but your n8n workflow from minting free codes.
+var ISSUE_SECRET = 'CHANGE-ME-to-a-long-random-string';
+
+function handleIssue(sheet, data) {
+  if (String(data.key || '') !== ISSUE_SECRET) {
+    return jsonResponse({ ok: false, error: 'Unauthorized' });
+  }
+  var name = String(data.name || 'Student').trim();
+  var email = String(data.email || '').trim();
+  var maxDevices = parseInt(data.maxDevices, 10);
+  if (!maxDevices || maxDevices < 1) maxDevices = 1;
+
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(10000); } catch (e) { return jsonResponse({ ok: false, error: 'Server busy, try again' }); }
+  try {
+    // Generate a code that is not already in the sheet.
+    var rows = sheet.getDataRange().getValues();
+    var existing = {};
+    for (var i = 1; i < rows.length; i++) { existing[String(rows[i][0]).toUpperCase().trim()] = true; }
+    var code, tries = 0;
+    do { code = 'CB-' + randomAlphanumeric(8); tries++; } while (existing[code] && tries < 50);
+
+    // Columns: A Code | B Name | C Status | D Device | E Activated | F MaxDevices | G Email
+    sheet.appendRow([code, name, '', '', '', maxDevices, email]);
+    SpreadsheetApp.flush();
+
+    return jsonResponse({ ok: true, code: code, name: name, email: email, maxDevices: maxDevices });
+  } finally {
+    lock.releaseLock();
   }
 }
 
