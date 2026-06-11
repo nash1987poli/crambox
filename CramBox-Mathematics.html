@@ -816,7 +816,7 @@
   <div class="subject-card" onclick="openSubject('maths')">
     <div class="subj-icon" style="background:var(--blue-bg);color:var(--blue);">+</div>
     <div class="subj-info">
-      <h3>Mathematics 4004</h3>
+      <h3>Mathematics</h3>
       <p>Algebra, Geometry, Stats, Trig</p>
     </div>
     <span class="subj-pct" id="mathsPct">0%</span>
@@ -849,7 +849,7 @@
 <!-- ==================== SUBJECT ==================== -->
 <div class="screen" id="subjectScreen">
 <div class="container">
-  <div class="section-title" id="subjectTitle" style="margin-bottom:4px">Mathematics 4004</div>
+  <div class="section-title" id="subjectTitle" style="margin-bottom:4px">Mathematics</div>
   <p style="color:var(--text2);font-size:13px;margin-bottom:16px" id="subjectDesc">Paper 1 & Paper 2 Topics</p>
   <div id="topicList"></div>
 </div>
@@ -1427,7 +1427,7 @@ function goHome() { history=[]; stopPlay(); showScreen('homeScreen'); updateHome
 // ================================================================
 const DATA = {
   maths: {
-    title:'Mathematics 4004', desc:'Paper 1 & Paper 2 Topics',
+    title:'Mathematics', desc:'Paper 1 & Paper 2 Topics',
     topics: [
       {
         title:'Solving Linear Equations', sub:'Algebra — Paper 1',
@@ -2685,7 +2685,7 @@ function teamNewGroup() {
 // ===== READINESS MODULE START =====
 // --- ZIMSEC Intelligence Layer ---
 // Per-topic exam importance: freq (relative frequency 0-100), marks (typical), diff (1-3).
-// v1 values are informed estimates (seeded from the 4075 specimen paper + O-Level frequency),
+// v1 values are informed estimates (seeded from ZIMSEC specimen papers + O-Level frequency),
 // flagged for a maths-expert to confirm. Wrong weights only mis-prioritise, never mis-grade.
 var ZIMSEC_VERIFIED = false;
 var ZIMSEC_WEIGHTS = {
@@ -4460,8 +4460,8 @@ document.addEventListener('keydown', (e) => {
 // EXAM COUNTDOWN (Feature 2)
 // ================================================================
 const EXAM_DATES = [
-  { paper: "Paper 1", date: "2026-10-26", subject: "Mathematics 4004" },
-  { paper: "Paper 2", date: "2026-10-28", subject: "Mathematics 4004" }
+  { paper: "Paper 1", date: "2026-10-26", subject: "Mathematics" },
+  { paper: "Paper 2", date: "2026-10-28", subject: "Mathematics" }
 ];
 
 function getNextExam() {
