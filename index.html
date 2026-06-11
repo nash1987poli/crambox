@@ -620,6 +620,7 @@
     background:var(--green-bg); border:1px solid var(--green-dim); border-radius:8px; padding:10px 12px;
   }
   .gate-buy b { color:var(--green); }
+  .gate-buy a { color:var(--green); font-weight:700; text-decoration:none; }
   .gate-disclaimer {
     margin-top:18px; padding-top:14px; border-top:1px solid var(--border);
     font-size:10px; color:var(--text2); line-height:1.5;
@@ -715,7 +716,7 @@
     <input type="text" class="gate-input" id="gateCode" placeholder="Enter activation code" maxlength="20" autocomplete="off">
     <button class="gate-btn" id="gateBtn" onclick="activateApp()">Activate</button>
     <div class="gate-error" id="gateError"></div>
-    <div class="gate-buy">No code yet? Get one at <b>crambox-prep.vercel.app</b> &#8212; $5 once, or a Squad code for your whole study group.</div>
+    <div class="gate-buy">No code yet? <a href="https://wa.me/263782005948?text=Hi%2C%20I%27d%20like%20to%20buy%20CramBox%20(%245)" target="_blank">WhatsApp 0782 005 948</a> to buy &#8212; $5 once via EcoCash, or a Squad code for your study group.</div>
     <div class="gate-device">Device ID: <code id="gateDeviceId">...</code></div>
     <div class="gate-disclaimer">An independent O-Level Mathematics study tool.</div>
   </div>
