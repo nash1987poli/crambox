@@ -615,6 +615,11 @@
   .gate-device code {
     background:var(--bg2); padding:2px 6px; border-radius:4px; font-size:10px;
   }
+  .gate-buy {
+    margin-top:14px; font-size:12px; color:var(--text2); line-height:1.5;
+    background:var(--green-bg); border:1px solid var(--green-dim); border-radius:8px; padding:10px 12px;
+  }
+  .gate-buy b { color:var(--green); }
   .gate-disclaimer {
     margin-top:18px; padding-top:14px; border-top:1px solid var(--border);
     font-size:10px; color:var(--text2); line-height:1.5;
@@ -703,6 +708,7 @@
     <input type="text" class="gate-input" id="gateCode" placeholder="Enter activation code" maxlength="20" autocomplete="off">
     <button class="gate-btn" id="gateBtn" onclick="activateApp()">Activate</button>
     <div class="gate-error" id="gateError"></div>
+    <div class="gate-buy">No code yet? Get one at <b>crambox-prep.vercel.app</b> &#8212; $5 once, or a Squad code for your whole study group.</div>
     <div class="gate-device">Device ID: <code id="gateDeviceId">...</code></div>
     <div class="gate-disclaimer">CramBox is an independent study tool. It is not affiliated with, endorsed by, or connected to ZIMSEC. Prepared in line with the O-Level Mathematics 4004 syllabus.</div>
   </div>
