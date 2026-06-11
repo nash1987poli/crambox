@@ -47,6 +47,11 @@ function doPost(e) {
       return handleNudgeList(sheet, data);
     }
 
+    // Block (or un-block) a code from future activations. Secured.
+    if (action === 'block') {
+      return handleBlock(sheet, data);
+    }
+
     return jsonResponse({ valid: false, error: 'Unknown action' });
 
   } catch (err) {
@@ -134,6 +139,32 @@ function handleNudgeList(sheet, data) {
   return jsonResponse({ ok: true, count: students.length, students: students });
 }
 
+// Block (or un-block with {unblock:true}) a code so it can't activate new devices.
+function handleBlock(sheet, data) {
+  if (String(data.key || '') !== ISSUE_SECRET) {
+    return jsonResponse({ ok: false, error: 'Unauthorized' });
+  }
+  var code = String(data.code || '').toUpperCase().trim();
+  if (!code) return jsonResponse({ ok: false, error: 'No code given' });
+  var unblock = (data.unblock === true || String(data.unblock) === 'true');
+
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(10000); } catch (e) { return jsonResponse({ ok: false, error: 'Server busy, try again' }); }
+  try {
+    var rows = sheet.getDataRange().getValues();
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][0]).toUpperCase().trim() === code) {
+        sheet.getRange(i + 1, 3).setValue(unblock ? 'ACTIVE' : 'BLOCKED'); // column C = Status
+        SpreadsheetApp.flush();
+        return jsonResponse({ ok: true, code: code, status: unblock ? 'ACTIVE' : 'BLOCKED' });
+      }
+    }
+    return jsonResponse({ ok: false, error: 'Code not found' });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 function handleValidate(sheet, code, fp) {
   var lock = LockService.getScriptLock();
   try {
@@ -152,6 +183,13 @@ function handleValidate(sheet, code, fp) {
       var name = rows[i][1] || 'Student';
       var status = String(rows[i][2]).toUpperCase().trim();
       var deviceField = String(rows[i][3] || '').trim();
+
+      // BLOCKED code -> reject any activation (refund, abuse, etc.).
+      // NOTE: this stops NEW activations. A device already activated keeps working offline
+      // (the app does not re-check the server once unlocked).
+      if (status === 'BLOCKED') {
+        return jsonResponse({ valid: false, error: 'This code has been deactivated. Contact support.' });
+      }
 
       // Column F (index 5) = MaxDevices for Squad codes. Empty/missing = 1 (solo, original behaviour).
       var maxDevices = parseInt(rows[i][5], 10);
