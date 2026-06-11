@@ -3,3 +3,9 @@
 # Large source papers and archives (not part of the app)
 MATHS PAPERS/
 files.zip
+
+# ZIMSEC papers — copyrighted reference only, keep local, never commit/host
+*.pdf
+
+# Stray screenshot images
+*.jpg
