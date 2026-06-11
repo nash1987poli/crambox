@@ -1,0 +1,94 @@
+{
+  "name": "CramBox — Issue Code (On-Screen + Telegram Alert)",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Get your CramBox code",
+        "formDescription": "Fill this in and your activation code appears on the next screen.",
+        "formFields": {
+          "values": [
+            { "fieldLabel": "Name", "requiredField": true },
+            { "fieldLabel": "Plan", "fieldType": "dropdown", "fieldOptions": { "values": [ { "option": "Solo" }, { "option": "Squad-3" }, { "option": "Squad-5" } ] }, "requiredField": true },
+            { "fieldLabel": "EcoCash Reference", "requiredField": true },
+            { "fieldLabel": "Email (optional)", "fieldType": "email", "requiredField": false }
+          ]
+        },
+        "options": {}
+      },
+      "id": "form-trigger-1",
+      "name": "Get Code Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.1,
+      "position": [ 0, 300 ],
+      "webhookId": "crambox-get-code"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "asg-1", "name": "maxDevices", "type": "number", "value": "={{ $json.Plan === 'Squad-5' ? 5 : ($json.Plan === 'Squad-3' ? 3 : 1) }}" }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "set-maxdevices-1",
+      "name": "Set maxDevices",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [ 220, 300 ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "PASTE_YOUR_APPS_SCRIPT_URL_HERE",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [ { "name": "Content-Type", "value": "text/plain;charset=utf-8" } ] },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"issue\",\n  \"key\": \"PASTE_YOUR_SECRET_HERE\",\n  \"name\": \"{{ $('Get Code Form').item.json.Name }}\",\n  \"email\": \"{{ $('Get Code Form').item.json['Email (optional)'] }}\",\n  \"maxDevices\": {{ $('Set maxDevices').item.json.maxDevices }}\n}",
+        "options": {}
+      },
+      "id": "http-issue-1",
+      "name": "Issue Code (Apps Script)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 440, 300 ]
+    },
+    {
+      "parameters": {
+        "chatId": "8305706766",
+        "text": "=💰 New CramBox code issued\nCode: {{ $('Issue Code (Apps Script)').item.json.code }}\nName: {{ $('Get Code Form').item.json.Name }}\nPlan: {{ $('Get Code Form').item.json.Plan }}\nEcoCash ref: {{ $('Get Code Form').item.json['EcoCash Reference'] }}",
+        "additionalFields": {}
+      },
+      "id": "telegram-1",
+      "name": "Telegram Alert (you)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [ 660, 300 ]
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Here is your CramBox code",
+        "completionMessage": "=Your activation code:\n\n{{ $('Issue Code (Apps Script)').item.json.code }}\n\n1. Open the CramBox file sent to you on WhatsApp (or go to crambox-prep.vercel.app)\n2. Enter this code\n3. Study offline - no data needed after the first load\n\nScreenshot this code so you do not lose it!",
+        "options": {}
+      },
+      "id": "form-completion-1",
+      "name": "Show Code On Screen",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [ 880, 300 ],
+      "webhookId": "crambox-show-code"
+    }
+  ],
+  "connections": {
+    "Get Code Form": { "main": [ [ { "node": "Set maxDevices", "type": "main", "index": 0 } ] ] },
+    "Set maxDevices": { "main": [ [ { "node": "Issue Code (Apps Script)", "type": "main", "index": 0 } ] ] },
+    "Issue Code (Apps Script)": { "main": [ [ { "node": "Telegram Alert (you)", "type": "main", "index": 0 } ] ] },
+    "Telegram Alert (you)": { "main": [ [ { "node": "Show Code On Screen", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false,
+  "pinData": {}
+}
