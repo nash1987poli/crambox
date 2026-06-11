@@ -10,6 +10,7 @@
             { "fieldLabel": "Name", "requiredField": true },
             { "fieldLabel": "Plan", "fieldType": "dropdown", "fieldOptions": { "values": [ { "option": "Solo" }, { "option": "Squad-3" }, { "option": "Squad-5" } ] }, "requiredField": true },
             { "fieldLabel": "EcoCash Reference", "requiredField": true },
+            { "fieldLabel": "Referred by (code)", "requiredField": false },
             { "fieldLabel": "Email (optional)", "fieldType": "email", "requiredField": false }
           ]
         },
@@ -46,7 +47,7 @@
         "headerParameters": { "parameters": [ { "name": "Content-Type", "value": "text/plain;charset=utf-8" } ] },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"action\": \"issue\",\n  \"key\": \"PASTE_YOUR_SECRET_HERE\",\n  \"name\": \"{{ $('Get Code Form').item.json.Name }}\",\n  \"email\": \"{{ $('Get Code Form').item.json['Email (optional)'] }}\",\n  \"maxDevices\": {{ $('Set maxDevices').item.json.maxDevices }}\n}",
+        "jsonBody": "={\n  \"action\": \"issue\",\n  \"key\": \"PASTE_YOUR_SECRET_HERE\",\n  \"name\": \"{{ $('Get Code Form').item.json.Name }}\",\n  \"email\": \"{{ $('Get Code Form').item.json['Email (optional)'] }}\",\n  \"referredBy\": \"{{ $('Get Code Form').item.json['Referred by (code)'] }}\",\n  \"maxDevices\": {{ $('Set maxDevices').item.json.maxDevices }}\n}",
         "options": {}
       },
       "id": "http-issue-1",
@@ -58,7 +59,7 @@
     {
       "parameters": {
         "chatId": "8305706766",
-        "text": "=💰 New CramBox code issued\nCode: {{ $('Issue Code (Apps Script)').item.json.code }}\nName: {{ $('Get Code Form').item.json.Name }}\nPlan: {{ $('Get Code Form').item.json.Plan }}\nEcoCash ref: {{ $('Get Code Form').item.json['EcoCash Reference'] }}",
+        "text": "=💰 New CramBox code issued\nCode: {{ $('Issue Code (Apps Script)').item.json.code }}\nName: {{ $('Get Code Form').item.json.Name }}\nPlan: {{ $('Get Code Form').item.json.Plan }}\nEcoCash ref: {{ $('Get Code Form').item.json['EcoCash Reference'] }}\nReferred by: {{ $('Get Code Form').item.json['Referred by (code)'] || '-' }}{{ $('Issue Code (Apps Script)').item.json.referralStatus === 'reward_due' ? '\\n🎁 REFERRER EARNED A REWARD — pay them!' : '' }}",
         "additionalFields": {}
       },
       "id": "telegram-1",

@@ -630,6 +630,12 @@
     margin-top:28px; padding:18px 4px 8px; border-top:1px solid var(--border);
     text-align:center;
   }
+  .refer-card { background:var(--gold-bg); border:1px solid var(--gold); border-radius:14px; padding:16px; margin:16px 0; text-align:center; }
+  .refer-head { font-size:15px; font-weight:800; color:var(--gold); margin-bottom:4px; }
+  .refer-sub { font-size:13px; color:var(--text2); margin-bottom:10px; }
+  .refer-code { font-size:14px; color:var(--text); margin-bottom:12px; }
+  .refer-code b { color:var(--gold); letter-spacing:1px; }
+  .refer-btn { width:100%; padding:12px; background:var(--green); color:#fff; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; }
   .app-footer-brand { font-size:16px; font-weight:800; letter-spacing:-0.5px; color:var(--text2); margin-bottom:8px; }
   .app-footer-brand span { color:var(--accent); }
   .app-footer p { font-size:11px; color:var(--text2); line-height:1.6; max-width:340px; margin:0 auto; }
@@ -836,6 +842,13 @@
       <p>Coming soon</p>
     </div>
     <span class="subj-pct" style="color:var(--text2)">Soon</span>
+  </div>
+
+  <div class="refer-card" id="referCard" style="display:none">
+    <div class="refer-head">🎁 Refer &amp; Earn</div>
+    <p class="refer-sub">Get <b>3 friends</b> to enter your code when they buy CramBox &#8212; and earn a reward.</p>
+    <div class="refer-code">Your code: <b id="referCode">CB-XXXX</b></div>
+    <button class="refer-btn" onclick="shareReferral()">📲 Share on WhatsApp</button>
   </div>
 
   <footer class="app-footer">
@@ -1342,9 +1355,26 @@ function saveScore(subj, idx, earned, total) {
   recordStreak();
 }
 
+function renderReferral() {
+  try {
+    const lic = JSON.parse(localStorage.getItem('crambox-license') || '{}');
+    if (lic.code) {
+      document.getElementById('referCode').textContent = lic.code;
+      document.getElementById('referCard').style.display = 'block';
+    }
+  } catch (e) {}
+}
+function shareReferral() {
+  let code = '';
+  try { code = (JSON.parse(localStorage.getItem('crambox-license') || '{}')).code || ''; } catch (e) {}
+  const msg = 'Get CramBox — O-Level Maths on your phone, works offline, $5 once. 🔥\n\n'
+    + 'Use my code ' + code + ' when you buy and we both win!\n\nGet it: https://crambox-prep.vercel.app';
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
 function updateHome() {
   renderExamCountdown();
   renderReadinessHero();
+  renderReferral();
   const s = getStore();
   // XP badge
   document.getElementById('xpBadge').textContent = (s.xp||0) + ' XP';

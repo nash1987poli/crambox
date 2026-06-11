@@ -59,12 +59,16 @@ function doPost(e) {
 // It stops anyone but your n8n workflow from minting free codes.
 var ISSUE_SECRET = 'CHANGE-ME-to-a-long-random-string';
 
+// A referrer earns a reward every REWARD_EVERY paid referrals (you pay out via EcoCash).
+var REWARD_EVERY = 3;
+
 function handleIssue(sheet, data) {
   if (String(data.key || '') !== ISSUE_SECRET) {
     return jsonResponse({ ok: false, error: 'Unauthorized' });
   }
   var name = String(data.name || 'Student').trim();
   var email = String(data.email || '').trim();
+  var referredBy = String(data.referredBy || '').toUpperCase().trim();
   var maxDevices = parseInt(data.maxDevices, 10);
   if (!maxDevices || maxDevices < 1) maxDevices = 1;
 
@@ -78,11 +82,32 @@ function handleIssue(sheet, data) {
     var code, tries = 0;
     do { code = 'CB-' + randomAlphanumeric(8); tries++; } while (existing[code] && tries < 50);
 
-    // Columns: A Code | B Name | C Status | D Device | E Activated | F MaxDevices | G Email
-    sheet.appendRow([code, name, '', '', '', maxDevices, email]);
+    // Columns: A Code | B Name | C Status | D Device | E Activated | F MaxDevices | G Email | H ReferredBy | I Referrals | J RewardDue
+    sheet.appendRow([code, name, '', '', '', maxDevices, email, referredBy, 0, '']);
+
+    // Credit the referrer (if a valid existing code was given).
+    var referralStatus = '';
+    var referrerCount = 0;
+    if (referredBy && existing[referredBy]) {
+      for (var r = 1; r < rows.length; r++) {
+        if (String(rows[r][0]).toUpperCase().trim() === referredBy) {
+          referrerCount = (parseInt(rows[r][8], 10) || 0) + 1;   // column I (index 8)
+          var rowNum = r + 1;
+          sheet.getRange(rowNum, 9).setValue(referrerCount);     // I = Referrals
+          if (referrerCount % REWARD_EVERY === 0) {
+            sheet.getRange(rowNum, 10).setValue('REWARD DUE (' + referrerCount + ' referrals)'); // J
+            referralStatus = 'reward_due';
+          } else {
+            referralStatus = 'counted';
+          }
+          break;
+        }
+      }
+    }
     SpreadsheetApp.flush();
 
-    return jsonResponse({ ok: true, code: code, name: name, email: email, maxDevices: maxDevices });
+    return jsonResponse({ ok: true, code: code, name: name, email: email, maxDevices: maxDevices,
+      referredBy: referredBy, referralStatus: referralStatus, referrerCount: referrerCount });
   } finally {
     lock.releaseLock();
   }
