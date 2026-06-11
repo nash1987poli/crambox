@@ -1,0 +1,66 @@
+{
+  "name": "CramBox — Daily Nudge",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [ { "field": "days", "triggerAtHour": 17 } ] }
+      },
+      "id": "schedule-1",
+      "name": "Every day 5pm",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [ 0, 300 ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "PASTE_YOUR_APPS_SCRIPT_URL_HERE",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [ { "name": "Content-Type", "value": "text/plain;charset=utf-8" } ] },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"nudgeList\",\n  \"key\": \"PASTE_YOUR_SECRET_HERE\"\n}",
+        "options": {}
+      },
+      "id": "http-list-1",
+      "name": "Get Active Students",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 240, 300 ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "students",
+        "options": {}
+      },
+      "id": "split-1",
+      "name": "One Per Student",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [ 480, 300 ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "YOUR_EMAIL@gmail.com",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Keep your CramBox streak - study today",
+        "emailFormat": "text",
+        "text": "=Hi {{ $json.name }},\n\nEvery day you study, you get a little closer to passing. Don't break your streak - one quick session today keeps you sharp.\n\nOpen CramBox: https://crambox-prep.vercel.app\n\nYou've got this!",
+        "options": {}
+      },
+      "id": "smtp-nudge-1",
+      "name": "Send Nudge",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [ 720, 300 ]
+    }
+  ],
+  "connections": {
+    "Every day 5pm": { "main": [ [ { "node": "Get Active Students", "type": "main", "index": 0 } ] ] },
+    "Get Active Students": { "main": [ [ { "node": "One Per Student", "type": "main", "index": 0 } ] ] },
+    "One Per Student": { "main": [ [ { "node": "Send Nudge", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false,
+  "pinData": {}
+}

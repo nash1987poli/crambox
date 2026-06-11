@@ -42,6 +42,11 @@ function doPost(e) {
       return handleIssue(sheet, data);
     }
 
+    // Returns the list of activated students (name + email) for the daily nudge. Secured.
+    if (action === 'nudgeList') {
+      return handleNudgeList(sheet, data);
+    }
+
     return jsonResponse({ valid: false, error: 'Unknown action' });
 
   } catch (err) {
@@ -81,6 +86,27 @@ function handleIssue(sheet, data) {
   } finally {
     lock.releaseLock();
   }
+}
+
+// Returns activated students with an email, for the n8n daily nudge.
+// "Activated" = a device has registered against the code (column D) AND an email exists (column G).
+function handleNudgeList(sheet, data) {
+  if (String(data.key || '') !== ISSUE_SECRET) {
+    return jsonResponse({ ok: false, error: 'Unauthorized' });
+  }
+  var rows = sheet.getDataRange().getValues();
+  var seen = {};
+  var students = [];
+  for (var i = 1; i < rows.length; i++) {
+    var name = rows[i][1] || 'Student';
+    var device = String(rows[i][3] || '').trim();
+    var email = String(rows[i][6] || '').trim();
+    if (email && device && !seen[email.toLowerCase()]) {
+      seen[email.toLowerCase()] = true;
+      students.push({ name: name, email: email });
+    }
+  }
+  return jsonResponse({ ok: true, count: students.length, students: students });
 }
 
 function handleValidate(sheet, code, fp) {
