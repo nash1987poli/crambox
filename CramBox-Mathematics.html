@@ -522,6 +522,8 @@
   .spar-review-item .sr-q { color:var(--text); margin-bottom:4px; }
   .spar-review-item .sr-exp { color:var(--text2); white-space:pre-wrap; }
   .spar-review-item.sr-wrong { border-color:var(--red); }
+  .hear-btn { margin-top:8px; background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue); border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; }
+  .hear-btn:active { opacity:0.7; }
 
   /* Team Spar */
   .team-name-row { display:flex; gap:8px; margin-bottom:8px; }
@@ -960,6 +962,7 @@
     </div>
     <div class="drill-feedback" id="drillFeedback"></div>
     <div class="drill-solution" id="drillSolution"></div>
+    <button class="hear-btn" id="drillHearBtn" style="display:none" onclick="speakSolution(document.getElementById('drillSolution').textContent)">🔊 Hear it</button>
     <button class="drill-next" id="drillNextBtn" onclick="nextDrill()">Next Question</button>
   </div>
   <button class="submit-btn" onclick="endDrill()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border)">End Drill</button>
@@ -1060,6 +1063,7 @@
     </div>
     <div class="drill-feedback" id="teamFeedback"></div>
     <div class="drill-solution" id="teamSolution"></div>
+    <button class="hear-btn" id="teamHearBtn" style="display:none" onclick="speakSolution(document.getElementById('teamSolution').innerHTML)">🔊 Hear it</button>
     <div id="teamTally" style="font-size:12px;color:var(--text2);margin-top:10px"></div>
     <button class="drill-next" id="teamNextBtn" onclick="teamNext()" style="display:none">Next</button>
   </div>
@@ -2465,7 +2469,8 @@ function renderVerdict(pct, marksEarned, marksTotal, correctCount, byTopic, befo
   sparAnswers.filter(a => !a.correct).forEach(a => {
     const div = document.createElement('div'); div.className = 'spar-review-item sr-wrong';
     div.innerHTML = '<div class="sr-q">' + a.q.q + '</div>' +
-      '<div class="sr-exp"><strong>Answer:</strong> ' + a.q.answer + '\n' + a.q.exp + '</div>';
+      '<div class="sr-exp"><strong>Answer:</strong> ' + a.q.answer + '\n' + a.q.exp + '</div>' +
+      '<button class="hear-btn" onclick="speakSolution(this.closest(\'.spar-review-item\').querySelector(\'.sr-exp\').innerHTML)">🔊 Hear it</button>';
     review.appendChild(div);
   });
   showScreen('sparVerdictScreen');
@@ -2626,6 +2631,7 @@ function teamShowQ() {
   document.getElementById('teamCheckBtn').disabled = false;
   document.getElementById('teamFeedback').className = 'drill-feedback'; document.getElementById('teamFeedback').style.display = 'none';
   document.getElementById('teamSolution').style.display = 'none';
+  document.getElementById('teamHearBtn').style.display = 'none';
   document.getElementById('teamNextBtn').style.display = 'none';
   document.getElementById('teamTally').innerHTML = '';
   teamRenderTeamScore();
@@ -2656,6 +2662,7 @@ function teamCheck() {
   const sol = document.getElementById('teamSolution');
   sol.innerHTML = '<strong>Answer:</strong> ' + q.answer + '\n' + q.exp;
   sol.style.display = 'block';
+  document.getElementById('teamHearBtn').style.display = 'inline-block';
 
   teamRenderTally();
   teamRenderTeamScore();
@@ -3170,6 +3177,27 @@ function speakChunked(text,voice,runId,onDone){
     speechSynthesis.speak(u);
   })();
 }
+// Read a worked solution aloud on demand (the "Hear it" button). Works even if global voice is OFF.
+function speakSolution(raw){
+  if(!ttsSupported || !raw) return;
+  const el=document.createElement('textarea'); el.innerHTML=String(raw); // decode HTML entities
+  let t=el.value
+    .replace(/<[^>]+>/g,' ')
+    .replace(/×/g,' times ').replace(/÷/g,' divided by ')
+    .replace(/²/g,' squared ').replace(/³/g,' cubed ')
+    .replace(/√/g,' square root of ').replace(/π/g,' pi ')
+    .replace(/→/g,' gives ').replace(/&/g,' and ')
+    .replace(/≤/g,' less than or equal to ').replace(/≥/g,' greater than or equal to ')
+    .replace(/[−–—]/g,' minus ').replace(/=/g,' equals ')
+    .replace(/\n/g,'. ').replace(/\s+/g,' ').trim();
+  if(!t) return;
+  if(ttsVoices.length===0)loadVoices();
+  const voice=ttsVoices.find(v=>v.lang.startsWith('en'))||ttsVoices[0];
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t);
+  u.rate=0.92;u.pitch=1;u.lang='en-US';u.volume=1; if(voice)u.voice=voice;
+  speechSynthesis.speak(u);
+}
 function toggleVoice(){
   voiceOn=!voiceOn;
   const b=document.getElementById('voiceBtn');
@@ -3213,7 +3241,7 @@ function startPractice(i) {
     } else {
       inp=`<input type="text" class="ans-input" id="inp-${qi}" placeholder="Your answer..." autocomplete="off">`;
     }
-    card.innerHTML=`<div class="q-num">Question ${qi+1}</div><div class="q-text">${q.q}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
+    card.innerHTML=`<div class="q-num">Question ${qi+1}</div><div class="q-text">${q.q}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre><button class="hear-btn" onclick="speakSolution(this.closest('.explanation').querySelector('pre').innerHTML)">🔊 Hear it</button></div>`;
     area.appendChild(card);
   });
   area.innerHTML+='<button class="submit-btn" onclick="submitPractice()">Submit Answers</button>';
@@ -3396,7 +3424,7 @@ function startPanicMode(){
     } else {
       inp=`<input type="text" class="ans-input" id="inp-${qi}" placeholder="Your answer..." autocomplete="off">`;
     }
-    card.innerHTML=`<div class="q-num">${escHTML(q.topicTitle)} — Q${qi+1}</div><div class="q-text">${q.q}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre></div>`;
+    card.innerHTML=`<div class="q-num">${escHTML(q.topicTitle)} — Q${qi+1}</div><div class="q-text">${q.q}</div><div class="q-marks">[${q.marks} marks]</div>${inp}<div class="explanation" id="exp-${qi}"><h4></h4><pre style="white-space:pre-wrap;font-family:inherit;margin:0"></pre><button class="hear-btn" onclick="speakSolution(this.closest('.explanation').querySelector('pre').innerHTML)">🔊 Hear it</button></div>`;
     area.appendChild(card);
   });
   area.innerHTML+='<button class="submit-btn" onclick="submitPanic()">Submit All</button>';
@@ -4379,6 +4407,7 @@ function nextDrill() {
   document.getElementById('drillFeedback').className = 'drill-feedback';
   document.getElementById('drillFeedback').style.display = 'none';
   document.getElementById('drillSolution').style.display = 'none';
+  document.getElementById('drillHearBtn').style.display = 'none';
   document.getElementById('drillNextBtn').style.display = 'none';
 }
 
@@ -4438,6 +4467,7 @@ function checkDrill() {
   // Show worked solution
   sol.textContent = drillCurrentQ.steps;
   sol.style.display = 'block';
+  document.getElementById('drillHearBtn').style.display = 'inline-block';
 
   // Check session milestone
   checkMilestone(drillNum);
